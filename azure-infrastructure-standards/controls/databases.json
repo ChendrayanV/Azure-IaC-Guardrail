@@ -1,0 +1,19 @@
+{
+  "$schema": "../schema/control.schema.json",
+  "catalogVersion": "2026.06.1",
+  "controls": [
+    {
+      "id": "AZ-SQL-001",
+      "title": "SQL servers require a minimum TLS version",
+      "description": "Azure SQL servers must declare TLS 1.2 or later.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "minimum_tls_version",
+      "operator": "equals",
+      "expected": "1.2",
+      "remediation": "Set minimum_tls_version = \"1.2\"."
+    }
+  ]
+}

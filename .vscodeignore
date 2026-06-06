@@ -1,0 +1,14 @@
+.github/**
+.infra-compliance/**
+.azure-code-guard/**
+.azure-iac-guardrail/**
+.vscode/**
+.vscode-test.mjs
+.gitignore
+src/**
+test/**
+coverage/**
+eslint.config.mjs
+esbuild.mjs
+tsconfig.json
+*.vsix

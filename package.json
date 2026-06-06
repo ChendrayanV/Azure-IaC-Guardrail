@@ -1,0 +1,88 @@
+{
+  "name": "azure-iac-guardrail",
+  "displayName": "Azure IaC Guardrail",
+  "description": "Scan Terraform files against versioned Azure infrastructure controls.",
+  "version": "0.1.0",
+  "publisher": "your-publisher",
+  "license": "MIT",
+  "icon": "media/azure-iac-guardrail.png",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:terraform",
+    "onCommand:infraCompliance.scanWorkspace",
+    "onCommand:infraCompliance.scanPlan",
+    "onCommand:infraCompliance.createAndScanPlan"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "infraCompliance.scanWorkspace",
+        "title": "Azure IaC Guardrail: Scan Terraform Files"
+      },
+      {
+        "command": "infraCompliance.scanPlan",
+        "title": "Azure IaC Guardrail: Scan Existing Terraform Plan"
+      },
+      {
+        "command": "infraCompliance.createAndScanPlan",
+        "title": "Azure IaC Guardrail: Create and Scan Local Terraform Plan"
+      }
+    ],
+    "configuration": {
+      "title": "Azure IaC Guardrail",
+      "properties": {
+        "azureIacGuardrail.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Scan Terraform files against Azure controls when they are saved."
+        },
+        "azureIacGuardrail.workspaceControlsPath": {
+          "type": "string",
+          "default": ".azure-iac-guardrail/controls",
+          "description": "Workspace-relative folder containing additional JSON control files."
+        },
+        "azureIacGuardrail.terraformPath": {
+          "type": "string",
+          "default": "terraform",
+          "description": "Terraform executable path used to create plans and convert binary plans to JSON."
+        },
+        "azureIacGuardrail.initializeBeforePlan": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run terraform init in non-interactive mode before creating a local compliance plan. Disable when initialization is managed separately."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run test/unit",
+    "test:watch": "vitest test/unit",
+    "test:extension": "npm run compile && vscode-test",
+    "package": "npm run check && npm run test && npm run compile && vsce package",
+    "prepublishOnly": "npm run package"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.2.0"
+  }
+}

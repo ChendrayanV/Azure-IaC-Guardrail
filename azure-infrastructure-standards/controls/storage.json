@@ -1,0 +1,148 @@
+{
+  "$schema": "../schema/control.schema.json",
+  "catalogVersion": "2026.06.1",
+  "controls": [
+    {
+      "id": "AZ-STOR-001",
+      "title": "Storage accounts must block public blob access",
+      "description": "Azure Storage accounts must explicitly disable nested item public access.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "allow_nested_items_to_be_public",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set allow_nested_items_to_be_public = false."
+    },
+    {
+      "id": "AZ-STOR-002",
+      "title": "Storage accounts must disable public network access",
+      "description": "Azure Storage accounts must only be reachable through approved private connectivity.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set public_network_access_enabled = false."
+    },
+    {
+      "id": "AZ-STOR-003",
+      "title": "Storage accounts require a blob private endpoint",
+      "description": "Each Azure Storage account must have a private endpoint for the blob subresource.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "expected": "blob",
+      "relatedResourceType": "azurerm_private_endpoint",
+      "relatedMatchAttribute": "private_service_connection.*.private_connection_resource_id",
+      "relatedConditionAttribute": "private_service_connection.*.subresource_names",
+      "remediation": "Create an azurerm_private_endpoint connected to the storage account with subresource_names = [\"blob\"]."
+    },
+    {
+      "id": "AZ-STOR-004",
+      "title": "Storage accounts require a file private endpoint",
+      "description": "Each Azure Storage account must have a private endpoint for the file subresource.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "expected": "file",
+      "relatedResourceType": "azurerm_private_endpoint",
+      "relatedMatchAttribute": "private_service_connection.*.private_connection_resource_id",
+      "relatedConditionAttribute": "private_service_connection.*.subresource_names",
+      "remediation": "Create an azurerm_private_endpoint connected to the storage account with subresource_names = [\"file\"]."
+    },
+    {
+      "id": "AZ-STOR-005",
+      "title": "Storage accounts require a table private endpoint",
+      "description": "Each Azure Storage account must have a private endpoint for the table subresource.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "expected": "table",
+      "relatedResourceType": "azurerm_private_endpoint",
+      "relatedMatchAttribute": "private_service_connection.*.private_connection_resource_id",
+      "relatedConditionAttribute": "private_service_connection.*.subresource_names",
+      "remediation": "Create an azurerm_private_endpoint connected to the storage account with subresource_names = [\"table\"]."
+    },
+    {
+      "id": "AZ-STOR-006",
+      "title": "Storage accounts require a queue private endpoint",
+      "description": "Each Azure Storage account must have a private endpoint for the queue subresource.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "expected": "queue",
+      "relatedResourceType": "azurerm_private_endpoint",
+      "relatedMatchAttribute": "private_service_connection.*.private_connection_resource_id",
+      "relatedConditionAttribute": "private_service_connection.*.subresource_names",
+      "remediation": "Create an azurerm_private_endpoint connected to the storage account with subresource_names = [\"queue\"]."
+    },
+    {
+      "id": "AZ-STOR-007",
+      "title": "Storage accounts must require secure transfer",
+      "description": "Azure Storage accounts must reject unencrypted HTTP traffic and require HTTPS.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "https_traffic_only_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set https_traffic_only_enabled = true."
+    },
+    {
+      "id": "AZ-STOR-008",
+      "title": "Storage accounts must require TLS 1.2 or higher",
+      "description": "Azure Storage accounts must use TLS 1.2 as the minimum supported protocol version.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "min_tls_version",
+      "operator": "equals",
+      "expected": "TLS1_2",
+      "remediation": "Set min_tls_version = \"TLS1_2\"."
+    },
+    {
+      "id": "AZ-STOR-009",
+      "title": "Storage accounts must disable Shared Key authorization",
+      "description": "Azure Storage requests must use Microsoft Entra authorization instead of account access keys.",
+      "severity": "error",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "shared_access_key_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set shared_access_key_enabled = false and configure the AzureRM provider to use Microsoft Entra authentication for supported data-plane operations."
+    },
+    {
+      "id": "AZ-STOR-011",
+      "title": "Production storage with sensitive data should use customer-managed keys",
+      "description": "Storage accounts tagged as production and sensitive should use a customer-managed key for additional control over key lifecycle and access.",
+      "severity": "warning",
+      "resourceTypes": ["azurerm_storage_account"],
+      "attribute": "customer_managed_key",
+      "operator": "exists",
+      "conditions": [
+        {
+          "attribute": "tags.environment",
+          "operator": "equals",
+          "expected": "production"
+        },
+        {
+          "attribute": "tags.data_classification",
+          "operator": "equals",
+          "expected": "sensitive"
+        }
+      ],
+      "remediation": "Configure the customer_managed_key block with a Key Vault key and user-assigned identity. Use tags environment = \"production\" and data_classification = \"sensitive\" to declare applicability."
+    }
+  ],
+  "assurances": [
+    {
+      "id": "AZ-STOR-010",
+      "title": "Storage account data is encrypted at rest",
+      "description": "Azure Storage service encryption protects all data at rest and cannot be disabled. Microsoft-managed keys are used unless customer-managed keys are configured.",
+      "implementation": "platform",
+      "reference": "https://learn.microsoft.com/azure/storage/common/storage-service-encryption"
+    }
+  ]
+}

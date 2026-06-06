@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ChendrayanV/Azure-IaC-Guardrail/blob/main/azure-infrastructure-standards/schema/control.schema.json",
+  "title": "Azure infrastructure control catalog",
+  "type": "object",
+  "required": [
+    "catalogVersion",
+    "controls"
+  ],
+  "properties": {
+    "catalogVersion": {
+      "type": "string"
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/control"
+      }
+    },
+    "assurances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assurance"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "control": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "description",
+        "severity",
+        "resourceTypes",
+        "attribute",
+        "operator"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9-]+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "information"
+          ]
+        },
+        "resourceTypes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "attribute": {
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "equals",
+            "notEquals",
+            "exists",
+            "relatedResourceExists"
+          ]
+        },
+        "expected": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "relatedResourceType": {
+          "type": "string"
+        },
+        "relatedMatchAttribute": {
+          "type": "string"
+        },
+        "relatedConditionAttribute": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": "object",
+      "required": [
+        "attribute",
+        "operator"
+      ],
+      "properties": {
+        "attribute": {
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "equals",
+            "notEquals",
+            "exists"
+          ]
+        },
+        "expected": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "assurance": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "description",
+        "implementation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9-]+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "implementation": {
+          "const": "platform"
+        },
+        "reference": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
