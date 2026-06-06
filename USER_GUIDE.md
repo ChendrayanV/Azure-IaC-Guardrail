@@ -32,6 +32,9 @@ Alternatively, in VS Code:
 
 Reload VS Code when prompted.
 
+Open VS Code's **Welcome** page and select
+**Get Started with Azure IaC Guardrail** to follow the built-in walkthrough.
+
 ## 3. Run a static Terraform scan
 
 Use this mode for fast feedback while editing.

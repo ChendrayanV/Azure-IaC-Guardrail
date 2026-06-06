@@ -6,6 +6,14 @@
   "publisher": "your-publisher",
   "license": "MIT",
   "icon": "media/azure-iac-guardrail.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChendrayanV/Azure-IaC-Guardrail.git"
+  },
+  "homepage": "https://github.com/ChendrayanV/Azure-IaC-Guardrail#readme",
+  "bugs": {
+    "url": "https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -21,6 +29,35 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "walkthroughs": [
+      {
+        "id": "azureIacGuardrail.gettingStarted",
+        "title": "Get Started with Azure IaC Guardrail",
+        "description": "Scan Terraform files and resolved plans against the bundled Azure infrastructure controls.",
+        "steps": [
+          {
+            "id": "openTerraformWorkspace",
+            "title": "Open a Terraform workspace",
+            "description": "Open the Terraform root folder that contains the `.tf` files you want to assess."
+          },
+          {
+            "id": "scanTerraformFiles",
+            "title": "Run a fast static scan",
+            "description": "Run [Azure IaC Guardrail: Scan Terraform Files](command:infraCompliance.scanWorkspace) for immediate, offline feedback while authoring Terraform."
+          },
+          {
+            "id": "scanResolvedPlan",
+            "title": "Scan resolved Terraform values",
+            "description": "Run [Azure IaC Guardrail: Create and Scan Local Terraform Plan](command:infraCompliance.createAndScanPlan) to evaluate variables, modules, and resource relationships. Terraform must be installed and configured for the workspace."
+          },
+          {
+            "id": "scanExistingPlan",
+            "title": "Use a plan from another workflow",
+            "description": "Run [Azure IaC Guardrail: Scan Existing Terraform Plan](command:infraCompliance.scanPlan) and select a binary `.tfplan` or Terraform plan JSON file."
+          }
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "infraCompliance.scanWorkspace",

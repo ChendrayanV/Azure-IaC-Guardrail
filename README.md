@@ -1,6 +1,6 @@
 # Azure IaC Guardrail
 
-![Azure IaC Guardrail logo](media/azure-iac-guardrail.svg)
+![Azure IaC Guardrail logo](media/azure-iac-guardrail.png)
 
 A VS Code extension scaffold for scanning Terraform `.tf` files against
 versioned Azure infrastructure controls and presenting violations in a native
@@ -8,6 +8,23 @@ IDE results panel.
 
 For installation, scan workflows, settings, result interpretation, custom
 controls, and troubleshooting, see the [User Guide](USER_GUIDE.md).
+
+## Use the extension
+
+After installation, open VS Code's **Welcome** page and select
+**Get Started with Azure IaC Guardrail** for an in-editor walkthrough with
+direct links to each scan command.
+
+For a quick static scan:
+
+1. Open the Terraform root folder in VS Code.
+2. Press `Ctrl+Shift+P`.
+3. Run **Azure IaC Guardrail: Scan Terraform Files**.
+4. Review the **Azure IaC Guardrail Results** tab.
+
+Use **Create and Scan Local Terraform Plan** when controls require resolved
+variables or resource relationships. Terraform must be installed and
+configured for the workspace.
 
 ## Repository layout
 
