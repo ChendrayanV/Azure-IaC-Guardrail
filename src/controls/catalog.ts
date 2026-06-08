@@ -3,6 +3,10 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import { getConfigurationValue } from "../configuration";
 import type { Control, ControlCatalog } from "../types";
+import {
+  createWorkspacePolicyControls,
+  loadWorkspacePolicy,
+} from "./workspacePolicy";
 
 export async function loadControls(
   context: vscode.ExtensionContext,
@@ -13,6 +17,7 @@ export async function loadControls(
     "controls",
   ).fsPath;
   const controls = await readCatalogDirectory(builtInDirectory);
+  const skippedControlIds = new Set<string>();
 
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
     const configuredPath = configuredControlsPath(folder.uri);
@@ -34,9 +39,32 @@ export async function loadControls(
         )),
       );
     }
+
+    const policy = await loadWorkspacePolicy(folder.uri.fsPath);
+    if (policy) {
+      policy.skippedControlIds.forEach((id) =>
+        skippedControlIds.add(id),
+      );
+      policy.exceptions
+        .filter((exception) => !isExpired(exception.expiresOn))
+        .forEach((exception) =>
+          skippedControlIds.add(exception.controlId),
+        );
+      controls.push(...createWorkspacePolicyControls(policy));
+    }
   }
 
-  return controls;
+  const uniqueControls = new Map(
+    controls.map((control) => [control.id, control]),
+  );
+  return [...uniqueControls.values()].filter(
+    (control) => !skippedControlIds.has(control.id.toUpperCase()),
+  );
+}
+
+function isExpired(expiresOn: string): boolean {
+  const endOfDay = new Date(`${expiresOn}T23:59:59.999Z`);
+  return Number.isNaN(endOfDay.getTime()) || endOfDay < new Date();
 }
 
 function configuredControlsPath(uri: vscode.Uri): string {
@@ -52,7 +80,12 @@ async function readCatalogDirectory(directory: string): Promise<Control[]> {
     const entries = await fs.readdir(directory, { withFileTypes: true });
     const catalogs = await Promise.all(
       entries
-        .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+        .filter(
+          (entry) =>
+            entry.isFile() &&
+            entry.name.endsWith(".json") &&
+            entry.name !== "profile.json",
+        )
         .map((entry) => readCatalog(path.join(directory, entry.name))),
     );
     return catalogs.flatMap((catalog) => catalog.controls);

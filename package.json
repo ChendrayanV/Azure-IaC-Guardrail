@@ -1,7 +1,7 @@
 {
   "name": "azure-iac-guardrail",
   "displayName": "Azure IaC Guardrail",
-  "description": "Scan Terraform files against versioned Azure infrastructure controls.",
+  "description": "Review Azure Terraform security, compliance, architecture risk, and plan changes directly inside VS Code.",
   "version": "0.1.0",
   "publisher": "your-publisher",
   "license": "MIT",
@@ -21,11 +21,29 @@
     "Linters",
     "Other"
   ],
+  "keywords": [
+    "azure",
+    "terraform",
+    "iac",
+    "security",
+    "compliance",
+    "devsecops",
+    "policy",
+    "architecture"
+  ],
+  "galleryBanner": {
+    "color": "#0B1728",
+    "theme": "dark"
+  },
   "activationEvents": [
     "onLanguage:terraform",
     "onCommand:infraCompliance.scanWorkspace",
     "onCommand:infraCompliance.scanPlan",
-    "onCommand:infraCompliance.createAndScanPlan"
+    "onCommand:infraCompliance.createAndScanPlan",
+    "onCommand:infraCompliance.exportPdf",
+    "onCommand:infraCompliance.exportEvidence",
+    "onCommand:infraCompliance.analyzePrChanges",
+    "onCommand:infraCompliance.configureWorkspace"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -33,27 +51,32 @@
       {
         "id": "azureIacGuardrail.gettingStarted",
         "title": "Get Started with Azure IaC Guardrail",
-        "description": "Scan Terraform files and resolved plans against the bundled Azure infrastructure controls.",
+        "description": "Review Terraform security, resolved plan values, architecture risk, and audit evidence without leaving VS Code.",
         "steps": [
           {
             "id": "openTerraformWorkspace",
             "title": "Open a Terraform workspace",
-            "description": "Open the Terraform root folder that contains the `.tf` files you want to assess."
+            "description": "Open the Terraform root module that contains the `.tf` files you want to review."
           },
           {
             "id": "scanTerraformFiles",
             "title": "Run a fast static scan",
-            "description": "Run [Azure IaC Guardrail: Scan Terraform Files](command:infraCompliance.scanWorkspace) for immediate, offline feedback while authoring Terraform."
+            "description": "Run [Azure IaC Guardrail: Scan Terraform Files](command:infraCompliance.scanWorkspace) for immediate offline feedback on supported literal Terraform values."
+          },
+          {
+            "id": "configureWorkspacePolicy",
+            "title": "Configure local Azure standards",
+            "description": "Run [Azure IaC Guardrail: Azure Pre-configuration](command:infraCompliance.configureWorkspace) to define required tags, governed exceptions, and control exclusions."
           },
           {
             "id": "scanResolvedPlan",
             "title": "Scan resolved Terraform values",
-            "description": "Run [Azure IaC Guardrail: Create and Scan Local Terraform Plan](command:infraCompliance.createAndScanPlan) to evaluate variables, modules, and resource relationships. Terraform must be installed and configured for the workspace."
+            "description": "Run [Azure IaC Guardrail: Create and Scan Local Terraform Plan](command:infraCompliance.createAndScanPlan) and select the intended tfvars file to evaluate resolved values, modules, and relationships."
           },
           {
             "id": "scanExistingPlan",
             "title": "Use a plan from another workflow",
-            "description": "Run [Azure IaC Guardrail: Scan Existing Terraform Plan](command:infraCompliance.scanPlan) and select a binary `.tfplan` or Terraform plan JSON file."
+            "description": "Run [Azure IaC Guardrail: Scan Existing Terraform Plan](command:infraCompliance.scanPlan) to review a binary `.tfplan` or `terraform show -json` output from another workflow."
           }
         ]
       }
@@ -70,6 +93,22 @@
       {
         "command": "infraCompliance.createAndScanPlan",
         "title": "Azure IaC Guardrail: Create and Scan Local Terraform Plan"
+      },
+      {
+        "command": "infraCompliance.exportPdf",
+        "title": "Azure IaC Guardrail: Export Scan Results as PDF"
+      },
+      {
+        "command": "infraCompliance.exportEvidence",
+        "title": "Azure IaC Guardrail: Export Auditor Evidence Pack"
+      },
+      {
+        "command": "infraCompliance.analyzePrChanges",
+        "title": "Azure IaC Guardrail: Analyze PR Change and Blast Radius"
+      },
+      {
+        "command": "infraCompliance.configureWorkspace",
+        "title": "Azure IaC Guardrail: Azure Pre-configuration"
       }
     ],
     "configuration": {
@@ -94,6 +133,11 @@
           "type": "boolean",
           "default": true,
           "description": "Run terraform init in non-interactive mode before creating a local compliance plan. Disable when initialization is managed separately."
+        },
+        "azureIacGuardrail.retainGeneratedPlan": {
+          "type": "boolean",
+          "default": false,
+          "description": "Keep the generated binary plan at .azure-iac-guardrail/plans/latest.tfplan after scanning. Plan files can contain sensitive values."
         }
       }
     }
@@ -102,11 +146,12 @@
     "compile": "node esbuild.mjs",
     "watch": "node esbuild.mjs --watch",
     "check": "tsc --noEmit",
+    "check:terraform-identifiers": "node scripts/check-terraform-identifiers.mjs",
     "lint": "eslint .",
     "test": "vitest run test/unit",
     "test:watch": "vitest test/unit",
     "test:extension": "npm run compile && vscode-test",
-    "package": "npm run check && npm run test && npm run compile && vsce package",
+    "package": "npm run check:terraform-identifiers && npm run check && npm run test && npm run compile && vsce package",
     "prepublishOnly": "npm run package"
   },
   "devDependencies": {
@@ -121,5 +166,8 @@
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^3.2.0"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
   }
 }

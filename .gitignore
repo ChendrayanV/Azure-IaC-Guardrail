@@ -3,4 +3,33 @@ dist/
 *.vsix
 .vscode-test/
 coverage/
+
+# Terraform working directories and generated state
 **/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local Terraform variable and backend configuration
+*.tfvars
+*.tfvars.json
+backend.hcl
+backend.tf
+terraform.rc
+.terraformrc
+
+# Local override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Keep distributable Terraform examples
+!*.tfvars.example
+!*.tfvars.json.example
+!backend.hcl.example
+!backend.tf.example
+
+.azure-iac-guardrail/plans/

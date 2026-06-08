@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "requiredTags": [
+    "environment"
+  ],
+  "tagValues": {
+    "environment": "dummy"
+  },
+  "skippedControlIds": [],
+  "exceptions": []
+}

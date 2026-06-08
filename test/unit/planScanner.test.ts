@@ -180,13 +180,120 @@ describe("scanTerraformPlan", () => {
     expect(findings[0].control.id).toBe("AZ-STOR-006");
   });
 
+  it("fails required storage endpoints when no private endpoints exist", () => {
+    const requiredEndpoints: Control[] = ["blob", "file", "table", "queue"].map(
+      (subresource, index) => ({
+        ...control,
+        id: `AZ-STOR-00${index + 3}`,
+        attribute: "id",
+        operator: "relatedResourceExists",
+        expected: subresource,
+        relatedResourceType: "azurerm_private_endpoint",
+        relatedMatchAttribute:
+          "private_service_connection.*.private_connection_resource_id",
+        relatedConditionAttribute:
+          "private_service_connection.*.subresource_names",
+      }),
+    );
+    const plan = JSON.stringify({
+      planned_values: {
+        root_module: {
+          resources: [
+            {
+              address: "azurerm_storage_account.example",
+              mode: "managed",
+              type: "azurerm_storage_account",
+              name: "example",
+              values: {
+                id: null,
+                public_network_access_enabled: false,
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const findings = scanTerraformPlan(plan, requiredEndpoints);
+
+    expect(findings).toHaveLength(4);
+    expect(
+      findings.every((finding) => finding.outcome === "noncompliant"),
+    ).toBe(true);
+    expect(findings[0].actual).toBe(
+      "No azurerm_private_endpoint resource found",
+    );
+  });
+
+  it("fails missing storage subresources even when another endpoint exists", () => {
+    const requiredEndpoints: Control[] = ["blob", "file", "table", "queue"].map(
+      (subresource, index) => ({
+        ...control,
+        id: `AZ-STOR-00${index + 3}`,
+        attribute: "id",
+        operator: "relatedResourceExists",
+        expected: subresource,
+        relatedResourceType: "azurerm_private_endpoint",
+        relatedMatchAttribute:
+          "private_service_connection.*.private_connection_resource_id",
+        relatedConditionAttribute:
+          "private_service_connection.*.subresource_names",
+      }),
+    );
+    const plan = JSON.stringify({
+      planned_values: {
+        root_module: {
+          resources: [
+            {
+              address: "azurerm_storage_account.example",
+              mode: "managed",
+              type: "azurerm_storage_account",
+              name: "example",
+              values: { id: null },
+            },
+            {
+              address: "azurerm_private_endpoint.blob",
+              mode: "managed",
+              type: "azurerm_private_endpoint",
+              name: "blob",
+              values: {
+                private_service_connection: [
+                  {
+                    private_connection_resource_id: null,
+                    subresource_names: ["blob"],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    const findings = scanTerraformPlan(plan, requiredEndpoints);
+
+    expect(
+      findings.find((finding) => finding.control.id === "AZ-STOR-003")
+        ?.outcome,
+    ).toBe("unresolved");
+    for (const controlId of ["AZ-STOR-004", "AZ-STOR-005", "AZ-STOR-006"]) {
+      const finding = findings.find(
+        (candidate) => candidate.control.id === controlId,
+      );
+      expect(finding?.outcome).toBe("noncompliant");
+      expect(finding?.actual).toContain("subresource found");
+    }
+  });
+
   it("applies the CMK recommendation only to production sensitive data", () => {
     const cmkControl: Control = {
       ...control,
       id: "AZ-STOR-011",
       severity: "warning",
-      attribute: "customer_managed_key",
-      operator: "exists",
+      attribute: "id",
+      operator: "relatedResourceExists",
+      relatedResourceType: "azurerm_storage_account_customer_managed_key",
+      relatedMatchAttribute: "storage_account_id",
       conditions: [
         {
           attribute: "tags.environment",
@@ -213,7 +320,15 @@ describe("scanTerraformPlan", () => {
                   environment: "production",
                   data_classification: "sensitive",
                 },
-                customer_managed_key: [],
+                id: "/storage/production",
+              },
+            },
+            {
+              mode: "managed",
+              type: "azurerm_storage_account_customer_managed_key",
+              name: "production",
+              values: {
+                storage_account_id: "/storage/production",
               },
             },
           ],
@@ -233,7 +348,7 @@ describe("scanTerraformPlan", () => {
                   environment: "test",
                   data_classification: "sensitive",
                 },
-                customer_managed_key: [],
+                id: "/storage/test",
               },
             },
           ],

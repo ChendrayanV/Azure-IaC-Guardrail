@@ -30,12 +30,18 @@ function evaluateControl(
   control: Control,
   resources: TerraformResource[],
 ): Finding[] {
+  if (control.planOnly && !resource.address) {
+    if (control.skipStatic) {
+      return [];
+    }
+    return [createFinding(resource, control, undefined, "unresolved")];
+  }
   const applicability = evaluateConditions(resource, control.conditions ?? []);
   if (applicability === false) {
     return [];
   }
 
-  const attribute = resource.attributes.get(control.attribute);
+  const attribute = getControlAttribute(resource, control);
   if (applicability === undefined) {
     return [createFinding(resource, control, attribute, "unresolved")];
   }
@@ -95,41 +101,106 @@ function evaluateRelatedResource(
 ): Finding[] {
   if (
     !control.relatedResourceType ||
-    !control.relatedMatchAttribute ||
-    !control.relatedConditionAttribute
+    !control.relatedMatchAttribute
   ) {
     throw new Error(
       `${control.id} must define related resource matching fields.`,
     );
   }
-  if (!attribute || !attribute.resolved || attribute.value == null) {
+  if (
+    !resource.address &&
+    (!attribute || !attribute.resolved || attribute.value == null)
+  ) {
     return [createFinding(resource, control, attribute, "unresolved")];
   }
 
   const relatedResources = resources.filter(
     (candidate) => candidate.type === control.relatedResourceType,
   );
-  const hasMatch = relatedResources.some((candidate) => {
+  if (relatedResources.length === 0) {
+    return [
+      createFinding(
+        resource,
+        control,
+        relationshipObservation(
+          resource,
+          `No ${control.relatedResourceType} resource found`,
+        ),
+        "noncompliant",
+      ),
+    ];
+  }
+
+  const eligibleResources = control.relatedConditionAttribute
+    ? relatedResources.filter((candidate) => {
+        const conditionValues = getAttributeValues(
+          candidate,
+          control.relatedConditionAttribute as string,
+        );
+        return (
+          conditionValues !== undefined &&
+          conditionValues.some((value) => value === control.expected)
+        );
+      })
+    : relatedResources;
+
+  if (eligibleResources.length === 0) {
+    return [
+      createFinding(
+        resource,
+        control,
+        relationshipObservation(
+          resource,
+          `No ${control.relatedResourceType} with ${String(control.expected)} subresource found`,
+        ),
+        "noncompliant",
+      ),
+    ];
+  }
+
+  if (!attribute || !attribute.resolved || attribute.value == null) {
+    return [createFinding(resource, control, attribute, "unresolved")];
+  }
+
+  const hasMatch = eligibleResources.some((candidate) => {
     const matchValues = getAttributeValues(
       candidate,
       control.relatedMatchAttribute as string,
     );
-    const conditionValues = getAttributeValues(
-      candidate,
-      control.relatedConditionAttribute as string,
-    );
     return (
       matchValues !== undefined &&
-      conditionValues !== undefined &&
-      matchValues.some((value) => value === attribute.value) &&
-      conditionValues.some((value) => value === control.expected)
+      matchValues.some((value) => value === attribute.value)
     );
   });
 
   if (hasMatch) {
     return [createFinding(resource, control, attribute, "compliant")];
   }
-  return [createFinding(resource, control, attribute, "noncompliant")];
+  return [
+    createFinding(
+      resource,
+      control,
+      relationshipObservation(
+        resource,
+        `No matching ${control.relatedResourceType} linked to this resource`,
+      ),
+      "noncompliant",
+    ),
+  ];
+}
+
+function relationshipObservation(
+  resource: TerraformResource,
+  value: string,
+): TerraformAttribute {
+  return {
+    name: "related_resource",
+    value,
+    resolved: true,
+    line: resource.startLine,
+    startCharacter: 0,
+    endCharacter: 1,
+  };
 }
 
 function createFinding(
@@ -165,14 +236,54 @@ function evaluate(
     return false;
   }
 
-  const actual =
-    typeof attribute.value === "string"
-      ? coerce(attribute.value)
-      : attribute.value;
+  const actual = attribute.value;
   const expected = control.expected;
-  return control.operator === "equals"
-    ? actual === expected
-    : actual !== expected;
+  if (control.operator === "equals") {
+    return valuesEqual(actual, expected);
+  }
+  if (control.operator === "notEquals") {
+    return !valuesEqual(actual, expected);
+  }
+  if (control.operator === "oneOf") {
+    return (
+      Array.isArray(expected) &&
+      expected.some((candidate) => valuesEqual(actual, candidate))
+    );
+  }
+  if (control.operator === "contains") {
+    return Array.isArray(actual)
+      ? actual.some((value) => valuesEqual(value, expected))
+      : false;
+  }
+  return false;
+}
+
+function getControlAttribute(
+  resource: TerraformResource,
+  control: Control,
+): TerraformAttribute | undefined {
+  const attributePath = control.attribute;
+  const direct = resource.attributes.get(attributePath);
+  if (direct || !attributePath.includes(".")) {
+    return direct;
+  }
+  const values = getAttributeValues(resource, attributePath);
+  if (values === undefined) {
+    return undefined;
+  }
+  return {
+    name: attributePath,
+    value:
+      control.operator === "contains"
+        ? values
+        : values.length === 1
+          ? values[0]
+          : values,
+    resolved: true,
+    line: resource.startLine,
+    startCharacter: 0,
+    endCharacter: 1,
+  };
 }
 
 function evaluateValues(
@@ -183,7 +294,7 @@ function evaluateValues(
     return values.some(hasValue);
   }
   const hasExpected = values.some(
-    (value) => coerceUnknown(value) === condition.expected,
+    (value) => valuesEqual(value, condition.expected),
   );
   return condition.operator === "equals" ? hasExpected : !hasExpected;
 }
@@ -238,6 +349,11 @@ function coerce(value: string): string | number | boolean {
   return Number.isNaN(number) ? value : number;
 }
 
-function coerceUnknown(value: unknown): unknown {
-  return typeof value === "string" ? coerce(value) : value;
+function valuesEqual(actual: unknown, expected: unknown): boolean {
+  if (typeof expected === "string") {
+    return actual === expected;
+  }
+  return (
+    (typeof actual === "string" ? coerce(actual) : actual) === expected
+  );
 }

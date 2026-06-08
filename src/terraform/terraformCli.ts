@@ -28,12 +28,15 @@ export async function createTerraformPlanJson(
   cwd: string,
   outputDirectory: string,
   varFile?: string,
-): Promise<string> {
-  await fs.mkdir(outputDirectory, { recursive: true });
-  const planPath = path.join(
-    outputDirectory,
-    `azure-iac-guardrail-${Date.now()}.tfplan`,
-  );
+  retainedPlanPath?: string,
+): Promise<{ planJson: string; planPath?: string }> {
+  const planPath =
+    retainedPlanPath ??
+    path.join(
+      outputDirectory,
+      `azure-iac-guardrail-${Date.now()}.tfplan`,
+    );
+  await fs.mkdir(path.dirname(planPath), { recursive: true });
   const args = [
     "plan",
     "-input=false",
@@ -47,9 +50,14 @@ export async function createTerraformPlanJson(
 
   try {
     await runTerraform(terraformPath, args, cwd);
-    return await showTerraformPlan(terraformPath, planPath, cwd);
+    return {
+      planJson: await showTerraformPlan(terraformPath, planPath, cwd),
+      planPath: retainedPlanPath ? planPath : undefined,
+    };
   } finally {
-    await fs.rm(planPath, { force: true });
+    if (!retainedPlanPath) {
+      await fs.rm(planPath, { force: true });
+    }
   }
 }
 
@@ -81,4 +89,8 @@ export function terraformPathFor(uri: vscode.Uri): string {
 
 export function initializeBeforePlanFor(uri: vscode.Uri): boolean {
   return getConfigurationValue(uri, "initializeBeforePlan", true) as boolean;
+}
+
+export function retainGeneratedPlanFor(uri: vscode.Uri): boolean {
+  return getConfigurationValue(uri, "retainGeneratedPlan", false) as boolean;
 }

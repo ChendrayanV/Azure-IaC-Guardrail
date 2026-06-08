@@ -18,6 +18,9 @@ const finding: Finding = {
     operator: "equals",
     expected: false,
     remediation: "Set allow_nested_items_to_be_public = false.",
+    reference: "https://learn.microsoft.com/azure/storage/common/security-recommendations-for-blob-storage",
+    benchmarkReference:
+      "https://avd.aquasec.com/misconfig/azure/storage/azu-0008/",
   },
   resource: {
     type: "azurerm_storage_account",
@@ -35,8 +38,15 @@ const finding: Finding = {
 
 describe("renderResultsHtml", () => {
   it("renders a loading state", () => {
-    const html = renderLoadingHtml("test-nonce");
+    const html = renderLoadingHtml(
+      "test-nonce",
+      "plan",
+      "Creating a resolved plan...",
+    );
     expect(html).toContain("Azure IaC Guardrail is scanning");
+    expect(html).toContain("Create plan");
+    expect(html).toContain("Creating a resolved plan...");
+    expect(html).toContain("role=\"progressbar\"");
     expect(html).toContain("test-nonce");
   });
 
@@ -67,8 +77,21 @@ describe("renderResultsHtml", () => {
     expect(html).toContain("Expected");
     expect(html).toContain("<code>true</code>");
     expect(html).toContain("<code>false</code>");
+    expect(html).toContain("finding-toggle");
+    expect(html).toContain("data-finding-card");
+    expect(html).toContain("data-finding-toggle");
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).toContain('id="finding-details-0" hidden');
+    expect(html).toContain("finding-summary-meta");
     expect(html).toContain('data-uri="file:///workspace/main.tf"');
     expect(html).toContain("Action required");
+    expect(html).toContain("Export PDF");
+    expect(html).toContain("data-export-pdf");
+    expect(html).toContain("Microsoft guidance");
+    expect(html).toContain("Aqua AVD rule");
+    expect(html).toContain(
+      'data-reference="https://learn.microsoft.com/azure/storage/common/security-recommendations-for-blob-storage"',
+    );
   });
 
   it("renders a compliant state", () => {
@@ -185,5 +208,117 @@ describe("renderResultsHtml", () => {
     expect(html).toContain(
       "Azure IaC Guardrail: Create and Scan Local Terraform Plan",
     );
+  });
+
+  it("renders unresolved plan values as apply-time values", () => {
+    const html = renderResultsHtml(
+      [
+        {
+          scanKind: "plan",
+          filePath: "local.tfplan",
+          findings: [
+            {
+              ...finding,
+              outcome: "unresolved",
+              actual: undefined,
+            },
+          ],
+        },
+      ],
+      "test-nonce",
+    );
+
+    expect(html).toContain("Apply-time value");
+    expect(html).toContain("APPLY-TIME VALUE");
+    expect(html).toContain(
+      "Terraform cannot know this value until Azure creates the resource",
+    );
+    expect(html).toContain("Example scenario");
+    expect(html).toContain("new storage account");
+    expect(html).toContain("Running the same unchanged pre-deployment plan");
+    expect(html).not.toContain("Run <em>Azure IaC Guardrail");
+  });
+
+  it("renders colored metrics and a local plan rescan action", () => {
+    const html = renderResultsHtml(
+      [
+        {
+          scanKind: "plan",
+          filePath: "local.tfplan",
+          findings: [finding],
+        },
+      ],
+      "test-nonce",
+      true,
+    );
+
+    expect(html).toContain("metric compliant");
+    expect(html).toContain("metric noncompliant");
+    expect(html).toContain("metric unresolved");
+    expect(html).toContain("Rescan Local Plan");
+    expect(html).toContain("data-rescan");
+    expect(html).toContain('type: "rescan"');
+  });
+
+  it("renders architecture, blast-radius, fixes, and evidence actions", () => {
+    const html = renderResultsHtml(
+      [
+        {
+          scanKind: "plan",
+          filePath: "local.tfplan",
+          findings: [finding],
+          analysis: {
+            nodes: [
+              {
+                address: "azurerm_storage_account.example",
+                type: "azurerm_storage_account",
+                name: "example",
+                service: "Storage Account",
+                changeAction: "replace",
+                risk: "high",
+                publicExposure: true,
+              },
+            ],
+            edges: [],
+            changes: {
+              create: 0,
+              update: 0,
+              delete: 0,
+              replace: 1,
+              "no-op": 0,
+              read: 0,
+            },
+            blastRadius: [
+              {
+                address: "azurerm_storage_account.example",
+                action: "replace",
+                risk: "high",
+                reason: "replace operation",
+              },
+            ],
+            riskScore: 75,
+          },
+        },
+      ],
+      "test-nonce",
+    );
+
+    expect(html).toContain("Architecture Risk Graph");
+    expect(html).toContain("view-tab findings active");
+    expect(html).toContain("view-tab architecture");
+    expect(html).toContain("view-tab changes");
+    expect(html).toContain("Controls and remediation");
+    expect(html).toContain("Resources and relationships");
+    expect(html).toContain("Change impact and risk");
+    expect(html).toContain('aria-pressed="true"');
+    expect(html).toContain("Open Architecture Diagram · Preview");
+    expect(html).toContain("coming soon");
+    expect(html).toContain("disabled");
+    expect(html).not.toContain("data-open-architecture");
+    expect(html).not.toContain('type: "openArchitecture"');
+    expect(html).toContain("PR Change &amp; Blast Radius");
+    expect(html).toContain("75/100");
+    expect(html).toContain("Preview Safe Fix");
+    expect(html).toContain("Export Evidence Pack");
   });
 });

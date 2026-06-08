@@ -35,7 +35,8 @@
         "severity",
         "resourceTypes",
         "attribute",
-        "operator"
+        "operator",
+        "reference"
       ],
       "properties": {
         "id": {
@@ -70,18 +71,49 @@
             "equals",
             "notEquals",
             "exists",
+            "oneOf",
+            "contains",
             "relatedResourceExists"
           ]
         },
         "expected": {
-          "type": [
-            "string",
-            "number",
-            "boolean"
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              }
+            }
           ]
         },
         "remediation": {
           "type": "string"
+        },
+        "reference": {
+          "type": "string",
+          "format": "uri"
+        },
+        "benchmarkReference": {
+          "type": "string",
+          "format": "uri"
+        },
+        "planOnly": {
+          "type": "boolean"
+        },
+        "skipStatic": {
+          "type": "boolean"
         },
         "conditions": {
           "type": "array",

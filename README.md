@@ -2,29 +2,125 @@
 
 ![Azure IaC Guardrail logo](media/azure-iac-guardrail.png)
 
-A VS Code extension scaffold for scanning Terraform `.tf` files against
-versioned Azure infrastructure controls and presenting violations in a native
-IDE results panel.
+<h3 align="center">Review Azure Terraform before it reaches production.</h3>
 
-For installation, scan workflows, settings, result interpretation, custom
-controls, and troubleshooting, see the [User Guide](USER_GUIDE.md).
+<p align="center">
+  Azure IaC Guardrail brings security controls, resolved plan analysis,
+  architecture risk, change impact, remediation guidance, and audit evidence
+  into Visual Studio Code.
+</p>
 
-## Use the extension
+> Azure IaC Guardrail never runs `terraform apply`. Static scans are offline.
+> Plan scans use your local Terraform executable and existing provider/backend
+> authentication.
 
-After installation, open VS Code's **Welcome** page and select
-**Get Started with Azure IaC Guardrail** for an in-editor walkthrough with
-direct links to each scan command.
+## Product tour
 
-For a quick static scan:
+![Illustrative Azure IaC Guardrail results preview](media/screenshots/results-overview.png)
 
-1. Open the Terraform root folder in VS Code.
-2. Press `Ctrl+Shift+P`.
-3. Run **Azure IaC Guardrail: Scan Terraform Files**.
-4. Review the **Azure IaC Guardrail Results** tab.
+<sub>Illustrative product preview. Resource names and findings are sample data; the shipped extension evaluates Terraform.</sub>
 
-Use **Create and Scan Local Terraform Plan** when controls require resolved
-variables or resource relationships. Terraform must be installed and
-configured for the workspace.
+![Azure IaC Guardrail end-user workflow](media/screenshots/workflow.png)
+
+## What you get
+
+<table>
+  <tr>
+    <td width="33%">
+      <strong>Fast authoring feedback</strong><br>
+      Scan supported literal Terraform values without invoking Terraform or authenticating to Azure.
+    </td>
+    <td width="33%">
+      <strong>Resolved plan assurance</strong><br>
+      Evaluate variables, locals, modules, conditions, and resource relationships from a Terraform plan.
+    </td>
+    <td width="33%">
+      <strong>Actionable findings</strong><br>
+      Filter outcomes, inspect observed versus expected values, and open Microsoft or Aqua guidance.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <strong>Architecture and blast radius</strong><br>
+      Review resource risk, public exposure, creates, updates, replacements, and connected impact.
+    </td>
+    <td>
+      <strong>Workspace governance</strong><br>
+      Define required tags, approved exclusions, and time-bound governed exceptions in a visual form.
+    </td>
+    <td>
+      <strong>Audit-ready exports</strong><br>
+      Generate a PDF report plus JSON and Markdown evidence artifacts for reviewers and pipelines.
+    </td>
+  </tr>
+</table>
+
+## Quick start
+
+### 1. Open the Terraform root
+
+Open the folder containing the root module's `.tf` files. For nested roots,
+open any Terraform file or select a tfvars file located below that root.
+
+### 2. Configure workspace standards
+
+Press `Ctrl+Shift+P` and run:
+
+```text
+Azure IaC Guardrail: Azure Pre-configuration
+```
+
+Review required tags, add governed exceptions when approved, and save the
+profile to `.azure-iac-guardrail/profile.json`.
+
+### 3. Run the right scan
+
+For immediate offline feedback:
+
+```text
+Azure IaC Guardrail: Scan Terraform Files
+```
+
+For resolved values and resource relationships:
+
+```text
+Azure IaC Guardrail: Create and Scan Local Terraform Plan
+```
+
+Choose **Use automatic variable loading** or **Select a .tfvars file**. Local
+tfvars files, backend files, plan files, and Terraform state should remain
+ignored by Git.
+
+### 4. Review and export
+
+1. Filter **Non-compliant**, **Compliant**, and unresolved results.
+2. Review remediation and **Preview Safe Fix** suggestions.
+3. Open **Architecture Risk Graph** and **PR Change & Blast Radius** for plan scans.
+4. Select **Export PDF** or **Export Evidence Pack** for review artifacts.
+5. Use **Rescan Local Plan** after changing Terraform.
+
+For detailed installation, configuration, troubleshooting, and control
+authoring, see the [End-user guide](USER_GUIDE.md).
+
+## Scan modes
+
+| Mode | Best for | Terraform required | Azure authentication |
+|---|---|---:|---:|
+| **Scan Terraform Files** | Fast feedback while editing | No | No |
+| **Create and Scan Local Terraform Plan** | Variables, modules, relationships, tags, and change impact | Yes | Depends on the workspace |
+| **Scan Existing Terraform Plan** | Plans created in CI/CD or another trusted workflow | For binary plans | No new authentication |
+
+## Plan review experience
+
+- **Architecture Risk Graph** groups Azure resources by risk, exposure, and
+  planned action.
+- **Open Architecture Diagram · Preview** is a visible coming-soon entry point.
+- **PR Change & Blast Radius** summarizes creates, updates, deletes,
+  replacements, connected resources, failed controls, and overall risk.
+- **Preview Safe Fix** displays reviewable before/after Terraform snippets and
+  never edits files silently.
+- **Export Evidence Pack** writes `compliance-report.pdf`, `evidence.json`, and
+  `evidence.md`.
 
 ## Repository layout
 
@@ -66,6 +162,10 @@ finding cards, and remediation guidance. Select a file location in a finding
 to jump directly to the affected Terraform line. Saving a Terraform file
 refreshes an already-open results tab without stealing focus.
 
+Select **Export PDF** in the results header to create a polished local report
+with an executive summary, compliance score, prioritized actions, detailed
+findings, and clickable standards references.
+
 ## Static and plan scans
 
 The extension supports two complementary scan modes:
@@ -92,6 +192,8 @@ can download providers, configure the backend, create `.terraform`, and update
 when initialization is managed by another workflow.
 
 The generated binary plan is temporary and removed after conversion to JSON.
+Set `azureIacGuardrail.retainGeneratedPlan` to `true` to retain the latest plan
+at `.azure-iac-guardrail/plans/latest.tfplan`.
 Terraform may still contact configured providers and read remote state while
 creating the plan. The extension uses `-input=false` and `-lock=false`, and it
 never applies infrastructure changes.
@@ -107,24 +209,16 @@ Use **Scan Existing Terraform Plan** with either `dev.tfplan` or
 `dev.tfplan.json`. Configure a non-default executable with
 `azureIacGuardrail.terraformPath`.
 
-### Runtime variable-file example
+### Production Terraform fixture
 
-The storage fixture uses:
+`test/fixtures/production/` is one production-style Terraform root containing
+ACR, Storage, Function App, Web App, Key Vault, PostgreSQL, private networking,
+managed identity, RBAC, private DNS, and optional diagnostics.
 
-```hcl
-allow_nested_items_to_be_public = var.allow_public_access
-```
-
-Two runtime files are included:
-
-- `test/fixtures/noncompliant/noncompliant.tfvars` sets the value to `true`.
-- `test/fixtures/noncompliant/compliant.tfvars` sets the value to `false`.
-
-Run **Azure IaC Guardrail: Scan Terraform Files** first. The control is displayed as **Plan
-required** because a static scan cannot safely resolve the variable. Then run
-**Azure IaC Guardrail: Create and Scan Local Terraform Plan**, select **Select a .tfvars file**, and
-choose one of the files above. The noncompliant file produces `Observed: true`;
-the compliant file produces a passing plan result.
+Copy `terraform.tfvars.example` to `terraform.tfvars`, set the subscription and
+PostgreSQL Microsoft Entra administrator values, then run **Azure IaC
+Guardrail: Scan Terraform Files** or **Create and Scan Local Terraform Plan**.
+The defaults use production-capable SKUs and can incur Azure charges.
 
 ## Package and distribute
 
@@ -153,6 +247,18 @@ truth for bundled controls:
 The extension bundles this reviewed snapshot so scanning works offline.
 Workspace overlays in `.azure-iac-guardrail/controls/*.json` remain appropriate
 for project-specific rules, experiments, and staged adoption.
+
+The bundled baseline covers enforceable settings for storage, Key Vault,
+networking, virtual machines, SQL and open-source databases, Cosmos DB,
+Container Registry, AKS, App Service, Functions, messaging, Azure AI services,
+Machine Learning, and Log Analytics. It intentionally includes only controls
+the current scanner can evaluate from top-level attributes or resolved plan
+relationships.
+
+Applicable controls include Aqua Vulnerability Database mappings for App
+Service, Container Registry, PostgreSQL, Key Vault, Resource Groups, and
+Storage. Result cards link to both Microsoft guidance and the originating Aqua
+AVD rule.
 
 Storage private endpoint controls are evaluated from resolved Terraform plan
 data because they must match each `azurerm_private_endpoint` to the target

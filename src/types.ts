@@ -3,6 +3,8 @@ export type Operator =
   | "equals"
   | "notEquals"
   | "exists"
+  | "oneOf"
+  | "contains"
   | "relatedResourceExists";
 
 export interface ControlCondition {
@@ -19,8 +21,12 @@ export interface Control {
   resourceTypes: string[];
   attribute: string;
   operator: Operator;
-  expected?: string | number | boolean;
+  expected?: string | number | boolean | Array<string | number | boolean>;
   remediation?: string;
+  reference?: string;
+  benchmarkReference?: string;
+  planOnly?: boolean;
+  skipStatic?: boolean;
   conditions?: ControlCondition[];
   relatedResourceType?: string;
   relatedMatchAttribute?: string;
@@ -68,4 +74,43 @@ export interface Finding {
   startCharacter: number;
   endCharacter: number;
   message: string;
+}
+
+export type ChangeAction =
+  | "create"
+  | "update"
+  | "delete"
+  | "replace"
+  | "no-op"
+  | "read";
+
+export interface ArchitectureNode {
+  address: string;
+  type: string;
+  name: string;
+  service: string;
+  changeAction: ChangeAction;
+  risk: "high" | "medium" | "low" | "none";
+  publicExposure: boolean;
+}
+
+export interface ArchitectureEdge {
+  source: string;
+  target: string;
+  label: string;
+}
+
+export interface BlastRadiusItem {
+  address: string;
+  action: ChangeAction;
+  risk: "high" | "medium" | "low";
+  reason: string;
+}
+
+export interface PlanAnalysis {
+  nodes: ArchitectureNode[];
+  edges: ArchitectureEdge[];
+  changes: Record<ChangeAction, number>;
+  blastRadius: BlastRadiusItem[];
+  riskScore: number;
 }

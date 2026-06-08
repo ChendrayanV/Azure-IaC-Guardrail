@@ -1,0 +1,76 @@
+{
+  "$schema": "../schema/control.schema.json",
+  "catalogVersion": "2026.06.4",
+  "controls": [
+    {
+      "id": "AZ-AI-001",
+      "title": "Azure AI accounts must disable public network access",
+      "description": "Azure AI service accounts must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure a private endpoint and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-AI-002",
+      "title": "Azure AI accounts must disable local authentication",
+      "description": "Azure AI clients must use Microsoft Entra identities instead of access keys.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "local_auth_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set local_auth_enabled = false and grant Azure AI data-plane roles.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-AI-003",
+      "title": "Azure AI accounts should restrict outbound network access",
+      "description": "Outbound access from Azure AI services should be restricted to approved dependencies.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "outbound_network_access_restricted",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set outbound_network_access_restricted = true and configure approved managed network destinations.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-ML-001",
+      "title": "Machine Learning workspaces must disable public network access",
+      "description": "Azure Machine Learning workspaces must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_machine_learning_workspace"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure private endpoints and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-ML-002",
+      "title": "Machine Learning workspaces must disable v1 legacy mode",
+      "description": "Legacy Azure Machine Learning v1 compatibility must remain disabled.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_machine_learning_workspace"
+      ],
+      "attribute": "v1_legacy_mode_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set v1_legacy_mode_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    }
+  ]
+}

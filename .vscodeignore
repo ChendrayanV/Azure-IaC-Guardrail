@@ -7,6 +7,8 @@
 .gitignore
 src/**
 test/**
+scripts/**
+node_modules/**
 coverage/**
 eslint.config.mjs
 esbuild.mjs
@@ -14,6 +16,7 @@ tsconfig.json
 *.vsix
 dist/*.map
 media/*.svg
+media/screenshots/*.svg
 azure-infrastructure-standards/CHANGELOG.md
 azure-infrastructure-standards/VERSION
 azure-infrastructure-standards/schema/**

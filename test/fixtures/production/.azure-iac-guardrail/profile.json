@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "requiredTags": [
+    "environment",
+    "owner"
+  ],
+  "tagValues": {
+    "environment": "production",
+    "owner": "vchen"
+  },
+  "skippedControlIds": [],
+  "exceptions": []
+}

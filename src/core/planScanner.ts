@@ -5,6 +5,8 @@ import type {
   TerraformResource,
 } from "../types";
 import { scanResources } from "./scanner";
+import { analyzeTerraformPlan } from "./planAnalysis";
+import type { PlanAnalysis } from "../types";
 
 interface TerraformPlan {
   planned_values?: {
@@ -38,6 +40,17 @@ export function scanTerraformPlan(
   }
 
   return scanResources(parseModule(rootModule), controls);
+}
+
+export function scanTerraformPlanDetailed(
+  planJson: string,
+  controls: Control[],
+): { findings: Finding[]; analysis: PlanAnalysis } {
+  const findings = scanTerraformPlan(planJson, controls);
+  return {
+    findings,
+    analysis: analyzeTerraformPlan(planJson, findings),
+  };
 }
 
 function parseModule(module: PlanModule): TerraformResource[] {
