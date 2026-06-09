@@ -97,34 +97,6 @@
       "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
     },
     {
-      "id": "AZ-NET-006",
-      "title": "Application Gateway must enable HTTP/2",
-      "description": "Application Gateway should use HTTP/2 for modern encrypted client connections.",
-      "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
-      "attribute": "http2_enabled",
-      "operator": "equals",
-      "expected": true,
-      "remediation": "Set http2_enabled = true.",
-      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
-    },
-    {
-      "id": "AZ-NET-007",
-      "title": "Application Gateway should enable FIPS mode",
-      "description": "FIPS mode should be enabled for workloads requiring validated cryptographic implementations.",
-      "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
-      "attribute": "fips_enabled",
-      "operator": "equals",
-      "expected": true,
-      "remediation": "Set fips_enabled = true when required by the workload compliance profile.",
-      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
-    },
-    {
       "id": "AZ-NET-008",
       "title": "Public IP addresses must use Standard SKU",
       "description": "Standard public IP addresses are secure by default and support zone-redundant scenarios.",

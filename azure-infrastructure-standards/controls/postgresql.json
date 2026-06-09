@@ -1,0 +1,115 @@
+{
+  "$schema": "../schema/control.schema.json",
+  "catalogVersion": "2026.06.4",
+  "controls": [
+    {
+      "id": "AZ-PG-001",
+      "title": "PostgreSQL flexible servers must disable public network access",
+      "description": "PostgreSQL flexible servers must use delegated networking or private endpoints.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set public_network_access_enabled = false and configure private connectivity.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-002",
+      "title": "PostgreSQL flexible servers should use geo-redundant backups",
+      "description": "Production PostgreSQL servers should protect backups against regional failure.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "geo_redundant_backup_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set geo_redundant_backup_enabled = true where the selected region and SKU support it.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-003",
+      "title": "PostgreSQL flexible servers must enable Microsoft Entra authentication",
+      "description": "Centralized Microsoft Entra authentication must be enabled for PostgreSQL.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "authentication.active_directory_auth_enabled",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set authentication.active_directory_auth_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-entra-concepts",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-004",
+      "title": "PostgreSQL flexible servers must disable password authentication",
+      "description": "PostgreSQL must use Microsoft Entra authentication instead of local passwords.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "authentication.password_auth_enabled",
+      "operator": "equals",
+      "expected": false,
+      "planOnly": true,
+      "remediation": "Set authentication.password_auth_enabled = false and configure an Entra administrator.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-entra-concepts",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-005",
+      "title": "PostgreSQL flexible servers must configure high availability",
+      "description": "Production PostgreSQL servers should use zone-redundant high availability.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "high_availability.mode",
+      "operator": "equals",
+      "expected": "ZoneRedundant",
+      "planOnly": true,
+      "remediation": "Configure high_availability.mode = \"ZoneRedundant\" where supported.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-high-availability",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-006",
+      "title": "PostgreSQL flexible servers must have tags",
+      "description": "PostgreSQL servers must include ownership and governance metadata.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "tags",
+      "operator": "exists",
+      "remediation": "Add the required organizational tags.",
+      "reference": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    },
+    {
+      "id": "AZ-PG-007",
+      "title": "PostgreSQL flexible servers should send diagnostics to Log Analytics",
+      "description": "Centralized database logs support auditing and incident response.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_postgresql_flexible_server"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_monitor_diagnostic_setting",
+      "relatedMatchAttribute": "target_resource_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the PostgreSQL server.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-configure-and-access-logs",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/database/"
+    }
+  ]
+}

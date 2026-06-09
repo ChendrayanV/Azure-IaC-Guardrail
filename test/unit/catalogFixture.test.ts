@@ -44,15 +44,22 @@ describe("bundled standards", () => {
 
     expect(catalogFiles.sort()).toEqual([
       "ai.json",
+      "app-configuration.json",
+      "application-gateway.json",
       "application-platform.json",
       "compute.json",
       "containers.json",
-      "databases.json",
-      "integration.json",
+      "cosmos-db.json",
+      "event-grid.json",
+      "event-hub.json",
       "key-vault.json",
       "monitoring.json",
+      "mysql.json",
       "networking.json",
+      "postgresql.json",
       "resource-group.json",
+      "service-bus.json",
+      "sql.json",
       "storage.json",
     ]);
     expect(catalogs.every((catalog) => catalog.catalogVersion === version))
