@@ -111,6 +111,15 @@ jobs:
         with:
           name: azure-iac-guardrail-${{ needs.build.outputs.version }}
 
+      - name: Validate Marketplace credential
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "::error::Add VSCE_PAT to the vscode-marketplace environment."
+            exit 1
+          fi
+
       - name: Publish extension to Visual Studio Marketplace
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
