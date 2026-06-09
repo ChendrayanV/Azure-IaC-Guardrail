@@ -1,0 +1,30 @@
+name: Azure control request
+description: Propose or change an Azure Terraform compliance control
+title: "[Control]: "
+labels: ["area: compliance", "status: discovery"]
+body:
+  - type: input
+    id: service
+    attributes:
+      label: Azure service and Terraform resource type
+      placeholder: Storage / azurerm_storage_account
+    validations:
+      required: true
+  - type: textarea
+    id: requirement
+    attributes:
+      label: Policy requirement
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Microsoft guidance or benchmark reference
+    validations:
+      required: true
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Compliant, non-compliant, and unresolved scenarios
+    validations:
+      required: true
