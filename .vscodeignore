@@ -8,6 +8,7 @@
 src/**
 test/**
 scripts/**
+docs/**
 node_modules/**
 coverage/**
 eslint.config.mjs

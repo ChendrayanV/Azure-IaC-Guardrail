@@ -8,7 +8,7 @@ export default tseslint.config(
     ignores: ["dist/**", "node_modules/**", ".vscode-test/**"],
   },
   {
-    files: ["*.mjs", "test/extension/**/*.mjs"],
+    files: ["*.mjs", "scripts/**/*.mjs", "test/extension/**/*.mjs"],
     languageOptions: {
       globals: {
         console: "readonly",

@@ -1,0 +1,137 @@
+name: Release VS Code Extension
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vscode-marketplace-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Validate release artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      vsix: ${{ steps.release.outputs.vsix }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve and validate release metadata
+        id: release
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          VSCE_PUBLISHER: ${{ vars.VSCE_PUBLISHER }}
+        run: node scripts/verify-release.mjs
+
+      - name: Apply Marketplace publisher to release manifest
+        env:
+          VSCE_PUBLISHER: ${{ vars.VSCE_PUBLISHER }}
+        run: npm pkg set publisher="$VSCE_PUBLISHER"
+
+      - name: Check Terraform identifiers
+        run: npm run check:terraform-identifiers
+
+      - name: Type check
+        run: npm run check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Compile extension
+        run: npm run compile
+
+      - name: Package VSIX
+        env:
+          VSIX_FILE: ${{ steps.release.outputs.vsix }}
+        run: npx vsce package --out "$VSIX_FILE"
+
+      - name: Create SHA-256 checksum
+        env:
+          VSIX_FILE: ${{ steps.release.outputs.vsix }}
+        run: sha256sum "$VSIX_FILE" > "$VSIX_FILE.sha256"
+
+      - name: Upload release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: azure-iac-guardrail-${{ steps.release.outputs.version }}
+          path: |
+            ${{ steps.release.outputs.vsix }}
+            ${{ steps.release.outputs.vsix }}.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish to Marketplace
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: vscode-marketplace
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download release candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: azure-iac-guardrail-${{ needs.build.outputs.version }}
+
+      - name: Publish extension to Visual Studio Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          VSIX_FILE: ${{ needs.build.outputs.vsix }}
+        run: npx vsce publish --packagePath "$VSIX_FILE"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VSIX_FILE: ${{ needs.build.outputs.vsix }}
+        run: |
+          if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
+            gh release upload "${{ github.ref_name }}" \
+              "$VSIX_FILE" \
+              "$VSIX_FILE.sha256" \
+              --clobber
+          else
+            gh release create "${{ github.ref_name }}" \
+              "$VSIX_FILE" \
+              "$VSIX_FILE.sha256" \
+              --verify-tag \
+              --generate-notes \
+              --title "Azure IaC Guardrail ${{ needs.build.outputs.version }}"
+          fi
