@@ -297,6 +297,48 @@ describe("renderResultsHtml", () => {
               },
             ],
             riskScore: 75,
+            cost: {
+              currency: "USD",
+              knownMonthlyCost: 120.45,
+              estimatedResources: 1,
+              partialResources: 0,
+              usageDependentResources: 1,
+              unavailableResources: 0,
+              omittedResources: 2,
+              hoursPerMonth: 730,
+              generatedAt: "2026-06-09T10:00:00.000Z",
+              source: "https://prices.azure.com/api/retail/prices",
+              resources: [
+                {
+                  address: "azurerm_linux_virtual_machine.example",
+                  resourceType: "azurerm_linux_virtual_machine",
+                  status: "estimated",
+                  monthlyCost: 120.45,
+                  currency: "USD",
+                  unitPrice: 0.165,
+                  unitOfMeasure: "1 Hour",
+                  quantity: 1,
+                  factors: {
+                    region: "uksouth",
+                    size: "Standard_D2s_v5",
+                    zones: "1",
+                  },
+                  note: "Retail list-price estimate.",
+                },
+                {
+                  address: "azurerm_storage_account.example",
+                  resourceType: "azurerm_storage_account",
+                  status: "partial",
+                  monthlyCost: 0.13,
+                  currency: "USD",
+                  factors: {
+                    region: "uksouth",
+                    account_replication_type: "LRS",
+                  },
+                  note: "Storage usage assumptions required.",
+                },
+              ],
+            },
           },
         },
       ],
@@ -317,6 +359,11 @@ describe("renderResultsHtml", () => {
     expect(html).not.toContain("data-open-architecture");
     expect(html).not.toContain('type: "openArchitecture"');
     expect(html).toContain("PR Change &amp; Blast Radius");
+    expect(html).toContain("Resource Cost · Preview");
+    expect(html).toContain("Estimated monthly subtotal");
+    expect(html).toContain("Free or helper resources hidden");
+    expect(html).toContain("$120.45");
+    expect(html).toContain("Partial estimate");
     expect(html).toContain("75/100");
     expect(html).toContain("Preview Safe Fix");
     expect(html).toContain("Export Evidence Pack");

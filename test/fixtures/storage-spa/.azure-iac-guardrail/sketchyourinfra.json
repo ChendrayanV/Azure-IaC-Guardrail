@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "node-1781017834209-4",
+      "serviceType": "virtual_network",
+      "name": "virtual-network-4",
+      "region": "uksouth",
+      "x": 1139.3333740234375,
+      "y": 247.66668701171875
+    },
+    {
+      "id": "node-1781017836146-5",
+      "serviceType": "subnet",
+      "name": "subnet-5",
+      "region": "uksouth",
+      "x": 664.6666259765625,
+      "y": 247.99996948242188
+    }
+  ],
+  "connections": []
+}

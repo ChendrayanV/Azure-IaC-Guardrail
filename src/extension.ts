@@ -4,9 +4,8 @@ import * as vscode from "vscode";
 import { getConfigurationValue } from "./configuration";
 import { loadControls } from "./controls/catalog";
 import { loadWorkspacePolicy } from "./controls/workspacePolicy";
-import {
-  scanTerraformPlanDetailed,
-} from "./core/planScanner";
+import { estimateTerraformPlanCosts } from "./core/costEstimator";
+import { scanTerraformPlanDetailed } from "./core/planScanner";
 import type { FileScanResult } from "./core/resultsHtml";
 import { scanTerraform } from "./core/scanner";
 import {
@@ -19,6 +18,7 @@ import {
 } from "./terraform/terraformCli";
 import { findTerraformRoot } from "./terraform/terraformRoot";
 import { ResultsPanel } from "./ui/resultsPanel";
+import { InfraSketchPanel } from "./ui/infraSketchPanel";
 import { WorkspacePolicyPanel } from "./ui/workspacePolicyPanel";
 
 const COMMANDS = {
@@ -29,14 +29,17 @@ const COMMANDS = {
   exportEvidence: "infraCompliance.exportEvidence",
   analyzePrChanges: "infraCompliance.analyzePrChanges",
   configureWorkspace: "infraCompliance.configureWorkspace",
+  sketchYourInfra: "sketchyourinfra",
 } as const;
 
 export function activate(context: vscode.ExtensionContext): void {
   const resultsPanel = new ResultsPanel(context.extensionUri);
   const workspacePolicyPanel = new WorkspacePolicyPanel();
+  const infraSketchPanel = new InfraSketchPanel();
   context.subscriptions.push(
     resultsPanel,
     workspacePolicyPanel,
+    infraSketchPanel,
     vscode.commands.registerCommand(COMMANDS.scanWorkspace, () =>
       scanWorkspace(context, resultsPanel),
     ),
@@ -57,6 +60,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand(COMMANDS.configureWorkspace, () =>
       workspacePolicyPanel.show(),
+    ),
+    vscode.commands.registerCommand(COMMANDS.sketchYourInfra, () =>
+      infraSketchPanel.show(),
     ),
     vscode.workspace.onDidSaveTextDocument((document) =>
       handleSavedDocument(document, context, resultsPanel),
@@ -161,6 +167,12 @@ async function scanExistingPlan(
             );
         const controls = await loadControls(context);
         const scan = scanTerraformPlanDetailed(planJson, controls);
+        const profile = await loadWorkspacePolicy(
+          workspaceFolder.uri.fsPath,
+        );
+        scan.analysis.cost = await estimateTerraformPlanCosts(planJson, {
+          assumptions: profile?.costAssumptions,
+        });
         resultsPanel.show([
           {
             scanKind: "plan",
@@ -271,6 +283,10 @@ async function runLocalPlanScan(
         );
         const controls = await loadControls(context);
         const scan = scanTerraformPlanDetailed(planJson, controls);
+        const profile = await loadWorkspacePolicy(terraformRoot.fsPath);
+        scan.analysis.cost = await estimateTerraformPlanCosts(planJson, {
+          assumptions: profile?.costAssumptions,
+        });
         resultsPanel.show([
           {
             scanKind: "plan",

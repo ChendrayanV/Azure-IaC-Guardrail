@@ -27,21 +27,30 @@ deployment.
 
 The extension does not apply, modify, or destroy Azure infrastructure.
 
+Release maintainers should follow [docs/RELEASING.md](docs/RELEASING.md) for
+Marketplace publisher, token, version, tag, and rollback procedures.
+
 ## Azure pre-configuration
 
 1. Open the Terraform root folder in VS Code.
 2. The **Azure Pre-configuration** form opens automatically the first time the
    extension is loaded for that workspace.
-3. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
+3. Enter comma-separated approved ARM region names, for example
+   `uksouth, ukwest`. The form accepts canonical Azure public-cloud
+   programmatic names.
+4. Review **Monthly cost assumptions**. The defaults model a small static SPA:
+   1 GB stored, 100,000 reads, 10,000 writes, and no paid egress per month.
+   Change the currency and usage to match the expected workload.
+5. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
    tags, then enter exact required values where appropriate.
-4. Select **Add Tag** to create more rows.
-5. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
+6. Select **Add Tag** to create more rows.
+7. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
    for example `AZ-AI-003, AZ-AI-004`.
-6. Select **Save Azure Pre-configuration**.
-7. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
+8. Select **Save Azure Pre-configuration**.
+9. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
    by the team.
-8. Run **Create and Scan Local Terraform Plan** to evaluate tags against
-   resolved values.
+10. Run **Create and Scan Local Terraform Plan** to evaluate regions and tags
+   against resolved values.
 
 Reopen the form with **Azure IaC Guardrail: Azure Pre-configuration** from the
 Command Palette. The setup is local and never authenticates to Azure. Skipped
@@ -49,7 +58,8 @@ IDs are excluded from both static and local plan scans.
 
 Static scans skip generated tag controls because Terraform source commonly
 assigns tags through locals or variables. Plan findings use control IDs
-beginning with `ORG-TAG-`.
+beginning with `ORG-TAG-`. Region violations use
+`ORG-REGION-LOCATION` and are non-compliant errors.
 
 ## 2. Install the extension
 
@@ -108,7 +118,7 @@ file without answering the selection prompts again.
 
 ### Architecture and change assurance
 
-Resolved plan scans expose three result views:
+Resolved plan scans expose four result views:
 
 - **Findings** lists control outcomes and offers **Preview Safe Fix** when a
   deterministic expected attribute can be suggested. The preview does not
@@ -120,9 +130,55 @@ Resolved plan scans expose three result views:
 - **PR Change & Blast Radius** uses Terraform `resource_changes` to summarize
   creates, updates, deletes, replacements, connected-resource impact, and
   failed-control concentration.
+- **Resource Cost** queries the unauthenticated Microsoft Retail Prices API
+  for supported fixed hourly resources. VM and VM scale-set estimates consider
+  region, size, operating system, zones, and instance count. App Service plan
+  estimates consider region, SKU, operating system, zone balancing, and worker
+  count. Storage estimates consider region, access tier, replication, planned
+  blob content, and the configured monthly capacity and operation assumptions.
+
+The cost view reports an **estimated monthly subtotal**, not a bill. Terraform
+resources that do not create a separate Azure charge, including resource
+groups, storage static-website configuration, and individual managed blobs,
+are hidden or grouped under their billable parent. This avoids duplicate
+`Price unavailable` cards.
+
+Fixed compute assumes 730 hours per month. Storage capacity, reads, and writes
+use the values saved in Azure Pre-configuration. Egress is displayed as an
+assumption but remains a partial estimate when it is non-zero because the
+network route and destination cannot be inferred safely. Public retail prices
+exclude negotiated discounts, reservations, taxes, and workload behavior not
+represented in Terraform.
 
 Run **Azure IaC Guardrail: Analyze PR Change and Blast Radius** to create a
 resolved local plan and open these views.
+
+### Cloud Canvas preview
+
+Run **Azure IaC Guardrail: Cloud Canvas (Preview)** from the Command
+Palette. The command ID is `sketchyourinfra`.
+
+1. Search the Azure service palette.
+2. Drag service cards onto the canvas.
+3. Select **Draw Connection**, then select the dependent service followed by
+   the service it depends on.
+4. Select a card to edit its Azure resource name and region.
+5. Select **Save Sketch** to store
+   `.azure-iac-guardrail/sketchyourinfra.json`.
+6. Select **Preview Terraform** to open generated code beside the canvas.
+7. Select **Generate Terraform** and choose the target `.tf` file in the
+   selected workspace.
+
+The preview currently supports Resource Groups, Virtual Networks, Subnets,
+Storage Accounts, Key Vault, App Service plans, Linux Web Apps, SQL servers,
+SQL databases, Container Registry, and Log Analytics. Supported connections
+become direct Terraform references where possible. Other connections become
+explicit `depends_on` relationships.
+
+Generated code uses secure starting defaults, but it is scaffolding rather
+than deployment-ready architecture. Review names, CIDR ranges, SKUs, identity
+configuration, private endpoints, DNS, and organization-specific modules
+before running a Terraform plan.
 
 ### Governed exceptions
 

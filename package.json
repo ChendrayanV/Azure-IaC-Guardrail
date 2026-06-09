@@ -43,7 +43,8 @@
     "onCommand:infraCompliance.exportPdf",
     "onCommand:infraCompliance.exportEvidence",
     "onCommand:infraCompliance.analyzePrChanges",
-    "onCommand:infraCompliance.configureWorkspace"
+    "onCommand:infraCompliance.configureWorkspace",
+    "onCommand:sketchyourinfra"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -77,6 +78,11 @@
             "id": "scanExistingPlan",
             "title": "Use a plan from another workflow",
             "description": "Run [Azure IaC Guardrail: Scan Existing Terraform Plan](command:infraCompliance.scanPlan) to review a binary `.tfplan` or `terraform show -json` output from another workflow."
+          },
+          {
+            "id": "sketchYourInfra",
+            "title": "Sketch Azure infrastructure",
+            "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to drag Azure service cards onto a canvas, connect them, and preview generated Terraform."
           }
         ]
       }
@@ -109,6 +115,10 @@
       {
         "command": "infraCompliance.configureWorkspace",
         "title": "Azure IaC Guardrail: Azure Pre-configuration"
+      },
+      {
+        "command": "sketchyourinfra",
+        "title": "Azure IaC Guardrail: Cloud Canvas (Preview)"
       }
     ],
     "configuration": {
@@ -152,6 +162,8 @@
     "test:watch": "vitest test/unit",
     "test:extension": "npm run compile && vscode-test",
     "package": "npm run check:terraform-identifiers && npm run check && npm run test && npm run compile && vsce package",
+    "release:verify": "node scripts/verify-release.mjs",
+    "release:publish": "vsce publish",
     "prepublishOnly": "npm run package"
   },
   "devDependencies": {

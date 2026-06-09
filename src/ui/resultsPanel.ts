@@ -296,8 +296,11 @@ function isOpenReferenceMessage(
   return (
     candidate.type === "openReference" &&
     typeof candidate.url === "string" &&
-    /^https:\/\/(?:learn\.microsoft\.com|avd\.aquasec\.com)\//.test(
-      candidate.url,
+    (
+      /^https:\/\/(?:learn\.microsoft\.com|avd\.aquasec\.com)\//.test(
+        candidate.url,
+      ) ||
+      candidate.url === "https://prices.azure.com/api/retail/prices"
     )
   );
 }

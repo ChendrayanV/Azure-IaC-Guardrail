@@ -1,4 +1,7 @@
-import type { WorkspacePolicyProfile } from "../controls/workspacePolicy";
+import {
+  defaultCostAssumptions,
+  type WorkspacePolicyProfile,
+} from "../controls/workspacePolicy";
 import type { PlanAnalysis } from "../types";
 import type { FileScanResult } from "./resultsHtml";
 
@@ -92,6 +95,9 @@ export function generateEvidencePack(
     summary,
     architectureRisk,
     policy: {
+      allowedRegions: options.profile?.allowedRegions ?? [],
+      costAssumptions:
+        options.profile?.costAssumptions ?? defaultCostAssumptions(),
       requiredTags: options.profile?.requiredTags ?? [],
       enforcedTagValues: options.profile?.tagValues ?? {},
       directSkips: options.profile?.skippedControlIds ?? [],

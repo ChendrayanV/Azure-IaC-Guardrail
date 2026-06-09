@@ -367,7 +367,7 @@ export function renderResultsHtml(
     .empty h2 { color: var(--vscode-testing-iconPassed); }
     .views {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin: 0 0 22px;
       padding: 5px;
@@ -503,6 +503,10 @@ export function renderResultsHtml(
             <span class="view-tab-icon" aria-hidden="true">↗</span>
             <span class="view-tab-copy"><strong>PR Change &amp; Blast Radius</strong><small>Change impact and risk</small></span>
           </button>
+          <button class="view-tab cost" data-view-tab="cost" type="button" aria-pressed="false">
+            <span class="view-tab-icon" aria-hidden="true">$</span>
+            <span class="view-tab-copy"><strong>Resource Cost · Preview</strong><small>Retail estimate and assumptions</small></span>
+          </button>
         </nav>`
         : ""
     }
@@ -594,6 +598,7 @@ export function renderResultsHtml(
     </div>
     ${analysis ? renderArchitectureView(analysis) : ""}
     ${analysis ? renderChangeView(analysis) : ""}
+    ${analysis ? renderCostView(analysis) : ""}
     <dialog id="fixDialog">
       <h2 id="fixTitle">Safe fix preview</h2>
       <p id="fixResource" class="meta"></p>
@@ -774,6 +779,78 @@ function renderChangeView(analysis: PlanAnalysis): string {
       }
     </div>
   </section>`;
+}
+
+function renderCostView(analysis: PlanAnalysis): string {
+  const cost = analysis.cost;
+  if (!cost) {
+    return `<section class="view" data-view="cost" hidden>
+      <h2>Resource cost estimate</h2>
+      <p class="meta">Cost analysis was not available for this plan.</p>
+    </section>`;
+  }
+  return `<section class="view" data-view="cost" hidden>
+    <div class="diagram-action">
+      <div><strong>Resource Cost Preview</strong><span>Early planning estimate using Microsoft retail prices. It is not a bill and needs further service coverage.</span></div>
+      <button class="link" type="button" data-reference="${escapeAttribute(cost.source)}">Pricing source</button>
+    </div>
+    <div class="analysis-grid">
+      <div class="analysis-card"><strong>${escapeHtml(formatMoney(cost.knownMonthlyCost, cost.currency))}</strong><span>Estimated monthly subtotal</span></div>
+      <div class="analysis-card"><strong>${cost.estimatedResources + cost.partialResources}</strong><span>Azure billing resources priced</span></div>
+      <div class="analysis-card"><strong>${cost.omittedResources}</strong><span>Free or helper resources hidden</span></div>
+    </div>
+    <p class="meta">Terraform helper resources are grouped under the Azure service that creates the bill. Fixed hourly resources use ${cost.hoursPerMonth} hours/month. Storage uses the monthly assumptions saved in Azure Pre-configuration.</p>
+    <div class="graph">
+      ${cost.resources
+        .map(
+          (resource) => `<article class="node ${resource.status === "estimated" ? "low" : "medium"}">
+            <strong>${resource.monthlyCost === undefined ? costStatusLabel(resource.status) : escapeHtml(formatMoney(resource.monthlyCost, resource.currency))}</strong>
+            <code>${escapeHtml(resource.address)}</code>
+            <div class="node-meta">
+              <span class="chip">${escapeHtml(costStatusLabel(resource.status))}</span>
+              ${Object.entries(resource.factors)
+                .map(
+                  ([key, value]) =>
+                    `<span class="chip">${escapeHtml(key)}: ${escapeHtml(value)}</span>`,
+                )
+                .join("")}
+            </div>
+            <p class="meta">${escapeHtml(resource.note)}</p>
+            ${
+              resource.unitPrice === undefined
+                ? ""
+                : `<p class="meta">Rate: ${escapeHtml(formatMoney(resource.unitPrice, resource.currency))} / ${escapeHtml(resource.unitOfMeasure ?? "unit")}; quantity ${resource.quantity ?? 1}</p>`
+            }
+          </article>`,
+        )
+        .join("")}
+    </div>
+  </section>`;
+}
+
+function formatMoney(value: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat("en", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    return `${currency} ${value.toFixed(2)}`;
+  }
+}
+
+function costStatusLabel(
+  status: "estimated" | "partial" | "usage-required" | "unavailable",
+): string {
+  return status === "partial"
+    ? "Partial estimate"
+    : status === "usage-required"
+    ? "Usage assumptions required"
+    : status === "unavailable"
+      ? "Price unavailable"
+      : "Estimated";
 }
 
 function filterButton(

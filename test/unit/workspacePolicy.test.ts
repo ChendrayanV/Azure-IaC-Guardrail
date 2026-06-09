@@ -9,6 +9,14 @@ describe("workspace policy", () => {
   it("provides the recommended Azure tag defaults", () => {
     expect(defaultWorkspacePolicy()).toEqual({
       version: 1,
+      allowedRegions: ["uksouth", "ukwest"],
+      costAssumptions: {
+        currency: "USD",
+        monthlyStorageGb: 1,
+        monthlyReadOperations: 100000,
+        monthlyWriteOperations: 10000,
+        monthlyEgressGb: 0,
+      },
       requiredTags: [
         "environment",
         "cost-center",
@@ -41,6 +49,14 @@ describe("workspace policy", () => {
     expect(profile.tagValues).toEqual({ managed_by: "terraform" });
     expect(profile).toEqual({
       version: 1,
+      allowedRegions: [],
+      costAssumptions: {
+        currency: "USD",
+        monthlyStorageGb: 1,
+        monthlyReadOperations: 100000,
+        monthlyWriteOperations: 10000,
+        monthlyEgressGb: 0,
+      },
       requiredTags: ["owner"],
       tagValues: { managed_by: "terraform" },
       skippedControlIds: ["AZ-AI-003", "AZ-AI-004"],
@@ -80,6 +96,40 @@ describe("workspace policy", () => {
     });
   });
 
+  it("creates a hard-fail plan control for approved Azure regions", () => {
+    const profile = normalizeWorkspacePolicy({
+      allowedRegions: ["UK South", "ukwest", "uksouth"],
+      requiredTags: [],
+      tagValues: {},
+      skippedControlIds: [],
+      exceptions: [],
+    });
+    const control = createWorkspacePolicyControls(profile)[0];
+
+    expect(profile.allowedRegions).toEqual(["uksouth", "ukwest"]);
+    expect(control).toMatchObject({
+      id: "ORG-REGION-LOCATION",
+      attribute: "location",
+      operator: "oneOf",
+      expected: ["uksouth", "ukwest"],
+      severity: "error",
+      planOnly: true,
+      skipStatic: true,
+    });
+  });
+
+  it("rejects non-canonical Azure regions", () => {
+    expect(() =>
+      normalizeWorkspacePolicy({
+        allowedRegions: ["london"],
+        requiredTags: [],
+        tagValues: {},
+        skippedControlIds: [],
+        exceptions: [],
+      }),
+    ).toThrow("uksouth");
+  });
+
   it("rejects malformed skipped control IDs", () => {
     expect(() =>
       normalizeWorkspacePolicy({
@@ -89,5 +139,30 @@ describe("workspace policy", () => {
         exceptions: [],
       }),
     ).toThrow("AZ-AI-003");
+  });
+
+  it("normalizes monthly cost assumptions", () => {
+    const profile = normalizeWorkspacePolicy({
+      allowedRegions: [],
+      costAssumptions: {
+        currency: "gbp",
+        monthlyStorageGb: "25",
+        monthlyReadOperations: 500000,
+        monthlyWriteOperations: 25000,
+        monthlyEgressGb: 10,
+      },
+      requiredTags: [],
+      tagValues: {},
+      skippedControlIds: [],
+      exceptions: [],
+    });
+
+    expect(profile.costAssumptions).toEqual({
+      currency: "GBP",
+      monthlyStorageGb: 25,
+      monthlyReadOperations: 500000,
+      monthlyWriteOperations: 25000,
+      monthlyEgressGb: 10,
+    });
   });
 });

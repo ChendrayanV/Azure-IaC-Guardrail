@@ -107,10 +107,38 @@ export interface BlastRadiusItem {
   reason: string;
 }
 
+export interface ResourceCostEstimate {
+  address: string;
+  resourceType: string;
+  status: "estimated" | "partial" | "usage-required" | "unavailable";
+  monthlyCost?: number;
+  currency: string;
+  unitPrice?: number;
+  unitOfMeasure?: string;
+  quantity?: number;
+  factors: Record<string, string>;
+  note: string;
+}
+
+export interface PlanCostAnalysis {
+  currency: string;
+  knownMonthlyCost: number;
+  estimatedResources: number;
+  partialResources: number;
+  usageDependentResources: number;
+  unavailableResources: number;
+  omittedResources: number;
+  hoursPerMonth: number;
+  generatedAt: string;
+  source: string;
+  resources: ResourceCostEstimate[];
+}
+
 export interface PlanAnalysis {
   nodes: ArchitectureNode[];
   edges: ArchitectureEdge[];
   changes: Record<ChangeAction, number>;
   blastRadius: BlastRadiusItem[];
   riskScore: number;
+  cost?: PlanCostAnalysis;
 }

@@ -23,6 +23,18 @@ export async function initializeTerraform(
   );
 }
 
+export async function validateTerraformConfiguration(
+  terraformPath: string,
+  cwd: string,
+): Promise<string> {
+  await runTerraform(
+    terraformPath,
+    ["init", "-backend=false", "-input=false", "-no-color"],
+    cwd,
+  );
+  return runTerraform(terraformPath, ["validate", "-no-color"], cwd);
+}
+
 export async function createTerraformPlanJson(
   terraformPath: string,
   cwd: string,

@@ -95,7 +95,8 @@ ignored by Git.
 
 1. Filter **Non-compliant**, **Compliant**, and unresolved results.
 2. Review remediation and **Preview Safe Fix** suggestions.
-3. Open **Architecture Risk Graph** and **PR Change & Blast Radius** for plan scans.
+3. Open **Architecture Risk Graph**, **PR Change & Blast Radius**, and
+   **Resource Cost** for plan scans.
 4. Select **Export PDF** or **Export Evidence Pack** for review artifacts.
 5. Use **Rescan Local Plan** after changing Terraform.
 
@@ -117,6 +118,13 @@ authoring, see the [End-user guide](USER_GUIDE.md).
 - **Open Architecture Diagram · Preview** is a visible coming-soon entry point.
 - **PR Change & Blast Radius** summarizes creates, updates, deletes,
   replacements, connected resources, failed controls, and overall risk.
+- **Resource Cost** groups Terraform helper resources under their Azure
+  billing parent, prices fixed compute, and estimates Storage from configurable
+  monthly capacity and operation assumptions. This feature is currently
+  **Preview**.
+- **Cloud Canvas · Preview** provides an IDE canvas for Azure service
+  cards, directional connections, saved sketches, and reviewable Terraform
+  generation.
 - **Preview Safe Fix** displays reviewable before/after Terraform snippets and
   never edits files silently.
 - **Export Evidence Pack** writes `compliance-report.pdf`, `evidence.json`, and

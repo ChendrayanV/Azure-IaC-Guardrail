@@ -30,6 +30,14 @@ describe("generateEvidencePack", () => {
       generatedAt: new Date("2026-06-08T10:00:00Z"),
       profile: {
         version: 1,
+        allowedRegions: ["uksouth", "ukwest"],
+        costAssumptions: {
+          currency: "GBP",
+          monthlyStorageGb: 5,
+          monthlyReadOperations: 200000,
+          monthlyWriteOperations: 20000,
+          monthlyEgressGb: 1,
+        },
         requiredTags: ["owner"],
         tagValues: {},
         skippedControlIds: [],

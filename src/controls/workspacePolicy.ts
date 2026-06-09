@@ -1,6 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Control } from "../types";
+import { isAzurePublicRegion } from "./azureRegions";
 
 export const WORKSPACE_POLICY_PATH = path.join(
   ".azure-iac-guardrail",
@@ -36,12 +37,41 @@ export const DEFAULT_TAGGABLE_RESOURCE_TYPES = [
   "azurerm_windows_virtual_machine",
 ];
 
+export const DEFAULT_REGIONAL_RESOURCE_TYPES = [
+  ...DEFAULT_TAGGABLE_RESOURCE_TYPES,
+  "azurerm_linux_virtual_machine_scale_set",
+  "azurerm_windows_virtual_machine_scale_set",
+  "azurerm_service_plan",
+  "azurerm_mssql_server",
+  "azurerm_storage_sync",
+  "azurerm_private_endpoint",
+  "azurerm_bastion_host",
+  "azurerm_nat_gateway",
+  "azurerm_route_table",
+  "azurerm_network_interface",
+  "azurerm_lb",
+  "azurerm_api_management",
+  "azurerm_redis_cache",
+  "azurerm_data_factory",
+  "azurerm_recovery_services_vault",
+];
+
 export interface WorkspacePolicyProfile {
   version: 1;
+  allowedRegions: string[];
+  costAssumptions: CostAssumptions;
   requiredTags: string[];
   tagValues: Record<string, string>;
   skippedControlIds: string[];
   exceptions: GovernedException[];
+}
+
+export interface CostAssumptions {
+  currency: string;
+  monthlyStorageGb: number;
+  monthlyReadOperations: number;
+  monthlyWriteOperations: number;
+  monthlyEgressGb: number;
 }
 
 export interface GovernedException {
@@ -55,6 +85,8 @@ export interface GovernedException {
 export function defaultWorkspacePolicy(): WorkspacePolicyProfile {
   return {
     version: 1,
+    allowedRegions: ["uksouth", "ukwest"],
+    costAssumptions: defaultCostAssumptions(),
     requiredTags: [
       "environment",
       "cost-center",
@@ -98,11 +130,59 @@ export function normalizeWorkspacePolicy(
 
   return {
     version: 1,
+    allowedRegions: normalizeRegions(value.allowedRegions),
+    costAssumptions: normalizeCostAssumptions(value.costAssumptions),
     requiredTags: uniqueStrings(value.requiredTags, "requiredTags"),
     tagValues: stringRecord(value.tagValues),
     skippedControlIds: normalizeControlIds(value.skippedControlIds),
     exceptions: normalizeExceptions(value.exceptions),
   };
+}
+
+export function defaultCostAssumptions(): CostAssumptions {
+  return {
+    currency: "USD",
+    monthlyStorageGb: 1,
+    monthlyReadOperations: 100000,
+    monthlyWriteOperations: 10000,
+    monthlyEgressGb: 0,
+  };
+}
+
+function normalizeCostAssumptions(value: unknown): CostAssumptions {
+  const defaults = defaultCostAssumptions();
+  if (value === undefined) {
+    return defaults;
+  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("Workspace policy costAssumptions must be an object.");
+  }
+  const input = value as Record<string, unknown>;
+  const currency = String(input.currency ?? defaults.currency)
+    .trim()
+    .toUpperCase();
+  if (!/^[A-Z]{3}$/.test(currency)) {
+    throw new Error("Cost currency must be a three-letter code such as USD or GBP.");
+  }
+  return {
+    currency,
+    monthlyStorageGb: nonNegativeNumber(input.monthlyStorageGb, defaults.monthlyStorageGb, "monthlyStorageGb"),
+    monthlyReadOperations: nonNegativeNumber(input.monthlyReadOperations, defaults.monthlyReadOperations, "monthlyReadOperations"),
+    monthlyWriteOperations: nonNegativeNumber(input.monthlyWriteOperations, defaults.monthlyWriteOperations, "monthlyWriteOperations"),
+    monthlyEgressGb: nonNegativeNumber(input.monthlyEgressGb, defaults.monthlyEgressGb, "monthlyEgressGb"),
+  };
+}
+
+function nonNegativeNumber(
+  value: unknown,
+  fallback: number,
+  field: string,
+): number {
+  const result = value === undefined ? fallback : Number(value);
+  if (!Number.isFinite(result) || result < 0) {
+    throw new Error(`Cost assumption ${field} must be a non-negative number.`);
+  }
+  return result;
 }
 
 export function createWorkspacePolicyControls(
@@ -112,7 +192,7 @@ export function createWorkspacePolicyControls(
     ...profile.requiredTags,
     ...Object.keys(profile.tagValues),
   ]);
-  return [...tagKeys].map((tagKey) => {
+  const controls: Control[] = [...tagKeys].map((tagKey): Control => {
     const expected = profile.tagValues[tagKey];
     const requiresValue = expected !== undefined;
     return {
@@ -137,6 +217,38 @@ export function createWorkspacePolicyControls(
       skipStatic: true,
     };
   });
+  if (profile.allowedRegions.length > 0) {
+    controls.unshift({
+      id: "ORG-REGION-LOCATION",
+      title: "Azure resources must use an approved region",
+      description:
+        "Organization policy restricts regional Azure resources to the configured ARM region names.",
+      severity: "error",
+      resourceTypes: DEFAULT_REGIONAL_RESOURCE_TYPES,
+      attribute: "location",
+      operator: "oneOf",
+      expected: profile.allowedRegions,
+      remediation: `Set location to one of: ${profile.allowedRegions.join(", ")}.`,
+      reference:
+        "https://learn.microsoft.com/azure/reliability/regions-list",
+      planOnly: true,
+      skipStatic: true,
+    });
+  }
+  return controls;
+}
+
+function normalizeRegions(value: unknown): string[] {
+  const regions = uniqueStrings(value, "allowedRegions").map((region) =>
+    region.toLowerCase().replaceAll(" ", ""),
+  );
+  const invalid = regions.find((region) => !isAzurePublicRegion(region));
+  if (invalid) {
+    throw new Error(
+      `Azure region "${invalid}" is not a supported public-cloud programmatic region name. Use values such as uksouth or ukwest.`,
+    );
+  }
+  return [...new Set(regions)];
 }
 
 function uniqueStrings(value: unknown, field: string): string[] {
