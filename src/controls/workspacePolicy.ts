@@ -58,6 +58,7 @@ export const DEFAULT_REGIONAL_RESOURCE_TYPES = [
 
 export interface WorkspacePolicyProfile {
   version: 1;
+  terraformVersion: string;
   allowedRegions: string[];
   costAssumptions: CostAssumptions;
   requiredTags: string[];
@@ -85,6 +86,7 @@ export interface GovernedException {
 export function defaultWorkspacePolicy(): WorkspacePolicyProfile {
   return {
     version: 1,
+    terraformVersion: ">= 1.5.0, < 2.0.0",
     allowedRegions: ["uksouth", "ukwest"],
     costAssumptions: defaultCostAssumptions(),
     requiredTags: [
@@ -130,6 +132,7 @@ export function normalizeWorkspacePolicy(
 
   return {
     version: 1,
+    terraformVersion: normalizeTerraformVersion(value.terraformVersion),
     allowedRegions: normalizeRegions(value.allowedRegions),
     costAssumptions: normalizeCostAssumptions(value.costAssumptions),
     requiredTags: uniqueStrings(value.requiredTags, "requiredTags"),
@@ -137,6 +140,21 @@ export function normalizeWorkspacePolicy(
     skippedControlIds: normalizeControlIds(value.skippedControlIds),
     exceptions: normalizeExceptions(value.exceptions),
   };
+}
+
+function normalizeTerraformVersion(value: unknown): string {
+  const version = String(value ?? ">= 1.5.0, < 2.0.0").trim();
+  if (
+    !version ||
+    version.length > 80 ||
+    !/^[0-9<>=!~.,\s]+$/.test(version) ||
+    !/\d+\.\d+(?:\.\d+)?/.test(version)
+  ) {
+    throw new Error(
+      'Terraform version must be a constraint such as ">= 1.6.0, < 2.0.0".',
+    );
+  }
+  return version.replace(/\s+/g, " ");
 }
 
 export function defaultCostAssumptions(): CostAssumptions {

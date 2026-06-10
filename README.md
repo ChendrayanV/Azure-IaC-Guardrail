@@ -28,7 +28,7 @@
   <tr>
     <td width="33%">
       <strong>Fast authoring feedback</strong><br>
-      Scan supported literal Terraform values without invoking Terraform or authenticating to Azure.
+      Resolve variable defaults, automatic and selected tfvars, locals, collections, interpolation, and simple conditionals without invoking Terraform.
     </td>
     <td width="33%">
       <strong>Resolved plan assurance</strong><br>
@@ -73,6 +73,10 @@ Azure IaC Guardrail: Azure Pre-configuration
 Review required tags, add governed exceptions when approved, and save the
 profile to `.azure-iac-guardrail/profile.json`.
 
+Pre-configuration also lets teams choose a Terraform `required_version`
+constraint for Cloud Canvas generated Terraform. Existing repository
+constraints are not rewritten.
+
 ### 3. Run the right scan
 
 For immediate offline feedback:
@@ -97,8 +101,9 @@ ignored by Git.
 2. Review remediation and **Preview Safe Fix** suggestions.
 3. Open **Architecture Risk Graph**, **PR Change & Blast Radius**, and
    **Resource Cost** for plan scans.
-4. Select **Export PDF** or **Export Evidence Pack** for review artifacts.
-5. Use **Rescan Local Plan** after changing Terraform.
+4. Select **Open Architecture Diagram** for the interactive plan canvas.
+5. Select **Export PDF** or **Export Evidence Pack** for review artifacts.
+6. Use **Rescan Local Plan** after changing Terraform.
 
 For detailed installation, configuration, troubleshooting, and control
 authoring, see the [End-user guide](USER_GUIDE.md).
@@ -107,7 +112,7 @@ authoring, see the [End-user guide](USER_GUIDE.md).
 
 | Mode | Best for | Terraform required | Azure authentication |
 |---|---|---:|---:|
-| **Scan Terraform Files** | Fast feedback while editing | No | No |
+| **Scan Terraform Files** | Variable-aware offline feedback while editing | No | No |
 | **Create and Scan Local Terraform Plan** | Variables, modules, relationships, tags, and change impact | Yes | Depends on the workspace |
 | **Scan Existing Terraform Plan** | Plans created in CI/CD or another trusted workflow | For binary plans | No new authentication |
 
@@ -115,7 +120,13 @@ authoring, see the [End-user guide](USER_GUIDE.md).
 
 - **Architecture Risk Graph** groups Azure resources by risk, exposure, and
   planned action.
-- **Open Architecture Diagram · Preview** is a visible coming-soon entry point.
+- **Open Architecture Diagram** opens a deterministic plan-derived canvas with
+  curved dependency connections, labels, dependency-aware layout, zoom, fit,
+  pan, connectivity highlighting, change/risk overlays, search, filters,
+  resource details, and SVG export.
+- **Compare Two Terraform Plans** summarizes added, removed, changed, and
+  unchanged resources while reporting changed attribute names without copying
+  sensitive plan values.
 - **PR Change & Blast Radius** summarizes creates, updates, deletes,
   replacements, connected resources, failed controls, and overall risk.
 - **Resource Cost** groups Terraform helper resources under their Azure
@@ -123,8 +134,11 @@ authoring, see the [End-user guide](USER_GUIDE.md).
   monthly capacity and operation assumptions. This feature is currently
   **Preview**.
 - **Cloud Canvas · Preview** provides an IDE canvas for Azure service
-  cards, directional connections, saved sketches, and reviewable Terraform
-  generation.
+  cards, directional connections, free panning, keyboard undo/redo and zoom,
+  service-specific parameter editing, and reviewable Terraform generation.
+  Start from a blank canvas or choose an AKS shared-cluster, three-tier Web
+  App, Event Hubs, Event Grid, or Service Bus pattern. Its searchable catalog
+  includes more than 200 Azure products and architecture primitives.
 - **Preview Safe Fix** displays reviewable before/after Terraform snippets and
   never edits files silently.
 - **Export Evidence Pack** writes `compliance-report.pdf`, `evidence.json`, and
@@ -178,8 +192,10 @@ findings, and clickable standards references.
 
 The extension supports two complementary scan modes:
 
-- **Scan Terraform Files** checks literal top-level values in `.tf` resource
-  blocks. It is fast, offline, and useful while authoring.
+- **Scan Terraform Files** evaluates supported top-level attributes and resolves
+  variable defaults, automatic and selected tfvars, locals, primitive
+  collections, interpolation, and simple boolean conditionals. It remains
+  offline.
 - **Scan Existing Terraform Plan** accepts a binary `.tfplan` or JSON produced
   by `terraform show -json`. It checks resolved values, including variables,
   locals, modules, conditionals, and `for_each` instances.
@@ -282,10 +298,23 @@ storage account and does not allow it to be disabled.
 Legacy `azureCodeGuard.*` and `infraCompliance.*` settings, plus their matching
 workspace control folders, remain supported for upgrades from earlier builds.
 
+## Editor IntelliSense and diagnostics
+
+Terraform files receive Azure IaC Guardrail diagnostics in the VS Code Problems
+panel after a scan or save. Hover a finding to inspect observed and expected
+values, remediation, and tfvars provenance. Quick fixes can rescan, select
+static variable files, or create a resolved Terraform plan. Completion items
+offer governed attribute/value pairs from the loaded control catalog.
+
+Run **Azure IaC Guardrail: Select Static Scan Variable Files** to select
+environment files. Paths are stored in
+`azureIacGuardrail.staticVarFiles`; selected files override Terraform automatic
+variable files in selection order.
+
 ## Current scanner scope
 
-The initial parser handles Terraform `resource` blocks and simple top-level
-attributes. It deliberately keeps scanning independent of VS Code so a CLI or
-CI runner can reuse it later. Before production use, replace the lightweight
-parser with a full HCL syntax parser to handle expressions, dynamic blocks,
-modules, and evaluated values reliably.
+The source parser handles Terraform `resource` blocks, simple top-level
+attributes, variable defaults, tfvars, locals, primitive collections,
+interpolation, and simple boolean conditionals. Provider functions, data
+sources, remote state, module outputs, dynamic blocks, complex comprehensions,
+and provider-computed values remain **Plan required**.

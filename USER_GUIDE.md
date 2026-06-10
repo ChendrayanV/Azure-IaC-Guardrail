@@ -38,23 +38,30 @@ Marketplace publisher, token, version, tag, and rollback procedures.
 3. Enter comma-separated approved ARM region names, for example
    `uksouth, ukwest`. The form accepts canonical Azure public-cloud
    programmatic names.
-4. Review **Monthly cost assumptions**. The defaults model a small static SPA:
+4. Choose the Terraform version constraint used by Cloud Canvas generated
+   Terraform, for example `>= 1.8.0, < 2.0.0`.
+5. Review **Monthly cost assumptions**. The defaults model a small static SPA:
    1 GB stored, 100,000 reads, 10,000 writes, and no paid egress per month.
    Change the currency and usage to match the expected workload.
-5. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
+6. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
    tags, then enter exact required values where appropriate.
-6. Select **Add Tag** to create more rows.
-7. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
+7. Select **Add Tag** to create more rows.
+8. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
    for example `AZ-AI-003, AZ-AI-004`.
-8. Select **Save Azure Pre-configuration**.
-9. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
+9. Select **Save Azure Pre-configuration**.
+10. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
    by the team.
-10. Run **Create and Scan Local Terraform Plan** to evaluate regions and tags
+11. Run **Create and Scan Local Terraform Plan** to evaluate regions and tags
    against resolved values.
 
 Reopen the form with **Azure IaC Guardrail: Azure Pre-configuration** from the
 Command Palette. The setup is local and never authenticates to Azure. Skipped
 IDs are excluded from both static and local plan scans.
+
+The Terraform version policy controls generated Cloud Canvas Terraform. It
+does not install Terraform or rewrite an existing repository
+`required_version` declaration. Configure the executable path separately with
+`azureIacGuardrail.terraformPath`.
 
 Static scans skip generated tag controls because Terraform source commonly
 assigns tags through locals or variables. Plan findings use control IDs
@@ -90,11 +97,30 @@ Use this mode for fast feedback while editing.
 3. Run **Azure IaC Guardrail: Scan Terraform Files**.
 4. Review the **Azure IaC Guardrail Results** tab.
 
-The static scanner reads Terraform resource blocks and literal top-level
-attributes. Values derived from variables, locals, modules, conditions, or
-resource references may appear as **Plan required**.
+The static scanner reads Terraform resource blocks and supported top-level
+attributes. It resolves variable defaults, `terraform.tfvars`,
+`*.auto.tfvars`, selected variable files, locals, lists, maps, interpolation,
+and simple boolean conditionals.
+
+Run **Azure IaC Guardrail: Select Static Scan Variable Files** to select one or
+more environment files for offline scanning. Selected paths are stored in
+`azureIacGuardrail.staticVarFiles`.
 
 Static scans are offline and do not invoke Terraform.
+
+### Editor diagnostics and IntelliSense
+
+After a scan or Terraform file save:
+
+- Non-compliant and unresolved controls appear in the Problems panel.
+- Hover a marked line for observed and expected values, remediation, and
+  variable-file provenance.
+- Use Quick Fix to rescan, select static variable files, or create a plan.
+- Completion suggestions offer governed attribute/value pairs from the loaded
+  control catalogs.
+
+Provider functions, data sources, module outputs, remote state, dynamic blocks,
+complex comprehensions, and provider-computed values remain **Plan required**.
 
 ## 4. Create and scan a resolved plan
 
@@ -125,8 +151,9 @@ Resolved plan scans expose four result views:
   modify Terraform automatically.
 - **Architecture Risk Graph** groups planned Azure resources, inferred
   references, public exposure, change action, and risk.
-- **Open Architecture Diagram · Preview** is visible in that view as a
-  coming-soon feature. It is intentionally disabled.
+- **Open Architecture Diagram** opens a full-size plan canvas with dependency
+  lines, action/risk/exposure overlays, search, filters, resource details, and
+  local SVG export.
 - **PR Change & Blast Radius** uses Terraform `resource_changes` to summarize
   creates, updates, deletes, replacements, connected-resource impact, and
   failed-control concentration.
@@ -158,16 +185,58 @@ resolved local plan and open these views.
 Run **Azure IaC Guardrail: Cloud Canvas (Preview)** from the Command
 Palette. The command ID is `sketchyourinfra`.
 
-1. Search the Azure service palette.
-2. Drag service cards onto the canvas.
-3. Select **Draw Connection**, then select the dependent service followed by
-   the service it depends on.
-4. Select a card to edit its Azure resource name and region.
-5. Select **Save Sketch** to store
-   `.azure-iac-guardrail/sketchyourinfra.json`.
-6. Select **Preview Terraform** to open generated code beside the canvas.
-7. Select **Generate Terraform** and choose the target `.tf` file in the
+1. Open **Common Patterns** and choose an AKS shared cluster, Web App with
+   database, Event Hubs, Event Grid, or Service Bus starting architecture.
+2. Open **Blank Canvas** to start empty or search and drag individual Azure
+   services onto the canvas. The catalog includes more than 200 current Azure
+   products and architecture primitives across AI, analytics, compute,
+   containers, databases, developer tools, DevOps, hybrid, identity,
+   integration, IoT, management, migration, networking, security, storage,
+   virtual desktop, and web categories.
+3. Rename, move, add, or remove services. Left-click and drag a service to move
+   it, or left-click and drag the blank canvas to pan horizontally and
+   vertically.
+4. Drag from a service port to create a dependency connection.
+5. Select a service card to edit its resource name, region, and the parameters
+   supported by its generated Terraform template.
+6. Use **Clear canvas** to remove every service and connection.
+7. Use `Ctrl+Z` to undo, `Ctrl+Y` to redo, `Ctrl++` to zoom in, and `Ctrl+-`
+   to zoom out.
+8. Select **Validate + Static Scan** before generation.
+9. Select **Preview Terraform** to open generated code beside the canvas.
+10. Select **Generate Terraform** and choose the target `.tf` file in the
    selected workspace.
+
+Choosing a pattern replaces the current sketch after confirmation. Messaging
+patterns generate private-by-default Event Hubs, Event Grid, or Service Bus
+resources with producer and worker application cards. The AKS pattern
+generates a private cluster, a connected node subnet, and Kubernetes namespace
+resources. The current sketch is persisted automatically when Terraform is
+generated; there is no separate Save Sketch action.
+
+Newly cataloged services default to the red **Not approved or not yet
+reviewed** state. They can be used in diagrams immediately. Services without a
+Terraform template are emitted as review comments rather than guessed
+resources.
+
+### Interactive plan architecture
+
+After a successful plan scan, open **Architecture Risk Graph** and select
+**Open Architecture Diagram**. You can also run **Azure IaC Guardrail: Open
+Terraform Plan Architecture** and select a binary plan or plan JSON.
+
+The plan canvas exports structural metadata only. It does not include resolved
+plan attribute values, IDs, or secrets in the SVG.
+
+The canvas uses Terraform configuration references and resolved resource IDs
+to infer connectivity. Select a node to highlight its dependencies and
+dependants. Use zoom, fit, pan, action/risk filters, and labeled directional
+connections to explore the topology.
+
+Run **Azure IaC Guardrail: Compare Two Terraform Plans** to select a baseline
+and candidate plan. The generated Markdown review lists added, removed,
+changed, and unchanged resources. For changed resources it reports attribute
+names only, not sensitive before/after values.
 
 The preview currently supports Resource Groups, Virtual Networks, Subnets,
 Storage Accounts, Key Vault, App Service plans, Linux Web Apps, SQL servers,
@@ -314,6 +383,7 @@ Disable it in workspace settings:
 | Setting | Default | Purpose |
 |---|---|---|
 | `azureIacGuardrail.scanOnSave` | `true` | Runs a static scan when a `.tf` file is saved. |
+| `azureIacGuardrail.staticVarFiles` | `[]` | Workspace-relative variable files loaded by offline static scans. |
 | `azureIacGuardrail.workspaceControlsPath` | `.azure-iac-guardrail/controls` | Workspace-relative directory containing additional control catalogs. |
 | `azureIacGuardrail.terraformPath` | `terraform` | Terraform executable name or absolute path. |
 | `azureIacGuardrail.initializeBeforePlan` | `true` | Runs `terraform init` before creating a local plan. |

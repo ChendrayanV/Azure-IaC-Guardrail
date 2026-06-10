@@ -51,6 +51,7 @@ export interface TerraformAttribute {
   name: string;
   value: unknown;
   resolved: boolean;
+  source?: string;
   line: number;
   startCharacter: number;
   endCharacter: number;
@@ -69,6 +70,7 @@ export interface Finding {
   control: Control;
   resource: TerraformResource;
   actual: unknown;
+  resolvedFrom?: string;
   expected: unknown;
   line: number;
   startCharacter: number;
@@ -92,6 +94,7 @@ export interface ArchitectureNode {
   changeAction: ChangeAction;
   risk: "high" | "medium" | "low" | "none";
   publicExposure: boolean;
+  changedAttributes?: string[];
 }
 
 export interface ArchitectureEdge {

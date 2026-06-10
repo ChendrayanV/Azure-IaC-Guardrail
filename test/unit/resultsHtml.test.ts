@@ -83,6 +83,12 @@ describe("renderResultsHtml", () => {
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain('id="finding-details-0" hidden');
     expect(html).toContain("finding-summary-meta");
+    expect(html).toContain(
+      "grid-template-columns: 132px minmax(280px, 1.45fr)",
+    );
+    expect(html).toContain(
+      'title="azurerm_storage_account.example"',
+    );
     expect(html).toContain('data-uri="file:///workspace/main.tf"');
     expect(html).toContain("Action required");
     expect(html).toContain("Export PDF");
@@ -260,6 +266,36 @@ describe("renderResultsHtml", () => {
     expect(html).toContain('type: "rescan"');
   });
 
+  it("links plan results to the interactive architecture canvas", () => {
+    const html = renderResultsHtml(
+      [
+        {
+          scanKind: "plan",
+          filePath: "local.tfplan",
+          findings: [],
+          analysis: {
+            nodes: [],
+            edges: [],
+            changes: {
+              create: 0,
+              update: 0,
+              delete: 0,
+              replace: 0,
+              "no-op": 0,
+              read: 0,
+            },
+            blastRadius: [],
+            riskScore: 0,
+          },
+        },
+      ],
+      "nonce",
+    );
+
+    expect(html).toContain("Open Architecture Diagram");
+    expect(html).toContain('type: "openPlanArchitecture"');
+  });
+
   it("renders architecture, blast-radius, fixes, and evidence actions", () => {
     const html = renderResultsHtml(
       [
@@ -353,9 +389,8 @@ describe("renderResultsHtml", () => {
     expect(html).toContain("Resources and relationships");
     expect(html).toContain("Change impact and risk");
     expect(html).toContain('aria-pressed="true"');
-    expect(html).toContain("Open Architecture Diagram · Preview");
-    expect(html).toContain("coming soon");
-    expect(html).toContain("disabled");
+    expect(html).toContain("Open Architecture Diagram");
+    expect(html).toContain("data-open-plan-architecture");
     expect(html).not.toContain("data-open-architecture");
     expect(html).not.toContain('type: "openArchitecture"');
     expect(html).toContain("PR Change &amp; Blast Radius");

@@ -18,6 +18,9 @@ suite("Azure IaC Guardrail extension", () => {
     assert.ok(commands.includes("infraCompliance.exportEvidence"));
     assert.ok(commands.includes("infraCompliance.analyzePrChanges"));
     assert.ok(commands.includes("infraCompliance.configureWorkspace"));
+    assert.ok(commands.includes("infraCompliance.configureStaticVariables"));
+    assert.ok(commands.includes("infraCompliance.visualizePlan"));
+    assert.ok(commands.includes("infraCompliance.comparePlans"));
   });
 
   test("opens the results pane after a Terraform file scan", async () => {

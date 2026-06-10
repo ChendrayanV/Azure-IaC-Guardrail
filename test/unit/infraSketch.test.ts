@@ -8,6 +8,33 @@ import {
 import serviceStatus from "../../src/data/cloudCanvasServiceStatus.json";
 
 describe("infrastructure sketch", () => {
+  it("includes the broad Microsoft Azure product catalog", () => {
+    const serviceIds = SKETCH_SERVICES.map((service) => service.type);
+    const titles = SKETCH_SERVICES.map((service) => service.title);
+
+    expect(SKETCH_SERVICES.length).toBeGreaterThanOrEqual(200);
+    expect(new Set(serviceIds).size).toBe(serviceIds.length);
+    expect(new Set(titles).size).toBe(titles.length);
+    expect(serviceIds).toEqual(
+      expect.arrayContaining([
+        "foundry_agent_service",
+        "compute_fleet",
+        "kubernetes_fleet_manager",
+        "documentdb",
+        "deployment_environments",
+        "operator_nexus",
+        "health_data_services",
+        "iot_operations",
+        "azure_copilot",
+        "storage_mover",
+        "virtual_network_manager",
+        "cloud_hsm",
+        "managed_lustre",
+        "static_web_apps",
+      ]),
+    );
+  });
+
   it("normalizes nodes and connections", () => {
     const sketch = normalizeInfraSketch({
       nodes: [
@@ -143,8 +170,9 @@ describe("infrastructure sketch", () => {
     );
   });
 
-  it("keeps catalog-only Azure services in diagrams", () => {
-    const sketch = normalizeInfraSketch({
+  it("generates an AKS shared-cluster pattern with namespaces", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
       nodes: [
         {
           id: "aks",
@@ -154,13 +182,90 @@ describe("infrastructure sketch", () => {
           x: 20,
           y: 20,
         },
+        {
+          id: "subnet",
+          serviceType: "subnet",
+          name: "snet-aks",
+          region: "uksouth",
+          x: 20,
+          y: 180,
+        },
+        {
+          id: "namespace",
+          serviceType: "kubernetes_namespace",
+          name: "Team Payments",
+          region: "uksouth",
+          x: 300,
+          y: 20,
+        },
+      ],
+      connections: [
+        { id: "edge-1", source: "aks", target: "subnet" },
+        { id: "edge-2", source: "namespace", target: "aks" },
+      ],
+    });
+
+    expect(terraform).toContain(
+      'resource "azurerm_kubernetes_cluster" "aks_platform"',
+    );
+    expect(terraform).toContain(
+      "vnet_subnet_id = azurerm_subnet.snet_aks.id",
+    );
+    expect(terraform).toContain(
+      'resource "kubernetes_namespace" "team_payments"',
+    );
+    expect(terraform).toContain('name = "team-payments"');
+    expect(terraform).toContain(
+      "depends_on = [azurerm_kubernetes_cluster.aks_platform]",
+    );
+  });
+
+  it("generates common messaging services", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "event-hubs",
+          serviceType: "event_hubs",
+          name: "evh-stream-prod",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+        },
+        {
+          id: "event-grid",
+          serviceType: "event_grid",
+          name: "egt-events-prod",
+          region: "uksouth",
+          x: 300,
+          y: 20,
+        },
+        {
+          id: "service-bus",
+          serviceType: "service_bus",
+          name: "sbn-messages-prod",
+          region: "uksouth",
+          x: 580,
+          y: 20,
+        },
       ],
       connections: [],
     });
 
-    expect(sketch.nodes[0].serviceType).toBe("kubernetes_service");
-    expect(generateTerraformFromSketch(sketch)).toContain(
-      "# aks-platform (kubernetes_service) was not generated.",
+    expect(terraform).toContain(
+      'resource "azurerm_eventhub_namespace" "evh_stream_prod"',
+    );
+    expect(terraform).toContain(
+      'resource "azurerm_eventhub" "evh_stream_prod_events"',
+    );
+    expect(terraform).toContain(
+      'resource "azurerm_eventgrid_topic" "egt_events_prod"',
+    );
+    expect(terraform).toContain(
+      'resource "azurerm_servicebus_namespace" "sbn_messages_prod"',
+    );
+    expect(terraform).toContain(
+      'resource "azurerm_servicebus_queue" "sbn_messages_prod_messages"',
     );
   });
 
@@ -203,18 +308,88 @@ describe("infrastructure sketch", () => {
     );
   });
 
-  it("keeps every canvas service synchronized with the governance registry", () => {
+  it("uses the workspace Terraform version in generated configuration", () => {
+    const terraform = generateTerraformFromSketch(
+      {
+        version: 1,
+        nodes: [
+          {
+            id: "rg",
+            serviceType: "resource_group",
+            name: "rg-example",
+            region: "uksouth",
+            x: 0,
+            y: 0,
+          },
+        ],
+        connections: [],
+      },
+      ">= 1.9.0, < 2.0.0",
+    );
+
+    expect(terraform).toContain(
+      'required_version = ">= 1.9.0, < 2.0.0"',
+    );
+  });
+
+  it("preserves service parameters and uses them in generated Terraform", () => {
+    const sketch = normalizeInfraSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "event-hubs",
+          serviceType: "event_hubs",
+          name: "evh-custom",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+          parameters: {
+            sku: "Premium",
+            capacity: 2,
+            publicNetworkAccess: true,
+            localAuthentication: true,
+            eventHubName: "telemetry",
+            partitionCount: 8,
+            messageRetention: 3,
+          },
+        },
+      ],
+      connections: [],
+    });
+
+    expect(sketch.nodes[0].parameters).toEqual({
+      sku: "Premium",
+      capacity: 2,
+      publicNetworkAccess: true,
+      localAuthentication: true,
+      eventHubName: "telemetry",
+      partitionCount: 8,
+      messageRetention: 3,
+    });
+
+    const terraform = generateTerraformFromSketch(sketch);
+    expect(terraform).toContain('sku                           = "Premium"');
+    expect(terraform).toContain("capacity                      = 2");
+    expect(terraform).toContain("public_network_access_enabled = true");
+    expect(terraform).toContain("local_authentication_enabled  = true");
+    expect(terraform).toContain('name              = "telemetry"');
+    expect(terraform).toContain("partition_count   = 8");
+    expect(terraform).toContain("message_retention = 3");
+  });
+
+  it("keeps governed canvas statuses unique and linked to known services", () => {
     const knownServices = new Set(SKETCH_SERVICES.map((service) => service.type));
     const registeredServices = [
       ...serviceStatus.approved,
       ...serviceStatus.underReview,
-      ...serviceStatus.notApproved,
     ];
     const uniqueRegisteredServices = new Set(registeredServices);
 
     expect(uniqueRegisteredServices.size).toBe(registeredServices.length);
-    expect([...uniqueRegisteredServices].sort()).toEqual(
-      [...knownServices].sort(),
-    );
+    expect(
+      [...uniqueRegisteredServices].every((service) =>
+        knownServices.has(service),
+      ),
+    ).toBe(true);
   });
 });

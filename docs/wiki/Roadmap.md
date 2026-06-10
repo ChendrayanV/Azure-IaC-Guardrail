@@ -27,6 +27,22 @@ Terraform generation.
 - [Sketch Your Infra v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8)
 - [Validated Terraform generation and modules](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/9)
 - [Interactive plan architecture diagram](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/10)
+- Variable-aware static scan and editor diagnostics
+
+### Delivered preview increment
+
+- Variable defaults, automatic and selected tfvars, locals, primitive
+  collections, interpolation, and simple boolean conditionals resolve offline.
+- VS Code diagnostics, hover details, completions, and quick actions are active.
+- The plan architecture diagram supports deterministic layout, dependencies,
+  action/risk/exposure overlays, search, filtering, details, and SVG export.
+- Cloud Canvas includes a secure web sample, zoom, undo/redo, PNG export, and
+  combined Terraform validation plus static scanning.
+
+Issues #8, #9, and #10 remain open where acceptance criteria still require
+official icon licensing, 100-node performance evidence, organization module
+mappings, full Terraform generation contracts, layout override persistence, or
+background layout for very large plans.
 
 ## v0.4 - Enterprise Governance
 

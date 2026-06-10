@@ -65,4 +65,49 @@ describe("analyzeTerraformPlan", () => {
     });
     expect(analysis.riskScore).toBeGreaterThan(0);
   });
+
+  it("uses Terraform configuration references for plan connectivity", () => {
+    const plan = JSON.stringify({
+      planned_values: {
+        root_module: {
+          resources: [
+            {
+              address: "azurerm_resource_group.example",
+              mode: "managed",
+              type: "azurerm_resource_group",
+              name: "example",
+              values: { name: "rg-example" },
+            },
+            {
+              address: "azurerm_virtual_network.example",
+              mode: "managed",
+              type: "azurerm_virtual_network",
+              name: "example",
+              values: { name: "vnet-example" },
+            },
+          ],
+        },
+      },
+      configuration: {
+        root_module: {
+          resources: [
+            {
+              address: "azurerm_virtual_network.example",
+              expressions: {
+                resource_group_name: {
+                  references: ["azurerm_resource_group.example.name"],
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    expect(analyzeTerraformPlan(plan, []).edges).toContainEqual({
+      source: "azurerm_virtual_network.example",
+      target: "azurerm_resource_group.example",
+      label: "resource_group_name",
+    });
+  });
 });

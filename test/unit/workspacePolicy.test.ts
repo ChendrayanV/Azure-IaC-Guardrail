@@ -9,6 +9,7 @@ describe("workspace policy", () => {
   it("provides the recommended Azure tag defaults", () => {
     expect(defaultWorkspacePolicy()).toEqual({
       version: 1,
+      terraformVersion: ">= 1.5.0, < 2.0.0",
       allowedRegions: ["uksouth", "ukwest"],
       costAssumptions: {
         currency: "USD",
@@ -49,6 +50,7 @@ describe("workspace policy", () => {
     expect(profile.tagValues).toEqual({ managed_by: "terraform" });
     expect(profile).toEqual({
       version: 1,
+      terraformVersion: ">= 1.5.0, < 2.0.0",
       allowedRegions: [],
       costAssumptions: {
         currency: "USD",
@@ -164,5 +166,19 @@ describe("workspace policy", () => {
       monthlyWriteOperations: 25000,
       monthlyEgressGb: 10,
     });
+  });
+
+  it("normalizes a selected Terraform version constraint", () => {
+    expect(
+      normalizeWorkspacePolicy({
+        terraformVersion: " >= 1.8.0,   < 2.0.0 ",
+      }).terraformVersion,
+    ).toBe(">= 1.8.0, < 2.0.0");
+  });
+
+  it("rejects invalid Terraform version constraints", () => {
+    expect(() =>
+      normalizeWorkspacePolicy({ terraformVersion: "latest" }),
+    ).toThrow("Terraform version");
   });
 });

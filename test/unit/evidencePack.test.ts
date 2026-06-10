@@ -30,6 +30,7 @@ describe("generateEvidencePack", () => {
       generatedAt: new Date("2026-06-08T10:00:00Z"),
       profile: {
         version: 1,
+        terraformVersion: ">= 1.8.0, < 2.0.0",
         allowedRegions: ["uksouth", "ukwest"],
         costAssumptions: {
           currency: "GBP",

@@ -10,12 +10,15 @@ teams design, scan, review, and evidence Azure Terraform before deployment.
 - Explain architecture risk, planned change impact, and remediation.
 - Generate reviewable evidence for engineering and assurance teams.
 - Explore Azure architecture visually through preview experiences.
+- Resolve common tfvars and local expressions during offline authoring scans.
+- Inspect plan-derived architecture in an interactive, exportable canvas.
 
 ## Start here
 
 - [Product Vision](Product-Vision)
 - [Roadmap](Roadmap)
 - [Architecture](Architecture)
+- [Authoring and Plan Canvas](Authoring-and-Plan-Canvas)
 - [Delivery Playbook](Delivery-Playbook)
 - [Contributing](Contributing)
 - [Security and Privacy](Security-and-Privacy)

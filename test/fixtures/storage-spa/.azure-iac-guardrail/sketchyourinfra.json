@@ -2,21 +2,118 @@
   "version": 1,
   "nodes": [
     {
-      "id": "node-1781017834209-4",
-      "serviceType": "virtual_network",
-      "name": "virtual-network-4",
+      "id": "aks-rg",
+      "serviceType": "resource_group",
+      "name": "rg-aks-shared",
       "region": "uksouth",
-      "x": 1139.3333740234375,
-      "y": 247.66668701171875
+      "x": 80,
+      "y": 90
     },
     {
-      "id": "node-1781017836146-5",
-      "serviceType": "subnet",
-      "name": "subnet-5",
+      "id": "aks-vnet",
+      "serviceType": "virtual_network",
+      "name": "vnet-aks-shared",
       "region": "uksouth",
-      "x": 664.6666259765625,
-      "y": 247.99996948242188
+      "x": 370,
+      "y": 90
+    },
+    {
+      "id": "aks-subnet",
+      "serviceType": "subnet",
+      "name": "snet-aks-nodes",
+      "region": "uksouth",
+      "x": 660,
+      "y": 90
+    },
+    {
+      "id": "aks-cluster",
+      "serviceType": "kubernetes_service",
+      "name": "aks-shared-platform",
+      "region": "uksouth",
+      "x": 950,
+      "y": 90
+    },
+    {
+      "id": "aks-team-a",
+      "serviceType": "kubernetes_namespace",
+      "name": "team-a",
+      "region": "uksouth",
+      "x": 1240,
+      "y": 20
+    },
+    {
+      "id": "aks-team-b",
+      "serviceType": "kubernetes_namespace",
+      "name": "team-b",
+      "region": "uksouth",
+      "x": 1240,
+      "y": 120
+    },
+    {
+      "id": "aks-team-c",
+      "serviceType": "kubernetes_namespace",
+      "name": "team-c",
+      "region": "uksouth",
+      "x": 1240,
+      "y": 220
+    },
+    {
+      "id": "aks-acr",
+      "serviceType": "container_registry",
+      "name": "acrsharedplatform",
+      "region": "uksouth",
+      "x": 950,
+      "y": 270
+    },
+    {
+      "id": "aks-logs",
+      "serviceType": "log_analytics",
+      "name": "log-aks-shared",
+      "region": "uksouth",
+      "x": 660,
+      "y": 270
     }
   ],
-  "connections": []
+  "connections": [
+    {
+      "id": "edge-aks-vnet-aks-rg",
+      "source": "aks-vnet",
+      "target": "aks-rg"
+    },
+    {
+      "id": "edge-aks-subnet-aks-vnet",
+      "source": "aks-subnet",
+      "target": "aks-vnet"
+    },
+    {
+      "id": "edge-aks-cluster-aks-subnet",
+      "source": "aks-cluster",
+      "target": "aks-subnet"
+    },
+    {
+      "id": "edge-aks-cluster-aks-logs",
+      "source": "aks-cluster",
+      "target": "aks-logs"
+    },
+    {
+      "id": "edge-aks-cluster-aks-acr",
+      "source": "aks-cluster",
+      "target": "aks-acr"
+    },
+    {
+      "id": "edge-aks-team-a-aks-cluster",
+      "source": "aks-team-a",
+      "target": "aks-cluster"
+    },
+    {
+      "id": "edge-aks-team-b-aks-cluster",
+      "source": "aks-team-b",
+      "target": "aks-cluster"
+    },
+    {
+      "id": "edge-aks-team-c-aks-cluster",
+      "source": "aks-team-c",
+      "target": "aks-cluster"
+    }
+  ]
 }

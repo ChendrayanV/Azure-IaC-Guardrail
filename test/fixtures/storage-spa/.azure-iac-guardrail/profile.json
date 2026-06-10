@@ -1,11 +1,18 @@
 {
   "version": 1,
   "allowedRegions": [],
+  "costAssumptions": {
+    "currency": "USD",
+    "monthlyStorageGb": 1,
+    "monthlyReadOperations": 100000,
+    "monthlyWriteOperations": 10000,
+    "monthlyEgressGb": 0
+  },
   "requiredTags": [
     "environment"
   ],
   "tagValues": {
-    "environment": "dummy"
+    "environment": "development"
   },
   "skippedControlIds": [],
   "exceptions": []

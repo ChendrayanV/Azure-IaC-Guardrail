@@ -4,6 +4,7 @@
 - [Product Vision](Product-Vision)
 - [Roadmap](Roadmap)
 - [Architecture](Architecture)
+- [Authoring and Plan Canvas](Authoring-and-Plan-Canvas)
 - [Delivery Playbook](Delivery-Playbook)
 - [Contributing](Contributing)
 - [Security and Privacy](Security-and-Privacy)

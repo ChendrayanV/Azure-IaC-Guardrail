@@ -2,23 +2,33 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as vscode from "vscode";
+import { loadControls } from "../controls/catalog";
+import { loadWorkspacePolicy } from "../controls/workspacePolicy";
 import {
   generateTerraformFromSketch,
   normalizeInfraSketch,
+  SKETCH_PARAMETER_DEFINITIONS,
   SKETCH_SERVICES,
   type InfraSketch,
 } from "../core/infraSketch";
+import { scanTerraform } from "../core/scanner";
 import serviceStatus from "../data/cloudCanvasServiceStatus.json";
 import {
   terraformPathFor,
   validateTerraformConfiguration,
 } from "../terraform/terraformCli";
+import type { ResultsPanel } from "./resultsPanel";
 
 const SKETCH_PATH = ".azure-iac-guardrail/sketchyourinfra.json";
 
 export class InfraSketchPanel implements vscode.Disposable {
   private panel: vscode.WebviewPanel | undefined;
   private workspaceFolder: vscode.WorkspaceFolder | undefined;
+
+  constructor(
+    private readonly context: vscode.ExtensionContext,
+    private readonly resultsPanel: ResultsPanel,
+  ) {}
 
   async show(selectedFolder?: vscode.WorkspaceFolder): Promise<void> {
     const folder = selectedFolder ?? (await selectWorkspaceFolder());
@@ -29,7 +39,20 @@ export class InfraSketchPanel implements vscode.Disposable {
     const sketch = await loadSketch(folder.uri);
     const panel = this.getOrCreatePanel();
     panel.title = `Cloud Canvas: ${folder.name}`;
-    panel.webview.html = renderSketchHtml(sketch, createNonce());
+    const montserratUri = panel.webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this.context.extensionUri,
+        "media",
+        "fonts",
+        "Montserrat-VariableFont_wght.ttf",
+      ),
+    );
+    panel.webview.html = renderSketchHtml(
+      sketch,
+      createNonce(),
+      montserratUri.toString(),
+      panel.webview.cspSource,
+    );
     panel.reveal(vscode.ViewColumn.Active, false);
   }
 
@@ -43,7 +66,13 @@ export class InfraSketchPanel implements vscode.Disposable {
         "infraCompliance.sketchYourInfra",
         "Cloud Canvas",
         vscode.ViewColumn.Active,
-        { enableScripts: true, retainContextWhenHidden: true },
+        {
+          enableScripts: true,
+          retainContextWhenHidden: true,
+          localResourceRoots: [
+            vscode.Uri.joinPath(this.context.extensionUri, "media"),
+          ],
+        },
       );
       panel.onDidDispose(() => {
         this.panel = undefined;
@@ -62,13 +91,6 @@ export class InfraSketchPanel implements vscode.Disposable {
     }
     try {
       const sketch = normalizeInfraSketch(message.sketch);
-      if (message.type === "saveSketch") {
-        await saveSketch(this.workspaceFolder.uri, sketch);
-        void vscode.window.showInformationMessage(
-          `Infrastructure sketch saved to ${SKETCH_PATH}.`,
-        );
-        return;
-      }
       if (message.type === "exportPng") {
         const destination = await vscode.window.showSaveDialog({
           defaultUri: vscode.Uri.joinPath(
@@ -91,8 +113,24 @@ export class InfraSketchPanel implements vscode.Disposable {
         );
         return;
       }
-      const terraform = generateTerraformFromSketch(sketch);
+      const policy = await loadWorkspacePolicy(
+        this.workspaceFolder.uri.fsPath,
+      );
+      const terraform = generateTerraformFromSketch(
+        sketch,
+        policy?.terraformVersion,
+      );
       if (message.type === "validateTerraform") {
+        const controls = await loadControls(this.context);
+        const findings = scanTerraform(terraform, controls);
+        this.resultsPanel.setRescanHandler();
+        this.resultsPanel.show([
+          {
+            scanKind: "static",
+            filePath: "Cloud Canvas/cloud-canvas.generated.tf",
+            findings,
+          },
+        ]);
         await vscode.window.withProgress(
           {
             location: vscode.ProgressLocation.Notification,
@@ -113,8 +151,14 @@ export class InfraSketchPanel implements vscode.Disposable {
                 terraformPathFor(this.workspaceFolder!.uri),
                 directory,
               );
+              const noncompliant = findings.filter(
+                (finding) => finding.outcome === "noncompliant",
+              ).length;
+              const unresolved = findings.filter(
+                (finding) => finding.outcome === "unresolved",
+              ).length;
               void vscode.window.showInformationMessage(
-                result.trim() || "Cloud Canvas Terraform is valid.",
+                `${result.trim() || "Cloud Canvas Terraform is valid."} Static scan: ${noncompliant} noncompliant, ${unresolved} unresolved.`,
               );
             } finally {
               await fs.rm(directory, { recursive: true, force: true });
@@ -166,7 +210,6 @@ export class InfraSketchPanel implements vscode.Disposable {
 }
 
 type SketchMessage =
-  | { type: "saveSketch"; sketch: unknown }
   | { type: "exportPng"; sketch: unknown; data: string }
   | { type: "validateTerraform"; sketch: unknown }
   | { type: "previewTerraform"; sketch: unknown }
@@ -179,7 +222,6 @@ function isSketchMessage(message: unknown): message is SketchMessage {
   const value = message as Partial<SketchMessage>;
   return (
     [
-      "saveSketch",
       "exportPng",
       "validateTerraform",
       "previewTerraform",
@@ -247,23 +289,41 @@ async function selectWorkspaceFolder(): Promise<
 function renderSketchHtml(
   sketch: InfraSketch,
   nonce: string,
+  montserratUri: string,
+  cspSource: string,
 ): string {
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${cspSource}; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Cloud Canvas</title>
   <style nonce="${nonce}">
+    @font-face { font-family: "Montserrat"; src: url("${montserratUri}") format("truetype"); font-style: normal; font-weight: 100 900; font-display: swap; }
     :root { color-scheme: light; --azure: #1683ff; --ink: #171717; --muted: #77808c; --line: #d8dde5; --panel: #f4f5f7; }
     * { box-sizing: border-box; }
-    body { margin: 0; overflow: hidden; color: var(--ink); background: #fff; font-family: "Segoe UI", var(--vscode-font-family), sans-serif; }
-    button, input { font: inherit; }
+    body { margin: 0; overflow: hidden; color: var(--ink); background: #fff; font-family: "Montserrat", "Segoe UI", var(--vscode-font-family), sans-serif; }
+    button, input, select { font: inherit; }
     .shell { display: grid; grid-template-columns: 350px minmax(0, 1fr); height: 100vh; }
     .palette { min-height: 0; overflow: auto; padding: 20px 16px 28px; border-right: 1px solid #d7dce3; background: #f3f3f3; }
     .brand { padding: 5px 6px 24px; }
     .brand h1 { margin: 0; font-size: 25px; font-weight: 650; }
+    .palette-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 0 4px 18px; padding: 4px; border: 1px solid #d5dbe3; border-radius: 7px; background: #e7e9ec; }
+    .palette-tab { min-height: 38px; border: 0; border-radius: 5px; color: #59636f; background: transparent; cursor: pointer; font-size: 12px; font-weight: 700; }
+    .palette-tab.active { color: #075ea8; background: #fff; box-shadow: 0 2px 7px #17203318; }
+    .palette-view[hidden] { display: none; }
+    .pattern-intro { margin: 0 6px 14px; color: #65707c; font-size: 12px; line-height: 1.5; }
+    .pattern-list { display: grid; gap: 10px; }
+    .pattern-card { width: 100%; padding: 14px; border: 1px solid #d7dce3; border-radius: 7px; color: #202833; background: #fff; text-align: left; cursor: pointer; box-shadow: 0 2px 7px #1720330d; }
+    .pattern-card:hover { border-color: #62a7e8; box-shadow: 0 5px 14px #1683ff1d; transform: translateY(-1px); }
+    .pattern-card-head { display: flex; gap: 10px; align-items: center; }
+    .pattern-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 9px; color: #fff; background: linear-gradient(145deg, #1683ff, #6657c8); font-size: 10px; font-weight: 800; }
+    .pattern-card strong { display: block; font-size: 14px; }
+    .pattern-card small { display: block; margin-top: 4px; color: #7b8591; font-size: 10px; line-height: 1.4; }
+    .pattern-services { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 11px; }
+    .pattern-services span { padding: 3px 6px; border-radius: 999px; color: #4e6073; background: #edf3f8; font-size: 9px; font-weight: 700; }
+    .blank-action { width: 100%; min-height: 40px; margin-bottom: 14px; border: 1px solid #1683ff; border-radius: 5px; color: #075ea8; background: #eaf4ff; cursor: pointer; font-weight: 700; }
     .search-wrap { position: relative; margin-bottom: 18px; }
     .search-wrap::before { content: ""; position: absolute; left: 16px; top: 15px; width: 13px; height: 13px; border: 1.8px solid #768394; border-radius: 50%; }
     .search-wrap::after { content: ""; position: absolute; left: 28px; top: 28px; width: 8px; height: 2px; background: #768394; transform: rotate(45deg); }
@@ -299,7 +359,7 @@ function renderSketchHtml(
     .toolbar button:hover { background: #edf4fc; color: #0067b8; }
     .toolbar button.primary { color: #fff; background: #0078d4; }
     .toolbar button.active { color: #fff; background: #6657c8; }
-    .canvas-wrap { width: 100%; height: 100%; overflow: auto; background-color: #fff; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 16px 16px; cursor: grab; }
+    .canvas-wrap { width: 100%; height: 100%; overflow: auto; touch-action: none; background-color: #fff; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 16px 16px; cursor: grab; }
     .canvas-wrap.panning { cursor: grabbing; }
     #canvas { position: relative; width: 2400px; height: 1500px; }
     #connections { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
@@ -320,11 +380,17 @@ function renderSketchHtml(
     .empty { position: absolute; top: 160px; left: 50%; width: 430px; transform: translateX(-50%); padding: 28px; border: 1px dashed #b7c1cc; border-radius: 8px; color: #66717e; background: #ffffffd9; text-align: center; }
     .empty strong { color: #26313f; font-size: 18px; }
     .empty p { margin: 8px 0 0; line-height: 1.5; }
-    .inspector { position: absolute; z-index: 19; top: 72px; right: 16px; width: 260px; padding: 14px; border: 1px solid #d9dee5; border-radius: 6px; background: #ffffffef; box-shadow: 0 8px 24px #17203316; backdrop-filter: blur(8px); }
+    .inspector { position: absolute; z-index: 19; top: 72px; right: 16px; width: 300px; max-height: calc(100vh - 90px); overflow: auto; padding: 14px; border: 1px solid #d9dee5; border-radius: 6px; background: #ffffffef; box-shadow: 0 8px 24px #17203316; backdrop-filter: blur(8px); }
     .inspector h2 { margin: 0 0 11px; font-size: 13px; }
+    .inspector-service { margin: -5px 0 12px; color: #65707c; font-size: 11px; }
+    .parameter-heading { margin: 16px 0 2px; padding-top: 12px; border-top: 1px solid #e0e5eb; color: #26313f; font-size: 11px; text-transform: uppercase; }
+    .parameter-empty { margin: 10px 0 0; color: #7b8591; font-size: 11px; line-height: 1.4; }
     .field { margin-top: 10px; }
     .field label { display: block; margin-bottom: 4px; color: #65707c; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .field input { width: 100%; height: 32px; padding: 0 8px; border: 1px solid #ced5dd; border-radius: 3px; color: #111; background: #fff; }
+    .field input, .field select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid #ced5dd; border-radius: 3px; color: #111; background: #fff; }
+    .field.checkbox { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .field.checkbox label { margin: 0; text-transform: none; }
+    .field.checkbox input { width: 18px; height: 18px; flex: 0 0 18px; }
     .danger { width: 100%; margin-top: 12px; padding: 7px; border: 1px solid #d92d20; border-radius: 3px; color: #b42318; background: #fff; cursor: pointer; }
     @media (max-width: 900px) { .shell { grid-template-columns: 285px minmax(0, 1fr); } .palette { padding-left: 10px; padding-right: 10px; } .toolbar-group.optional { display: none; } }
   </style>
@@ -333,28 +399,62 @@ function renderSketchHtml(
   <div class="shell">
     <aside class="palette">
       <div class="brand"><h1>Cloud Canvas</h1></div>
-      <div class="search-wrap"><input id="search" type="search" placeholder="Search Azure services" aria-label="Search Azure services"></div>
-      <div id="categories"></div>
-      <div class="diagram-key">
-        <strong>Diagram key</strong>
-        <div class="key-row"><span class="status-dot approved"></span><span>Approved service</span></div>
-        <div class="key-row"><span class="status-dot under-review"></span><span>Service under review</span></div>
-        <div class="key-row"><span class="status-dot not-approved"></span><span>Not approved or not yet reviewed</span></div>
-        <p>A connection means the source service depends on the service at the arrowhead. Two-way arrows create dependencies in both directions and may produce a Terraform cycle.</p>
-        <p>Press and hold the blank canvas with the left mouse button to pan horizontally or vertically.</p>
+      <div class="palette-tabs" role="tablist" aria-label="Canvas starting point">
+        <button class="palette-tab active" type="button" data-palette-tab="patterns" role="tab" aria-selected="true">Common Patterns</button>
+        <button class="palette-tab" type="button" data-palette-tab="blank" role="tab" aria-selected="false">Blank Canvas</button>
+      </div>
+      <div class="palette-view" data-palette-view="patterns">
+        <p class="pattern-intro">Choose a proven starting point, then rename, move, connect, or remove services on the canvas.</p>
+        <div class="pattern-list">
+          <button class="pattern-card" type="button" data-pattern="aks-shared">
+            <span class="pattern-card-head"><span class="pattern-icon">AKS</span><span><strong>AKS shared cluster</strong><small>One private cluster with isolated team namespaces.</small></span></span>
+            <span class="pattern-services"><span>AKS</span><span>3 namespaces</span><span>ACR</span><span>Log Analytics</span></span>
+          </button>
+          <button class="pattern-card" type="button" data-pattern="web-three-tier">
+            <span class="pattern-card-head"><span class="pattern-icon">WEB</span><span><strong>Web App with database</strong><small>Three-tier application with networking, app compute, and SQL.</small></span></span>
+            <span class="pattern-services"><span>VNet</span><span>Web App</span><span>SQL</span><span>Key Vault</span></span>
+          </button>
+          <button class="pattern-card" type="button" data-pattern="event-hubs">
+            <span class="pattern-card-head"><span class="pattern-icon">EH</span><span><strong>Event Hubs streaming</strong><small>Private streaming ingestion with monitoring and storage.</small></span></span>
+            <span class="pattern-services"><span>Event Hubs</span><span>Storage</span><span>Monitor</span></span>
+          </button>
+          <button class="pattern-card" type="button" data-pattern="event-grid">
+            <span class="pattern-card-head"><span class="pattern-icon">EG</span><span><strong>Event Grid routing</strong><small>Event topic with producer, consumer, and observability.</small></span></span>
+            <span class="pattern-services"><span>Event Grid</span><span>Worker App</span><span>Storage</span></span>
+          </button>
+          <button class="pattern-card" type="button" data-pattern="service-bus">
+            <span class="pattern-card-head"><span class="pattern-icon">SB</span><span><strong>Service Bus messaging</strong><small>Enterprise queue pattern with worker and monitoring.</small></span></span>
+            <span class="pattern-services"><span>Service Bus</span><span>Producer App</span><span>Worker App</span></span>
+          </button>
+        </div>
+      </div>
+      <div class="palette-view" data-palette-view="blank" hidden>
+        <button id="startBlank" class="blank-action" type="button">Start a blank canvas</button>
+        <div class="search-wrap"><input id="search" type="search" placeholder="Search Azure services" aria-label="Search Azure services"></div>
+        <div id="categories"></div>
+        <div class="diagram-key">
+          <strong>Diagram key</strong>
+          <div class="key-row"><span class="status-dot approved"></span><span>Approved service</span></div>
+          <div class="key-row"><span class="status-dot under-review"></span><span>Service under review</span></div>
+          <div class="key-row"><span class="status-dot not-approved"></span><span>Not approved or not yet reviewed</span></div>
+          <p>A connection means the source service depends on the service at the arrowhead.</p>
+          <p>Press and hold the blank canvas with the left mouse button to pan.</p>
+        </div>
       </div>
     </aside>
     <main class="workspace">
       <div class="toolbar">
         <div class="toolbar-group optional">
+          <button id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
+          <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo</button>
+          <button id="zoomOut" type="button" title="Zoom out (Ctrl+-)">Zoom -</button>
+          <button id="zoomIn" type="button" title="Zoom in (Ctrl++)">Zoom +</button>
           <button id="twoWay" type="button">Two-way arrows</button>
-          <button id="clearConnections" type="button">Clear connections</button>
           <button id="clearCanvas" type="button">Clear canvas</button>
-          <button id="save" type="button">Save sketch</button>
         </div>
         <div class="toolbar-group">
           <button id="exportPng" type="button">Export PNG</button>
-          <button id="validate" type="button">Validate Terraform</button>
+          <button id="validate" type="button">Validate + Static Scan</button>
           <button id="preview" type="button">Preview Terraform</button>
           <button id="generate" class="primary" type="button">Generate Terraform</button>
         </div>
@@ -367,8 +467,11 @@ function renderSketchHtml(
       </div>
       <section id="inspector" class="inspector" hidden>
         <h2>Selected Azure service</h2>
+        <p id="inspectorService" class="inspector-service"></p>
         <div class="field"><label for="nodeName">Resource name</label><input id="nodeName"></div>
         <div class="field"><label for="nodeRegion">Azure region</label><input id="nodeRegion" value="uksouth"></div>
+        <h3 class="parameter-heading">Service parameters</h3>
+        <div id="serviceParameters"></div>
         <button id="deleteNode" class="danger" type="button">Delete service</button>
       </section>
     </main>
@@ -376,12 +479,16 @@ function renderSketchHtml(
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
     const catalog = ${JSON.stringify(serviceCatalog())};
+    const parameterDefinitions = ${safeJson(SKETCH_PARAMETER_DEFINITIONS)};
     let sketch = ${safeJson(sketch)};
     let selectedId = null;
     let connectionDraft = null;
     let bidirectionalConnections = false;
     let openCategories = new Set(['Networking']);
     let sequence = sketch.nodes.length + 1;
+    let zoom = 1;
+    let history = [JSON.stringify(sketch)];
+    let historyIndex = 0;
     const canvas = document.getElementById("canvas");
     const canvasWrap = document.querySelector(".canvas-wrap");
     const svg = document.getElementById("connections");
@@ -389,6 +496,22 @@ function renderSketchHtml(
     const search = document.getElementById("search");
     const nodeName = document.getElementById("nodeName");
     const nodeRegion = document.getElementById("nodeRegion");
+    const serviceParameters = document.getElementById("serviceParameters");
+    document.querySelectorAll("[data-palette-tab]").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll("[data-palette-tab]").forEach(item => {
+          const active = item === tab;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-selected", String(active));
+        });
+        document.querySelectorAll("[data-palette-view]").forEach(view => {
+          view.hidden = view.dataset.paletteView !== tab.dataset.paletteTab;
+        });
+      });
+    });
+    document.querySelectorAll("[data-pattern]").forEach(card => {
+      card.addEventListener("click", () => loadPattern(card.dataset.pattern));
+    });
 
     function renderPalette() {
       const term = search.value.trim().toLowerCase();
@@ -426,6 +549,7 @@ function renderSketchHtml(
     }
 
     function render() {
+      canvas.style.zoom = zoom;
       canvas.querySelectorAll(".node").forEach(node => node.remove());
       document.getElementById("empty").hidden = sketch.nodes.length > 0;
       sketch.nodes.forEach(node => {
@@ -459,6 +583,7 @@ function renderSketchHtml(
         const hit = appendPath(path, 'edge-hit');
         hit.addEventListener('click', event => {
           event.stopPropagation();
+          remember();
           sketch.connections = sketch.connections.filter(item => item.id !== connection.id);
           renderConnections();
         });
@@ -482,12 +607,13 @@ function renderSketchHtml(
 
     function beginDrag(event, node) {
       if (event.target.closest('.port')) return;
+      event.preventDefault();
       const card = event.currentTarget;
       const startX = event.clientX, startY = event.clientY, originX = node.x, originY = node.y;
       card.setPointerCapture(event.pointerId);
       const move = moveEvent => {
-        node.x = Math.max(0, originX + moveEvent.clientX - startX);
-        node.y = Math.max(0, originY + moveEvent.clientY - startY);
+        node.x = Math.max(0, originX + (moveEvent.clientX - startX) / zoom);
+        node.y = Math.max(0, originY + (moveEvent.clientY - startY) / zoom);
         card.style.left = node.x + "px";
         card.style.top = node.y + "px";
         renderConnections();
@@ -495,6 +621,7 @@ function renderSketchHtml(
       const up = () => {
         card.removeEventListener("pointermove", move);
         card.removeEventListener("pointerup", up);
+        remember();
       };
       card.addEventListener("pointermove", move);
       card.addEventListener("pointerup", up);
@@ -509,7 +636,7 @@ function renderSketchHtml(
       const startY = node.y + 38;
       connectionDraft = { source: node.id, path: connectionPath(startX, startY, startX, startY) };
       const move = moveEvent => {
-        connectionDraft.path = connectionPath(startX, startY, moveEvent.clientX - rect.left, moveEvent.clientY - rect.top);
+        connectionDraft.path = connectionPath(startX, startY, (moveEvent.clientX - rect.left) / zoom, (moveEvent.clientY - rect.top) / zoom);
         renderConnections();
       };
       const up = upEvent => {
@@ -520,7 +647,10 @@ function renderSketchHtml(
         const targetId = targetCard?.dataset.id;
         if (targetId && targetId !== node.id) {
           const exists = sketch.connections.some(item => item.source === node.id && item.target === targetId);
-          if (!exists) sketch.connections.push({ id: 'edge-' + Date.now(), source: node.id, target: targetId, ...(bidirectionalConnections ? { bidirectional: true } : {}) });
+          if (!exists) {
+            remember();
+            sketch.connections.push({ id: 'edge-' + Date.now(), source: node.id, target: targetId, ...(bidirectionalConnections ? { bidirectional: true } : {}) });
+          }
         }
         connectionDraft = null;
         render();
@@ -540,9 +670,66 @@ function renderSketchHtml(
       const node = sketch.nodes.find(item => item.id === selectedId);
       document.getElementById("inspector").hidden = !node;
       if (node) {
+        const service = catalog.find(item => item.type === node.serviceType);
         nodeName.value = node.name;
         nodeRegion.value = node.region;
+        document.getElementById("inspectorService").textContent = service?.title || node.serviceType;
+        renderServiceParameters(node);
       }
+    }
+
+    function renderServiceParameters(node) {
+      const definitions = parameterDefinitions[node.serviceType] || [];
+      serviceParameters.innerHTML = "";
+      if (!definitions.length) {
+        serviceParameters.innerHTML = '<p class="parameter-empty">This service currently has name and region settings only. Terraform generation support may be added in a later release.</p>';
+        return;
+      }
+      definitions.forEach(definition => {
+        const field = document.createElement("div");
+        field.className = "field" + (definition.type === "boolean" ? " checkbox" : "");
+        const label = document.createElement("label");
+        label.textContent = definition.label;
+        label.htmlFor = "parameter-" + definition.key;
+        const control = createParameterControl(node, definition);
+        field.append(label, control);
+        serviceParameters.appendChild(field);
+      });
+    }
+
+    function createParameterControl(node, definition) {
+      let control;
+      if (definition.type === "select") {
+        control = document.createElement("select");
+        (definition.options || []).forEach(option => {
+          const item = document.createElement("option");
+          item.value = option;
+          item.textContent = option;
+          control.appendChild(item);
+        });
+      } else {
+        control = document.createElement("input");
+        control.type = definition.type === "boolean" ? "checkbox" : definition.type;
+        if (definition.min !== undefined) control.min = String(definition.min);
+        if (definition.max !== undefined) control.max = String(definition.max);
+        if (definition.step !== undefined) control.step = String(definition.step);
+      }
+      control.id = "parameter-" + definition.key;
+      const current = node.parameters && Object.prototype.hasOwnProperty.call(node.parameters, definition.key)
+        ? node.parameters[definition.key]
+        : definition.defaultValue;
+      if (definition.type === "boolean") control.checked = Boolean(current);
+      else control.value = String(current);
+      control.addEventListener("change", () => {
+        node.parameters = node.parameters || {};
+        node.parameters[definition.key] = definition.type === "boolean"
+          ? control.checked
+          : definition.type === "number"
+            ? Number(control.value)
+            : control.value;
+        remember();
+      });
+      return control;
     }
 
     function post(type) {
@@ -550,6 +737,7 @@ function renderSketchHtml(
     }
 
     function addNode(service, x, y) {
+      remember();
       sketch.nodes.push({
         id: 'node-' + Date.now() + '-' + sequence,
         serviceType: service.type,
@@ -568,7 +756,7 @@ function renderSketchHtml(
       const service = catalog.find(item => item.type === type);
       if (!service) return;
       const rect = canvas.getBoundingClientRect();
-      addNode(service, event.clientX - rect.left - 120, event.clientY - rect.top - 38);
+      addNode(service, (event.clientX - rect.left) / zoom - 120, (event.clientY - rect.top) / zoom - 38);
     });
     canvas.addEventListener("click", () => { selectedId = null; render(); });
     canvasWrap.addEventListener('pointerdown', event => {
@@ -600,34 +788,64 @@ function renderSketchHtml(
       card.querySelector("strong").textContent = node.name;
     }
     nodeName.addEventListener("input", () => { const node = sketch.nodes.find(item => item.id === selectedId); if (node) { node.name = nodeName.value; updateSelectedCard(); } });
+    nodeName.addEventListener("change", remember);
     nodeRegion.addEventListener("input", () => { const node = sketch.nodes.find(item => item.id === selectedId); if (node) { node.region = nodeRegion.value; updateSelectedCard(); } });
+    nodeRegion.addEventListener("change", remember);
     document.getElementById("deleteNode").addEventListener("click", () => {
       deleteSelectedNode();
     });
-    document.getElementById("clearConnections").addEventListener("click", () => {
-      sketch.connections = [];
-      connectionDraft = null;
-      render();
-    });
     document.getElementById("clearCanvas").addEventListener("click", () => {
-      if (!sketch.nodes.length || !confirm('Clear every service and connection from Cloud Canvas?')) return;
+      if (!sketch.nodes.length && !sketch.connections.length) return;
       sketch.nodes = [];
       sketch.connections = [];
       selectedId = null;
       connectionDraft = null;
+      sequence = 1;
       render();
+      remember();
     });
     document.getElementById("twoWay").addEventListener("click", event => {
       bidirectionalConnections = !bidirectionalConnections;
       event.currentTarget.classList.toggle('active', bidirectionalConnections);
     });
-    document.getElementById("save").addEventListener("click", () => post("saveSketch"));
+    document.getElementById("zoomIn").addEventListener("click", () => setZoom(zoom + .1));
+    document.getElementById("zoomOut").addEventListener("click", () => setZoom(zoom - .1));
+    document.getElementById("undo").addEventListener("click", () => restoreHistory(historyIndex - 1));
+    document.getElementById("redo").addEventListener("click", () => restoreHistory(historyIndex + 1));
+    document.getElementById("startBlank").addEventListener("click", () => {
+      if (sketch.nodes.length && !confirm("Replace the current architecture with a blank canvas?")) return;
+      remember();
+      sketch = { version: 1, nodes: [], connections: [] };
+      selectedId = null;
+      sequence = 1;
+      render();
+    });
     document.getElementById("validate").addEventListener("click", () => post("validateTerraform"));
     document.getElementById("preview").addEventListener("click", () => post("previewTerraform"));
     document.getElementById("generate").addEventListener("click", () => post("generateTerraform"));
     document.getElementById("exportPng").addEventListener("click", exportPng);
 
     document.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        restoreHistory(event.shiftKey ? historyIndex + 1 : historyIndex - 1);
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
+        event.preventDefault();
+        restoreHistory(historyIndex + 1);
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && ['+', '=', 'Add'].includes(event.key)) {
+        event.preventDefault();
+        setZoom(zoom + .1);
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && ['-', '_', 'Subtract'].includes(event.key)) {
+        event.preventDefault();
+        setZoom(zoom - .1);
+        return;
+      }
       if ((event.key !== 'Delete' && event.key !== 'Backspace') || !selectedId) return;
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
       event.preventDefault();
@@ -636,10 +854,128 @@ function renderSketchHtml(
 
     function deleteSelectedNode() {
       if (!selectedId) return;
+      remember();
       sketch.nodes = sketch.nodes.filter(node => node.id !== selectedId);
       sketch.connections = sketch.connections.filter(item => item.source !== selectedId && item.target !== selectedId);
       selectedId = null;
       render();
+    }
+
+    function remember() {
+      queueMicrotask(() => {
+        const current = JSON.stringify(sketch);
+        if (history[historyIndex] !== current) {
+          history = history.slice(0, historyIndex + 1);
+          history.push(current);
+          historyIndex = history.length - 1;
+        }
+      });
+    }
+
+    function restoreHistory(index) {
+      if (index < 0 || index >= history.length) return;
+      historyIndex = index;
+      sketch = JSON.parse(history[historyIndex]);
+      selectedId = null;
+      render();
+    }
+
+    function setZoom(value) {
+      zoom = Math.max(.5, Math.min(1.6, Math.round(value * 10) / 10));
+      render();
+    }
+
+    function loadPattern(patternId) {
+      if (sketch.nodes.length && !confirm("Replace the current architecture with this common pattern?")) return;
+      const pattern = commonPattern(patternId);
+      if (!pattern) return;
+      remember();
+      sketch = pattern;
+      selectedId = null;
+      sequence = sketch.nodes.length + 1;
+      render();
+      canvasWrap.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+    }
+
+    function commonPattern(patternId) {
+      const patterns = {
+        "aks-shared": {
+          version: 1,
+          nodes: [
+            node("aks-rg", "resource_group", "rg-aks-shared", 80, 90),
+            node("aks-vnet", "virtual_network", "vnet-aks-shared", 370, 90),
+            node("aks-subnet", "subnet", "snet-aks-nodes", 660, 90),
+            node("aks-cluster", "kubernetes_service", "aks-shared-platform", 950, 90),
+            node("aks-team-a", "kubernetes_namespace", "team-a", 1240, 20),
+            node("aks-team-b", "kubernetes_namespace", "team-b", 1240, 120),
+            node("aks-team-c", "kubernetes_namespace", "team-c", 1240, 220),
+            node("aks-acr", "container_registry", "acrsharedplatform", 950, 270),
+            node("aks-logs", "log_analytics", "log-aks-shared", 660, 270)
+          ],
+          connections: [
+            edge("aks-vnet", "aks-rg"), edge("aks-subnet", "aks-vnet"),
+            edge("aks-cluster", "aks-subnet"), edge("aks-cluster", "aks-logs"),
+            edge("aks-cluster", "aks-acr"), edge("aks-team-a", "aks-cluster"),
+            edge("aks-team-b", "aks-cluster"), edge("aks-team-c", "aks-cluster")
+          ]
+        },
+        "web-three-tier": {
+          version: 1,
+          nodes: [
+            node("web-rg", "resource_group", "rg-web-three-tier", 80, 90),
+            node("web-vnet", "virtual_network", "vnet-web", 370, 90),
+            node("web-subnet", "subnet", "snet-app", 660, 90),
+            node("web-plan", "service_plan", "asp-web-prod", 660, 260),
+            node("web-app", "web_app", "app-web-prod", 950, 170),
+            node("web-sql", "sql_server", "sql-web-prod", 1240, 90),
+            node("web-db", "sql_database", "sqldb-web-prod", 1530, 90),
+            node("web-kv", "key_vault", "kv-web-prod", 1240, 270),
+            node("web-logs", "log_analytics", "log-web-prod", 950, 350)
+          ],
+          connections: [
+            edge("web-vnet", "web-rg"), edge("web-subnet", "web-vnet"),
+            edge("web-plan", "web-rg"), edge("web-app", "web-plan"),
+            edge("web-app", "web-subnet"), edge("web-app", "web-kv"),
+            edge("web-app", "web-db"), edge("web-db", "web-sql"),
+            edge("web-app", "web-logs")
+          ]
+        },
+        "event-hubs": messagingPattern("eh", "event_hubs", "evh-stream-prod"),
+        "event-grid": messagingPattern("eg", "event_grid", "egt-events-prod"),
+        "service-bus": messagingPattern("sb", "service_bus", "sbn-messages-prod")
+      };
+      return patterns[patternId];
+    }
+
+    function messagingPattern(prefix, serviceType, serviceName) {
+      return {
+        version: 1,
+        nodes: [
+          node(prefix + "-rg", "resource_group", "rg-" + prefix + "-pattern", 80, 100),
+          node(prefix + "-producer", "web_app", "app-" + prefix + "-producer", 370, 30),
+          node(prefix + "-plan", "service_plan", "asp-" + prefix + "-pattern", 370, 190),
+          node(prefix + "-service", serviceType, serviceName, 680, 100),
+          node(prefix + "-consumer", "web_app", "app-" + prefix + "-consumer", 990, 30),
+          node(prefix + "-storage", "storage_account", "st" + prefix + "pattern", 990, 190),
+          node(prefix + "-logs", "log_analytics", "log-" + prefix + "-pattern", 680, 300)
+        ],
+        connections: [
+          edge(prefix + "-plan", prefix + "-rg"),
+          edge(prefix + "-producer", prefix + "-plan"),
+          edge(prefix + "-producer", prefix + "-service"),
+          edge(prefix + "-consumer", prefix + "-service"),
+          edge(prefix + "-consumer", prefix + "-storage"),
+          edge(prefix + "-service", prefix + "-logs")
+        ]
+      };
+    }
+
+    function node(id, serviceType, name, x, y) {
+      return { id, serviceType, name, region: "uksouth", x, y };
+    }
+
+    function edge(source, target) {
+      return { id: "edge-" + source + "-" + target, source, target };
     }
 
     function exportPng() {
@@ -795,23 +1131,14 @@ function safeJson(value: unknown): string {
 function serviceCatalog() {
   const approved = new Set(serviceStatus.approved);
   const underReview = new Set(serviceStatus.underReview);
-  const notApproved = new Set(serviceStatus.notApproved);
   return SKETCH_SERVICES.map((service) => ({
     ...service,
     status: approved.has(service.type)
       ? "approved"
       : underReview.has(service.type)
         ? "under-review"
-        : notApproved.has(service.type)
-          ? "not-approved"
-          : missingServiceStatus(service.type),
+        : "not-approved",
   }));
-}
-
-function missingServiceStatus(serviceType: string): never {
-  throw new Error(
-    `Cloud Canvas service "${serviceType}" is missing from cloudCanvasServiceStatus.json.`,
-  );
 }
 
 function createNonce(): string {

@@ -27,6 +27,7 @@ export async function validateTerraformConfiguration(
   terraformPath: string,
   cwd: string,
 ): Promise<string> {
+  await runTerraform(terraformPath, ["fmt", "-no-color"], cwd);
   await runTerraform(
     terraformPath,
     ["init", "-backend=false", "-input=false", "-no-color"],

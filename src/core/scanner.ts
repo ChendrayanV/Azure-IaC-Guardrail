@@ -6,10 +6,19 @@ import type {
   TerraformResource,
 } from "../types";
 import { parseTerraform } from "./terraformParser";
+import type { StaticResolutionContext } from "./staticResolution";
 
 export function scanTerraform(source: string, controls: Control[]): Finding[] {
   const resources = parseTerraform(source);
   return scanResources(resources, controls);
+}
+
+export function scanTerraformWithContext(
+  source: string,
+  controls: Control[],
+  context: StaticResolutionContext,
+): Finding[] {
+  return scanResources(parseTerraform(source, context), controls);
 }
 
 export function scanResources(
@@ -214,6 +223,7 @@ function createFinding(
     control,
     resource,
     actual: attribute?.value,
+    resolvedFrom: attribute?.source,
     expected:
       control.operator === "exists"
         ? "attribute present"

@@ -40,6 +40,9 @@
     "onCommand:infraCompliance.scanWorkspace",
     "onCommand:infraCompliance.scanPlan",
     "onCommand:infraCompliance.createAndScanPlan",
+    "onCommand:infraCompliance.visualizePlan",
+    "onCommand:infraCompliance.configureStaticVariables",
+    "onCommand:infraCompliance.comparePlans",
     "onCommand:infraCompliance.exportPdf",
     "onCommand:infraCompliance.exportEvidence",
     "onCommand:infraCompliance.analyzePrChanges",
@@ -62,12 +65,12 @@
           {
             "id": "scanTerraformFiles",
             "title": "Run a fast static scan",
-            "description": "Run [Azure IaC Guardrail: Scan Terraform Files](command:infraCompliance.scanWorkspace) for immediate offline feedback on supported literal Terraform values."
+            "description": "Run [Azure IaC Guardrail: Scan Terraform Files](command:infraCompliance.scanWorkspace) for offline feedback using variable defaults, automatic tfvars, selected variable files, and supported locals."
           },
           {
             "id": "configureWorkspacePolicy",
             "title": "Configure local Azure standards",
-            "description": "Run [Azure IaC Guardrail: Azure Pre-configuration](command:infraCompliance.configureWorkspace) to define required tags, governed exceptions, and control exclusions."
+            "description": "Run [Azure IaC Guardrail: Azure Pre-configuration](command:infraCompliance.configureWorkspace) to choose the generated Terraform version constraint and define regions, tags, cost assumptions, exceptions, and exclusions."
           },
           {
             "id": "scanResolvedPlan",
@@ -83,6 +86,11 @@
             "id": "sketchYourInfra",
             "title": "Sketch Azure infrastructure",
             "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to drag Azure service cards onto a canvas, connect them, and preview generated Terraform."
+          },
+          {
+            "id": "openPlanArchitecture",
+            "title": "Explore a Terraform plan",
+            "description": "Run [Azure IaC Guardrail: Open Terraform Plan Architecture](command:infraCompliance.visualizePlan) to search and filter a plan-derived dependency canvas."
           }
         ]
       }
@@ -99,6 +107,18 @@
       {
         "command": "infraCompliance.createAndScanPlan",
         "title": "Azure IaC Guardrail: Create and Scan Local Terraform Plan"
+      },
+      {
+        "command": "infraCompliance.visualizePlan",
+        "title": "Azure IaC Guardrail: Open Terraform Plan Architecture"
+      },
+      {
+        "command": "infraCompliance.comparePlans",
+        "title": "Azure IaC Guardrail: Compare Two Terraform Plans"
+      },
+      {
+        "command": "infraCompliance.configureStaticVariables",
+        "title": "Azure IaC Guardrail: Select Static Scan Variable Files"
       },
       {
         "command": "infraCompliance.exportPdf",
@@ -148,6 +168,14 @@
           "type": "boolean",
           "default": false,
           "description": "Keep the generated binary plan at .azure-iac-guardrail/plans/latest.tfplan after scanning. Plan files can contain sensitive values."
+        },
+        "azureIacGuardrail.staticVarFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Workspace-relative tfvars files loaded by offline static scans after Terraform automatic variable files."
         }
       }
     }

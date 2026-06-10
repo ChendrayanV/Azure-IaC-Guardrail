@@ -254,11 +254,12 @@ export function renderResultsHtml(
     .finding[hidden] { display: none; }
     .finding-toggle {
       display: grid;
-      grid-template-columns: auto minmax(180px, 1.5fr) minmax(160px, 1fr) minmax(120px, .75fr) auto;
-      gap: 12px;
+      grid-template-columns: 132px minmax(280px, 1.45fr) minmax(230px, 1fr) minmax(170px, .72fr) 36px;
+      column-gap: 18px;
       width: 100%;
       align-items: center;
-      padding: 12px 15px;
+      min-height: 86px;
+      padding: 14px 18px;
       border: 0;
       color: inherit;
       background: transparent;
@@ -268,33 +269,109 @@ export function renderResultsHtml(
     }
     .finding-toggle:hover { background: color-mix(in srgb, var(--vscode-list-hoverBackground) 72%, transparent); }
     .finding-toggle:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: -2px; }
-    .finding-summary-title { min-width: 0; }
-    .finding-summary-title h3 { margin: 5px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
-    .finding-summary-meta { min-width: 0; }
-    .finding-summary-meta span { display: block; margin-bottom: 3px; color: var(--vscode-descriptionForeground); font-size: 9px; text-transform: uppercase; }
-    .finding-summary-meta code { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--vscode-foreground); font-family: var(--vscode-editor-font-family); font-size: 11px; }
+    .finding-summary-title {
+      display: grid;
+      min-width: 0;
+      align-content: center;
+      gap: 7px;
+    }
+    .finding-summary-title h3 {
+      margin: 0;
+      overflow: hidden;
+      color: var(--vscode-foreground);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .finding-summary-meta {
+      display: grid;
+      min-width: 0;
+      align-content: center;
+      gap: 6px;
+    }
+    .finding-summary-meta span {
+      display: block;
+      color: var(--vscode-descriptionForeground);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .finding-summary-meta code {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--vscode-foreground);
+      background: color-mix(in srgb, var(--vscode-textCodeBlock-background) 82%, transparent);
+      font-family: var(--vscode-editor-font-family);
+      font-size: 11px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .finding-chevron {
       display: grid;
-      width: 28px;
-      height: 28px;
+      width: 34px;
+      height: 34px;
       place-items: center;
-      border-radius: 7px;
+      justify-self: end;
+      border: 1px solid transparent;
+      border-radius: 8px;
       color: var(--vscode-descriptionForeground);
       background: var(--vscode-editor-background);
       transition: transform .16s ease, color .16s ease, background .16s ease;
     }
     .finding.expanded .finding-chevron { transform: rotate(180deg); color: var(--vscode-foreground); background: var(--vscode-button-secondaryBackground); }
     .badge {
-      display: inline-block;
-      margin-right: 8px;
-      padding: 2px 7px;
-      border-radius: 4px;
+      display: inline-flex;
+      min-width: 0;
+      max-width: 100%;
+      min-height: 26px;
+      align-items: center;
+      justify-content: center;
+      justify-self: start;
+      overflow: hidden;
+      padding: 4px 9px;
+      border-radius: 5px;
       background: var(--vscode-badge-background);
       color: var(--vscode-badge-foreground);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .control-id { color: var(--vscode-descriptionForeground); font-family: var(--vscode-editor-font-family); }
+    .finding.compliant .badge {
+      color: color-mix(in srgb, var(--vscode-testing-iconPassed) 84%, var(--vscode-foreground));
+      background: color-mix(in srgb, var(--vscode-testing-iconPassed) 16%, var(--vscode-editor-background));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vscode-testing-iconPassed) 34%, transparent);
+    }
+    .finding.error .badge {
+      color: color-mix(in srgb, var(--vscode-testing-iconFailed) 84%, var(--vscode-foreground));
+      background: color-mix(in srgb, var(--vscode-testing-iconFailed) 14%, var(--vscode-editor-background));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vscode-testing-iconFailed) 34%, transparent);
+    }
+    .finding.warning .badge,
+    .finding.unresolved .badge {
+      color: color-mix(in srgb, var(--vscode-editorWarning-foreground) 86%, var(--vscode-foreground));
+      background: color-mix(in srgb, var(--vscode-editorWarning-foreground) 15%, var(--vscode-editor-background));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vscode-editorWarning-foreground) 36%, transparent);
+    }
+    .control-id {
+      overflow: hidden;
+      color: var(--vscode-descriptionForeground);
+      font-family: var(--vscode-editor-font-family);
+      font-size: 11px;
+      line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .details { padding: 2px 17px 17px; border-top: 1px solid var(--vscode-panel-border); }
     .details[hidden] { display: none; }
     .details p { margin: 8px 0; line-height: 1.5; }
@@ -449,7 +526,7 @@ export function renderResultsHtml(
     .diagram-action { display: flex; justify-content: space-between; gap: 18px; align-items: center; margin: 0 0 18px; padding: 16px; border: 1px solid #1683ff66; border-radius: 10px; background: linear-gradient(135deg, color-mix(in srgb, #1683ff 14%, var(--vscode-sideBar-background)), var(--vscode-sideBar-background)); }
     .diagram-action strong, .diagram-action span { display: block; }
     .diagram-action span { margin-top: 4px; color: var(--vscode-descriptionForeground); }
-    .diagram-preview { opacity: .72; cursor: not-allowed; }
+    .diagram-preview { white-space: nowrap; }
     dialog { width: min(720px, calc(100vw - 48px)); color: var(--vscode-foreground); background: var(--vscode-editorWidget-background); border: 1px solid var(--vscode-widget-border); border-radius: 10px; padding: 22px; }
     dialog::backdrop { background: #0008; }
     .diff { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -464,6 +541,39 @@ export function renderResultsHtml(
       .views { grid-template-columns: 1fr; }
       .finding-toggle { grid-template-columns: auto minmax(0, 1fr) auto; }
       .finding-summary-meta { display: none; }
+    }
+    @media (max-width: 1100px) {
+      .finding-toggle {
+        grid-template-columns: 118px minmax(250px, 1.35fr) minmax(210px, 1fr) 34px;
+      }
+      .finding-summary-meta:last-of-type { display: none; }
+    }
+    @media (max-width: 780px) {
+      .finding-toggle {
+        grid-template-columns: 112px minmax(0, 1fr) 34px;
+        min-height: 78px;
+        padding: 12px 14px;
+      }
+      .finding-summary-meta { display: none; }
+    }
+    @media (max-width: 520px) {
+      .finding-toggle {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        row-gap: 9px;
+      }
+      .badge {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      .finding-summary-title {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .finding-chevron {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+      }
+      .finding-summary-title h3 { white-space: normal; }
     }
   </style>
 </head>
@@ -535,11 +645,11 @@ export function renderResultsHtml(
             </span>
             <span class="finding-summary-meta">
               <span>Resource</span>
-              <code>${escapeHtml(finding.resource.address ?? `${finding.resource.type}.${finding.resource.name}`)}</code>
+              <code title="${escapeAttribute(finding.resource.address ?? `${finding.resource.type}.${finding.resource.name}`)}">${escapeHtml(finding.resource.address ?? `${finding.resource.type}.${finding.resource.name}`)}</code>
             </span>
             <span class="finding-summary-meta">
               <span>Observed</span>
-              <code>${escapeHtml(formatValue(finding.actual))}</code>
+              <code title="${escapeAttribute(formatValue(finding.actual))}">${escapeHtml(formatValue(finding.actual))}</code>
             </span>
             <span class="finding-chevron" aria-hidden="true">⌄</span>
           </button>
@@ -674,6 +784,10 @@ export function renderResultsHtml(
         vscode.postMessage({ type: "rescan" });
         return;
       }
+      if (event.target.closest("[data-open-plan-architecture]")) {
+        vscode.postMessage({ type: "openPlanArchitecture" });
+        return;
+      }
       const target = event.target.closest("[data-uri]");
       if (target) {
         vscode.postMessage({
@@ -720,8 +834,8 @@ function renderArchitectureView(analysis: PlanAnalysis): string {
         : "low";
   return `<section class="view" data-view="architecture" hidden>
     <div class="diagram-action">
-      <div><strong>Interactive Terraform topology</strong><span>A full-size architecture diagram with relationships, risk, change actions, and resource details is coming soon.</span></div>
-      <button class="export diagram-preview" type="button" disabled aria-disabled="true">Open Architecture Diagram · Preview</button>
+      <div><strong>Interactive Terraform topology</strong><span>Open the full-size plan canvas with dependency lines, search, filters, resource details, and SVG export.</span></div>
+      <button class="export diagram-preview" type="button" data-open-plan-architecture>Open Architecture Diagram</button>
     </div>
     <div class="analysis-grid">
       <div class="analysis-card risk-score ${riskClass}"><strong>${analysis.riskScore}/100</strong><span>Architecture risk score</span></div>

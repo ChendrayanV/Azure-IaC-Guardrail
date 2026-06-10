@@ -20,6 +20,13 @@ variable "resource_group_name" {
   default     = "rg-storage-spa-dev"
 }
 
+variable "public_network_access_enabled" {
+  description = "Name of the resource group that hosts the SPA."
+  type        = bool
+  default     = false
+}
+
+
 variable "storage_account_name" {
   description = "Globally unique storage account name using 3-24 lowercase letters and numbers."
   type        = string

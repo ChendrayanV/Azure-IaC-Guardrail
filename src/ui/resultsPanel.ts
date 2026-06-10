@@ -221,6 +221,10 @@ export class ResultsPanel implements vscode.Disposable {
       await this.rescanHandler();
       return;
     }
+    if (isOpenPlanArchitectureMessage(message)) {
+      await vscode.commands.executeCommand("infraCompliance.visualizePlan");
+      return;
+    }
     if (isOpenReferenceMessage(message)) {
       await vscode.env.openExternal(vscode.Uri.parse(message.url));
       return;
@@ -263,6 +267,21 @@ function isExportEvidenceMessage(
 
 interface RescanMessage {
   type: "rescan";
+}
+
+interface OpenPlanArchitectureMessage {
+  type: "openPlanArchitecture";
+}
+
+function isOpenPlanArchitectureMessage(
+  message: unknown,
+): message is OpenPlanArchitectureMessage {
+  return (
+    !!message &&
+    typeof message === "object" &&
+    (message as Partial<OpenPlanArchitectureMessage>).type ===
+      "openPlanArchitecture"
+  );
 }
 
 function isRescanMessage(message: unknown): message is RescanMessage {

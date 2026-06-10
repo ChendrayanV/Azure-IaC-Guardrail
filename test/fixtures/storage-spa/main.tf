@@ -16,7 +16,7 @@ resource "azurerm_storage_account" "spa" {
   allow_nested_items_to_be_public  = false
   https_traffic_only_enabled       = true
   min_tls_version                  = "TLS1_2"
-  public_network_access_enabled    = true
+  public_network_access_enabled    = var.public_network_access_enabled
   shared_access_key_enabled        = true
   default_to_oauth_authentication  = false
   cross_tenant_replication_enabled = false

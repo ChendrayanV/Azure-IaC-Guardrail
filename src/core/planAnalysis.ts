@@ -10,6 +10,7 @@ import type {
 interface TerraformPlan {
   planned_values?: { root_module?: PlanModule };
   resource_changes?: PlanChange[];
+  configuration?: { root_module?: ConfigurationModule };
 }
 
 interface PlanModule {
@@ -37,6 +38,16 @@ interface PlanChange {
   };
 }
 
+interface ConfigurationModule {
+  resources?: ConfigurationResource[];
+  module_calls?: Record<string, { module?: ConfigurationModule }>;
+}
+
+interface ConfigurationResource {
+  address?: string;
+  expressions?: Record<string, unknown>;
+}
+
 export function analyzeTerraformPlan(
   planJson: string,
   findings: Finding[],
@@ -49,6 +60,14 @@ export function analyzeTerraformPlan(
       .map((change) => [
         change.address as string,
         normalizeAction(change.change?.actions ?? []),
+      ]),
+  );
+  const changeAttributes = new Map(
+    (plan.resource_changes ?? [])
+      .filter((change) => change.address)
+      .map((change) => [
+        change.address as string,
+        changedAttributeNames(change.change?.before, change.change?.after),
       ]),
   );
   const failedByAddress = new Map<string, Finding[]>();
@@ -65,12 +84,17 @@ export function analyzeTerraformPlan(
   }
 
   const knownTargets = buildTargetIndex(resources);
-  const edges = collectEdges(resources, knownTargets);
+  const edges = collectEdges(
+    resources,
+    knownTargets,
+    plan.configuration?.root_module,
+  );
   const nodes = resources.map((resource) =>
     createNode(
       resource,
       changes.get(resource.address as string) ?? "no-op",
       failedByAddress.get(resource.address as string) ?? [],
+      changeAttributes.get(resource.address as string) ?? [],
     ),
   );
   const blastRadius = createBlastRadius(nodes, edges, failedByAddress);
@@ -130,6 +154,7 @@ function buildTargetIndex(resources: PlanResource[]): Map<string, string> {
 function collectEdges(
   resources: PlanResource[],
   targets: Map<string, string>,
+  configuration?: ConfigurationModule,
 ): ArchitectureEdge[] {
   const edges = new Map<string, ArchitectureEdge>();
   for (const resource of resources) {
@@ -146,7 +171,84 @@ function collectEdges(
       edges.set(`${source}|${target}|${label}`, { source, target, label });
     });
   }
+  const addresses = new Set(resources.map((resource) => resource.address as string));
+  for (const resource of flattenConfiguration(configuration)) {
+    if (!resource.address || !addresses.has(resource.address)) {
+      continue;
+    }
+    walkConfigurationExpressions(
+      resource.expressions ?? {},
+      "",
+      (path, reference) => {
+        const target = referenceTarget(reference, addresses);
+        if (!target || target === resource.address) {
+          return;
+        }
+        const label = path.split(".").filter(Boolean).at(-1) ?? "reference";
+        edges.set(`${resource.address}|${target}|${label}`, {
+          source: resource.address as string,
+          target,
+          label,
+        });
+      },
+    );
+  }
   return [...edges.values()];
+}
+
+function flattenConfiguration(
+  module?: ConfigurationModule,
+): ConfigurationResource[] {
+  if (!module) {
+    return [];
+  }
+  return [
+    ...(module.resources ?? []),
+    ...Object.values(module.module_calls ?? {}).flatMap((call) =>
+      flattenConfiguration(call.module),
+    ),
+  ];
+}
+
+function walkConfigurationExpressions(
+  value: unknown,
+  path: string,
+  visit: (path: string, reference: string) => void,
+): void {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      walkConfigurationExpressions(item, `${path}.${index}`, visit),
+    );
+    return;
+  }
+  if (!value || typeof value !== "object") {
+    return;
+  }
+  const record = value as Record<string, unknown>;
+  if (Array.isArray(record.references)) {
+    record.references
+      .filter((reference): reference is string => typeof reference === "string")
+      .forEach((reference) => visit(path, reference));
+  }
+  Object.entries(record)
+    .filter(([key]) => key !== "references")
+    .forEach(([key, item]) =>
+      walkConfigurationExpressions(item, path ? `${path}.${key}` : key, visit),
+    );
+}
+
+function referenceTarget(
+  reference: string,
+  addresses: Set<string>,
+): string | undefined {
+  const segments = reference.split(".");
+  for (let length = segments.length; length >= 2; length -= 1) {
+    const candidate = segments.slice(0, length).join(".");
+    if (addresses.has(candidate)) {
+      return candidate;
+    }
+  }
+  return undefined;
 }
 
 function walkValues(
@@ -173,6 +275,7 @@ function createNode(
   resource: PlanResource,
   action: ChangeAction,
   failures: Finding[],
+  changedAttributes: string[],
 ): ArchitectureNode {
   const values = resource.values ?? {};
   const publicExposure = isPublic(values);
@@ -193,7 +296,21 @@ function createNode(
     changeAction: action,
     risk,
     publicExposure,
+    changedAttributes,
   };
+}
+
+function changedAttributeNames(before: unknown, after: unknown): string[] {
+  if (!isRecord(before) || !isRecord(after)) {
+    return [];
+  }
+  return [...new Set([...Object.keys(before), ...Object.keys(after)])]
+    .filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
+    .sort();
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
 function isPublic(values: Record<string, unknown>): boolean {

@@ -161,6 +161,21 @@ function renderPolicyHtml(
   const regionOptions = AZURE_PUBLIC_REGIONS.map(
     (region) => `<option value="${region}"></option>`,
   ).join("");
+  const terraformVersionOptions = [
+    ">= 1.5.0, < 2.0.0",
+    ">= 1.6.0, < 2.0.0",
+    ">= 1.7.0, < 2.0.0",
+    ">= 1.8.0, < 2.0.0",
+    ">= 1.9.0, < 2.0.0",
+    ">= 1.10.0, < 2.0.0",
+    ">= 1.11.0, < 2.0.0",
+    ">= 1.12.0, < 2.0.0",
+    ">= 1.13.0, < 2.0.0",
+    ">= 1.14.0, < 2.0.0",
+    ">= 1.15.0, < 2.0.0",
+  ]
+    .map((version) => `<option value="${version}"></option>`)
+    .join("");
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -169,43 +184,69 @@ function renderPolicyHtml(
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Azure Pre-configuration</title>
   <style nonce="${nonce}">
-    body { color: var(--vscode-foreground); background: var(--vscode-editor-background); font: var(--vscode-font-size) var(--vscode-font-family); max-width: 820px; margin: 0 auto; padding: 32px; }
-    h1 { font-size: 26px; margin: 0 0 8px; }
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body { color: var(--vscode-foreground); background: var(--vscode-editor-background); font: var(--vscode-font-size) var(--vscode-font-family); max-width: 1180px; margin: 0 auto; padding: 28px; }
+    .hero { display: flex; gap: 18px; align-items: center; padding: 22px; border: 1px solid var(--vscode-widget-border); border-radius: 12px; background: radial-gradient(circle at top left, color-mix(in srgb, #1683ff 20%, transparent), transparent 38%), linear-gradient(135deg, color-mix(in srgb, var(--vscode-editorWidget-background) 94%, #1683ff), var(--vscode-editorWidget-background)); box-shadow: 0 14px 34px #0002; }
+    .hero-icon { display: grid; flex: 0 0 58px; width: 58px; height: 58px; place-items: center; border-radius: 16px; color: white; background: linear-gradient(145deg, #1683ff, #3154c9); box-shadow: 0 10px 24px #1683ff44; font-size: 28px; font-weight: 800; }
+    .hero-copy { min-width: 0; }
+    h1 { font-size: 27px; margin: 0 0 6px; letter-spacing: -.02em; }
     .intro, .hint { color: var(--vscode-descriptionForeground); line-height: 1.5; }
-    .status { border-left: 3px solid var(--vscode-testing-iconPassed); padding: 10px 12px; margin: 18px 0; background: var(--vscode-textBlockQuote-background); }
-    .card { margin-top: 24px; padding: 20px; background: var(--vscode-editorWidget-background); border: 1px solid var(--vscode-widget-border); }
-    h2 { font-size: 17px; margin: 0 0 6px; }
+    .intro { margin: 0; }
+    .status { border: 1px solid color-mix(in srgb, var(--vscode-testing-iconPassed) 42%, var(--vscode-widget-border)); border-left: 4px solid var(--vscode-testing-iconPassed); border-radius: 8px; padding: 11px 14px; margin: 18px 0 0; background: color-mix(in srgb, var(--vscode-testing-iconPassed) 9%, var(--vscode-editorWidget-background)); }
+    .policy-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+    .card { min-width: 0; padding: 20px; background: linear-gradient(145deg, color-mix(in srgb, var(--vscode-editorWidget-background) 96%, #1683ff), var(--vscode-editorWidget-background)); border: 1px solid var(--vscode-widget-border); border-radius: 10px; box-shadow: 0 8px 22px #00000012; }
+    .card.wide-card { grid-column: 1 / -1; }
+    .card-heading { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+    .card-icon { display: grid; flex: 0 0 34px; width: 34px; height: 34px; place-items: center; border-radius: 9px; color: #7bb7ff; background: color-mix(in srgb, #1683ff 15%, var(--vscode-editor-background)); box-shadow: inset 0 0 0 1px #1683ff55; font-weight: 800; }
+    h2 { font-size: 17px; margin: 0 0 4px; }
+    .card-heading .hint { margin: 0; }
     .columns, .tag-row { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.3fr) 76px; gap: 10px; align-items: center; }
     .exception-row { display: grid; grid-template-columns: 120px 1fr 145px 1fr 1.5fr 76px; gap: 8px; margin: 8px 0; align-items: center; }
     .cost-row, .cost-columns { display: grid; grid-template-columns: 90px repeat(4, minmax(110px, 1fr)); gap: 10px; align-items: center; }
     .columns { color: var(--vscode-descriptionForeground); font-size: 12px; font-weight: 600; margin-bottom: 8px; }
     .tag-row { margin: 8px 0; }
-    input { box-sizing: border-box; width: 100%; color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, transparent); padding: 9px; font: inherit; }
+    input { box-sizing: border-box; width: 100%; color: var(--vscode-input-foreground); background: color-mix(in srgb, var(--vscode-input-background) 92%, transparent); border: 1px solid var(--vscode-input-border, var(--vscode-widget-border)); border-radius: 5px; padding: 10px; font: inherit; }
     .wide { margin-top: 8px; }
     code { color: var(--vscode-textPreformat-foreground); }
-    input:focus { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
-    button { color: var(--vscode-button-foreground); background: var(--vscode-button-background); border: 0; padding: 9px 14px; cursor: pointer; font-weight: 600; }
+    input:focus { outline: 2px solid var(--vscode-focusBorder); outline-offset: -1px; }
+    button { color: var(--vscode-button-foreground); background: var(--vscode-button-background); border: 1px solid var(--vscode-button-border, transparent); border-radius: 5px; padding: 9px 14px; cursor: pointer; font-weight: 600; }
     button:hover { background: var(--vscode-button-hoverBackground); }
     .secondary { color: var(--vscode-button-secondaryForeground); background: var(--vscode-button-secondaryBackground); }
     .secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
-    .actions { display: flex; gap: 10px; margin-top: 18px; }
-    @media (max-width: 800px) { .columns { display: none; } .tag-row, .exception-row, .cost-row { grid-template-columns: 1fr; padding-bottom: 12px; border-bottom: 1px solid var(--vscode-widget-border); } }
+    .actions { display: flex; gap: 10px; margin-top: 16px; }
+    .save-bar { position: sticky; bottom: 0; display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-top: 18px; padding: 14px 16px; border: 1px solid var(--vscode-widget-border); border-radius: 10px; background: color-mix(in srgb, var(--vscode-editor-background) 93%, transparent); backdrop-filter: blur(12px); box-shadow: 0 -8px 24px #0003; }
+    .save-bar .hint { margin: 0; }
+    @media (max-width: 900px) { .policy-grid { grid-template-columns: 1fr; } .card.wide-card { grid-column: auto; } .columns { display: none; } .tag-row, .exception-row, .cost-row { grid-template-columns: 1fr; padding-bottom: 12px; border-bottom: 1px solid var(--vscode-widget-border); } }
+    @media (max-width: 580px) { body { padding: 16px; } .hero { align-items: flex-start; } .save-bar { position: static; align-items: stretch; flex-direction: column; } }
   </style>
 </head>
 <body>
-  <h1>Azure Pre-configuration</h1>
-  <p class="intro">Configure local Azure standards for this Terraform workspace. No Azure sign-in or tenant connection is used.</p>
+  <header class="hero">
+    <div class="hero-icon" aria-hidden="true">✓</div>
+    <div class="hero-copy">
+      <h1>Azure IaC Guardrail</h1>
+      <p class="intro">Pre-configure Terraform compatibility, Azure governance, cost assumptions, tags, and exceptions for this workspace.</p>
+    </div>
+  </header>
   ${status ? `<div class="status">${escapeHtml(status)}</div>` : ""}
+  <div class="policy-grid">
   <div class="card">
-    <h2>Approved Azure regions</h2>
+    <div class="card-heading"><span class="card-icon">TF</span><div><h2>Terraform compatibility</h2><p class="hint">Choose the version constraint used by generated Cloud Canvas Terraform.</p></div></div>
+    <label for="terraformVersion"><strong>Required Terraform version</strong></label>
+    <input id="terraformVersion" class="wide" type="text" list="terraformVersions" value="${escapeHtml(profile.terraformVersion)}" placeholder=">= 1.8.0, < 2.0.0" aria-describedby="terraformVersionHelp">
+    <datalist id="terraformVersions">${terraformVersionOptions}</datalist>
+    <p id="terraformVersionHelp" class="hint">Select a supported preset or enter a Terraform constraint. Existing repository <code>required_version</code> declarations remain unchanged.</p>
+  </div>
+  <div class="card">
+    <div class="card-heading"><span class="card-icon">RG</span><div><h2>Approved Azure regions</h2><p class="hint">Restrict resolved resources to approved Azure locations.</p></div></div>
     <label for="allowedRegions"><strong>Allowed ARM region names</strong></label>
     <input id="allowedRegions" class="wide" type="text" list="azureRegions" value="${escapeHtml(profile.allowedRegions.join(", "))}" placeholder="uksouth, ukwest" aria-describedby="regionHelp">
     <datalist id="azureRegions">${regionOptions}</datalist>
     <p id="regionHelp" class="hint">Enter comma-separated Microsoft programmatic region names, for example <code>uksouth, ukwest</code>. A resolved plan resource outside this list is non-compliant.</p>
   </div>
-  <div class="card">
-    <h2>Monthly cost assumptions</h2>
-    <p class="hint">Used when Terraform defines the service but cannot describe runtime usage. Adjust these values to match the workload.</p>
+  <div class="card wide-card">
+    <div class="card-heading"><span class="card-icon">$</span><div><h2>Monthly cost assumptions</h2><p class="hint">Used when Terraform defines the service but cannot describe runtime usage.</p></div></div>
     <div class="columns cost-columns"><span>Currency</span><span>Storage GB</span><span>Read operations</span><span>Write operations</span><span>Egress GB</span></div>
     <div class="cost-row">
       <input id="costCurrency" value="${escapeHtml(profile.costAssumptions.currency)}" maxlength="3" aria-label="Cost currency">
@@ -216,31 +257,30 @@ function renderPolicyHtml(
     </div>
     <p class="hint">Example SPA baseline: 1 GB stored, 100,000 reads, 10,000 writes, and 0 GB paid egress. The result page shows every assumption used.</p>
   </div>
-  <div class="card">
-    <h2>Required tags</h2>
-    <p class="hint">Each tag name is required. Enter a value when the scan must also validate an exact key/value pair.</p>
+  <div class="card wide-card">
+    <div class="card-heading"><span class="card-icon">#</span><div><h2>Required tags</h2><p class="hint">Require tag names and optionally enforce exact values.</p></div></div>
     <div class="columns"><span>Tag name</span><span>Required value (optional)</span><span></span></div>
     <div id="tagRows">${tagRows}</div>
     <div class="actions">
       <button id="add" class="secondary" type="button">Add Tag</button>
     </div>
   </div>
-  <div class="card">
-    <h2>Governed exceptions</h2>
-    <p class="hint">Temporary exceptions require accountability and automatically expire. Expired controls return to the scan.</p>
+  <div class="card wide-card">
+    <div class="card-heading"><span class="card-icon">EX</span><div><h2>Governed exceptions</h2><p class="hint">Temporary exceptions require ownership, justification, and expiry.</p></div></div>
     <div id="exceptionRows">${exceptionRows}</div>
     <div class="actions"><button id="addException" class="secondary" type="button">Add Governed Exception</button></div>
   </div>
-  <div class="card">
-    <h2>Skipped standard checks</h2>
+  <div class="card wide-card">
+    <div class="card-heading"><span class="card-icon">SK</span><div><h2>Skipped standard checks</h2><p class="hint">Exclude specific controls from local scans.</p></div></div>
     <label for="skippedControls"><strong>SKIP Scan for Control ID(s)</strong></label>
     <input id="skippedControls" class="wide" type="text" value="${escapeHtml(profile.skippedControlIds.join(", "))}" placeholder="AZ-AI-003, AZ-AI-004" aria-describedby="skipHelp">
     <p id="skipHelp" class="hint">Enter comma-separated control IDs. Matching controls are excluded from static and local plan scans.</p>
   </div>
-  <div class="actions">
+  </div>
+  <div class="save-bar">
+    <p class="hint">Saved to <code>.azure-iac-guardrail/profile.json</code>. Commit it to share workspace policy.</p>
     <button id="save" type="button">Save Azure Pre-configuration</button>
   </div>
-  <p class="hint">Saved locally to <code>.azure-iac-guardrail/profile.json</code>. Commit this file to share the same local scan policy with your team.</p>
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
     const rows = document.getElementById("tagRows");
@@ -274,6 +314,11 @@ function renderPolicyHtml(
       }
     });
     document.getElementById("save").addEventListener("click", () => {
+      const terraformVersion = document.getElementById("terraformVersion").value.trim();
+      if (!terraformVersion || terraformVersion.length > 80 || !/^[0-9<>=!~.,\\s]+$/.test(terraformVersion) || !/\\d+\\.\\d+(?:\\.\\d+)?/.test(terraformVersion)) {
+        window.alert('Enter a Terraform version constraint such as ">= 1.8.0, < 2.0.0".');
+        return;
+      }
       const requiredTags = [];
       const tagValues = {};
       for (const row of rows.querySelectorAll(".tag-row")) {
@@ -350,6 +395,7 @@ function renderPolicyHtml(
         type: "savePolicy",
         profile: {
           version: 1,
+          terraformVersion,
           allowedRegions: [...new Set(allowedRegions)],
           costAssumptions,
           requiredTags,

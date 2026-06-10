@@ -1,3 +1,0 @@
-# Start from the environment-specific examples under environments/.
-# Keep real subscription IDs, object IDs, network IDs, and certificate IDs in
-# approved variable stores or pipeline libraries rather than source control.

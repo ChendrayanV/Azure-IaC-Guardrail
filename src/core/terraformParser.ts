@@ -1,10 +1,17 @@
 import type { TerraformResource } from "../types";
+import {
+  evaluateStaticExpression,
+  type StaticResolutionContext,
+} from "./staticResolution";
 
 const resourcePattern =
   /^\s*resource\s+"([^"]+)"\s+"([^"]+)"\s*\{/;
 const attributePattern = /^(\s*)([A-Za-z0-9_-]+)\s*=\s*(.+?)\s*$/;
 
-export function parseTerraform(source: string): TerraformResource[] {
+export function parseTerraform(
+  source: string,
+  context?: StaticResolutionContext,
+): TerraformResource[] {
   const lines = source.split(/\r?\n/);
   const resources: TerraformResource[] = [];
   let current: TerraformResource | undefined;
@@ -34,11 +41,12 @@ export function parseTerraform(source: string): TerraformResource[] {
       const attributeMatch = line.match(attributePattern);
       if (attributeMatch) {
         const [, whitespace, name, rawValue] = attributeMatch;
-        const normalised = normaliseValue(rawValue);
+        const normalised = normaliseValue(rawValue, context);
         current.attributes.set(name, {
           name,
           value: normalised.value,
           resolved: normalised.resolved,
+          source: normalised.source,
           line: lineNumber,
           startCharacter: whitespace.length,
           endCharacter: line.length,
@@ -61,11 +69,21 @@ function braceDelta(line: string): number {
   return (code.match(/\{/g) ?? []).length - (code.match(/\}/g) ?? []).length;
 }
 
-function normaliseValue(value: string): {
-  value: string;
+function normaliseValue(
+  value: string,
+  context?: StaticResolutionContext,
+): {
+  value: unknown;
   resolved: boolean;
+  source?: string;
 } {
   const withoutComment = value.replace(/\s+(?:#|\/\/).*$/, "").trim();
+  if (context) {
+    const evaluated = evaluateStaticExpression(withoutComment, context);
+    if (evaluated.resolved) {
+      return evaluated;
+    }
+  }
   if (
     (withoutComment.startsWith('"') && withoutComment.endsWith('"')) ||
     (withoutComment.startsWith("'") && withoutComment.endsWith("'"))
