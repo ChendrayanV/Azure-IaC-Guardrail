@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "compute_fleet",
+  "displayName": "Azure Compute Fleet",
+  "shortName": "FLEET",
+  "category": "Compute",
+  "description": "COMPUTE CAPACITY AT SCALE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "compute/03487-icon-service-Compute-Fleet.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

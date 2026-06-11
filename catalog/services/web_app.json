@@ -1,0 +1,350 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "web_app",
+  "displayName": "Web App",
+  "shortName": "WEB",
+  "category": "Compute",
+  "description": "MANAGED WEB APPLICATION",
+  "color": "#e11d48",
+  "governanceStatus": "approved",
+  "icon": "other/02515-icon-service-Web-App-+-Database.svg",
+  "terraform": {
+    "resourceType": "azurerm_linux_web_app",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "service_plan_id",
+        "label": "Service Plan Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "site_config",
+        "label": "Site Config",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "https_only",
+        "label": "Https Only",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-WEB-001"
+        ],
+        "remediation": "Set https_only = true."
+      },
+      {
+        "key": "ftp_publish_basic_authentication_enabled",
+        "label": "Ftp Publish Basic Authentication Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-WEB-002"
+        ],
+        "remediation": "Set ftp_publish_basic_authentication_enabled = false."
+      },
+      {
+        "key": "webdeploy_publish_basic_authentication_enabled",
+        "label": "Webdeploy Publish Basic Authentication Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-WEB-003"
+        ],
+        "remediation": "Set webdeploy_publish_basic_authentication_enabled = false."
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-WEB-004"
+        ],
+        "remediation": "Configure private ingress and set public_network_access_enabled = false."
+      },
+      {
+        "key": "site_config.always_on",
+        "label": "Site Config.always On",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-WEB-005"
+        ],
+        "remediation": "Set site_config.always_on = true on a supported App Service plan."
+      },
+      {
+        "key": "site_config.remote_debugging_enabled",
+        "label": "Site Config.remote Debugging Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-WEB-006"
+        ],
+        "remediation": "Set site_config.remote_debugging_enabled = false."
+      },
+      {
+        "key": "site_config.minimum_tls_version",
+        "label": "Site Config.minimum Tls Version",
+        "type": "json",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": [
+          "1.2",
+          "1.3"
+        ],
+        "controlIds": [
+          "AZ-WEB-007"
+        ],
+        "remediation": "Set site_config.minimum_tls_version to \"1.2\" or \"1.3\"."
+      },
+      {
+        "key": "virtual_network_subnet_id",
+        "label": "Virtual Network Subnet Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-WEB-008"
+        ],
+        "remediation": "Set virtual_network_subnet_id to an App Service delegated subnet."
+      },
+      {
+        "key": "identity.type",
+        "label": "Identity.type",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-WEB-009"
+        ],
+        "remediation": "Configure a SystemAssigned or UserAssigned identity block."
+      },
+      {
+        "key": "id",
+        "label": "Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-WEB-010"
+        ],
+        "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the web app and send logs to Log Analytics."
+      },
+      {
+        "key": "httpsOnly",
+        "label": "HTTPS only",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "publicNetworkAccess",
+        "label": "Public network access",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-WEB-001",
+      "title": "Web apps must require HTTPS",
+      "description": "App Service applications must redirect and restrict traffic to HTTPS.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "https_only",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set https_only = true.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-WEB-002",
+      "title": "Web apps must disable FTP basic authentication",
+      "description": "App Service FTP publishing must not use basic credentials.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "ftp_publish_basic_authentication_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set ftp_publish_basic_authentication_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-WEB-003",
+      "title": "Web apps must disable Web Deploy basic authentication",
+      "description": "App Service Web Deploy publishing must not use basic credentials.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "webdeploy_publish_basic_authentication_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set webdeploy_publish_basic_authentication_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-WEB-004",
+      "title": "Web apps should disable public network access",
+      "description": "Production web apps should use private endpoints or an approved private ingress architecture.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure private ingress and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-WEB-005",
+      "title": "Web apps must enable Always On",
+      "description": "Production web apps must remain loaded to support reliable request and background processing.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "site_config.always_on",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set site_config.always_on = true on a supported App Service plan.",
+      "reference": "https://learn.microsoft.com/azure/app-service/configure-common",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-always-on-enabled/"
+    },
+    {
+      "id": "AZ-WEB-006",
+      "title": "Web apps must disable remote debugging",
+      "description": "Remote debugging opens additional attack paths and must be disabled in production.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "site_config.remote_debugging_enabled",
+      "operator": "equals",
+      "expected": false,
+      "planOnly": true,
+      "remediation": "Set site_config.remote_debugging_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-dotnet-visual-studio",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-remote-debugging-disabled/"
+    },
+    {
+      "id": "AZ-WEB-007",
+      "title": "Web apps must require TLS 1.2 or 1.3",
+      "description": "App Service must reject legacy TLS protocol versions.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "site_config.minimum_tls_version",
+      "operator": "oneOf",
+      "expected": [
+        "1.2",
+        "1.3"
+      ],
+      "planOnly": true,
+      "remediation": "Set site_config.minimum_tls_version to \"1.2\" or \"1.3\".",
+      "reference": "https://learn.microsoft.com/azure/app-service/tls-minimum-version",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/azu-0006/"
+    },
+    {
+      "id": "AZ-WEB-008",
+      "title": "Web apps must integrate with a virtual network",
+      "description": "Regional VNet integration provides controlled outbound access to private resources.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "virtual_network_subnet_id",
+      "operator": "exists",
+      "remediation": "Set virtual_network_subnet_id to an App Service delegated subnet.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-vnet-integration",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-vnet-integrated/"
+    },
+    {
+      "id": "AZ-WEB-009",
+      "title": "Web apps must use a managed identity",
+      "description": "Managed identity removes application credentials and supports Microsoft Entra authentication to dependencies.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "identity.type",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure a SystemAssigned or UserAssigned identity block.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-managed-identity",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/account-identity-registered/"
+    },
+    {
+      "id": "AZ-WEB-010",
+      "title": "Web apps should send diagnostics to Log Analytics",
+      "description": "Centralized App Service diagnostic logs support security monitoring and incident response.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_web_app",
+        "azurerm_windows_web_app"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_monitor_diagnostic_setting",
+      "relatedMatchAttribute": "target_resource_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the web app and send logs to Log Analytics.",
+      "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
+    }
+  ]
+}

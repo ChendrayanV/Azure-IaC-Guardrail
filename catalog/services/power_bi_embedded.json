@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "power_bi_embedded",
+  "displayName": "Power BI Embedded",
+  "shortName": "PBI",
+  "category": "Analytics",
+  "description": "EMBEDDED ANALYTICS",
+  "color": "#eab308",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/03332-icon-service-Power-BI-Embedded.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

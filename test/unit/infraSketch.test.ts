@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   generateTerraformFromSketch,
@@ -5,7 +7,7 @@ import {
   SKETCH_SERVICES,
   type InfraSketch,
 } from "../../src/core/infraSketch";
-import serviceStatus from "../../src/data/cloudCanvasServiceStatus.json";
+import completeCatalog from "../../azure-complete-catalog-vscode.json";
 
 describe("infrastructure sketch", () => {
   it("includes the broad Microsoft Azure product catalog", () => {
@@ -31,6 +33,79 @@ describe("infrastructure sketch", () => {
         "cloud_hsm",
         "managed_lustre",
         "static_web_apps",
+      ]),
+    );
+  });
+
+  it("maps every canvas item to a packaged SVG icon", () => {
+    const serviceIds = SKETCH_SERVICES.map((service) => service.type).sort();
+
+    expect(Object.keys(completeCatalog.services).sort()).toEqual(serviceIds);
+    for (const service of Object.values(completeCatalog.services)) {
+      expect(
+        fs.existsSync(
+          path.join(
+            process.cwd(),
+            "media",
+            "cloud-canvas",
+            "Azure_Public_Service_Icons",
+            "Icons",
+            service.icon,
+          ),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it("maps every canvas item to customizable parameters and controls", () => {
+    const mappedServices = completeCatalog.services as Record<
+      string,
+      {
+        icon: string;
+        terraform: {
+          resourceType: string | null;
+          parameters: unknown[];
+        };
+        controls: unknown[];
+      }
+    >;
+    const serviceIds = SKETCH_SERVICES.map((service) => service.type).sort();
+
+    expect(Object.keys(mappedServices).sort()).toEqual(serviceIds);
+    expect(
+      Object.values(mappedServices).filter(
+        (service) => service.terraform.resourceType,
+      ).length,
+    ).toBeGreaterThanOrEqual(40);
+    expect(
+      Object.values(mappedServices).flatMap((service) => service.controls)
+        .length,
+    ).toBeGreaterThanOrEqual(100);
+  });
+
+  it("includes generic IT architecture actors and components", () => {
+    const genericServices = SKETCH_SERVICES.filter(
+      (service) => service.category === "Generic Architecture",
+    );
+
+    expect(genericServices.map((service) => service.type)).toEqual(
+      expect.arrayContaining([
+        "generic_user",
+        "generic_users",
+        "generic_developer",
+        "generic_architect",
+        "generic_device",
+        "generic_browser",
+        "generic_internet",
+        "generic_application",
+        "generic_api",
+        "generic_server",
+        "generic_database",
+        "generic_network",
+        "generic_firewall",
+        "generic_queue",
+        "generic_repository",
+        "generic_external_system",
       ]),
     );
   });
@@ -377,17 +452,43 @@ describe("infrastructure sketch", () => {
     expect(terraform).toContain("message_retention = 3");
   });
 
+  it("generates a mapped prototype for a catalog-backed service", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "apim",
+          serviceType: "api_management",
+          name: "apim-prototype",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+          parameters: {
+            publisher_name: "Platform Engineering",
+            publisher_email: "platform@example.com",
+            sku_name: "Developer_1",
+          },
+        },
+      ],
+      connections: [],
+    });
+
+    expect(terraform).toContain(
+      'resource "azurerm_api_management" "apim_prototype"',
+    );
+    expect(terraform).toContain(
+      'publisher_name = "Platform Engineering"',
+    );
+    expect(terraform).toContain(
+      'publisher_email = "platform@example.com"',
+    );
+    expect(terraform).toContain('sku_name = "Developer_1"');
+  });
+
   it("keeps governed canvas statuses unique and linked to known services", () => {
     const knownServices = new Set(SKETCH_SERVICES.map((service) => service.type));
-    const registeredServices = [
-      ...serviceStatus.approved,
-      ...serviceStatus.underReview,
-    ];
-    const uniqueRegisteredServices = new Set(registeredServices);
-
-    expect(uniqueRegisteredServices.size).toBe(registeredServices.length);
     expect(
-      [...uniqueRegisteredServices].every((service) =>
+      Object.keys(completeCatalog.services).every((service) =>
         knownServices.has(service),
       ),
     ).toBe(true);

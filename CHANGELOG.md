@@ -14,6 +14,31 @@ their general-availability milestone.
 - VSIX artifact checksums and generated GitHub release notes.
 - Variable-aware offline scanning for defaults, automatic and selected tfvars,
   locals, primitive collections, interpolation, and simple conditionals.
+- Module-aware static scanning for nested local modules and initialized
+  registry or Git modules, including input propagation, workspace-wide
+  relationship checks, unresolved-module diagnostics, and a backend-disabled
+  initialize-and-rescan action.
+- Resource-aware Terraform completion suggestions and explicit plan-required
+  reporting for module `count` and `for_each` expansion.
+- Source-aware editor diagnostics now mark the originating `.tfvars`
+  assignment, link back to the affected resource, provide plain-language
+  hover guidance, and offer safe one-click scalar replacements.
+- Nested Terraform blocks such as App Service `site_config` and `identity` are
+  evaluated statically when values are visible. Plan-only diagnostic lists are
+  collapsed into one informational summary per resource.
+- IntelliSense suggestions are filtered to the current resource and nested
+  block, with human-readable labels and recommended values.
+- Added a pinned downloaded registry-module fixture using
+  `Azure/vnet/azurerm` 5.0.1, plus a complete local static-scan scenario matrix
+  covering local, cached remote, missing, dynamic, repeated, variable-driven,
+  nested-block, cross-resource, and plan-required cases.
+- Added an intentionally misconfigured IntelliSense UX fixture demonstrating
+  exact `.tfvars` diagnostics, nested App Service findings, resource-aware
+  completions, plain-language hover guidance, and preferred one-click fixes.
+- Azure Pre-configuration now includes a Terraform root folder picker,
+  workspace-relative path entry, live path preview, and workspace-root reset.
+  The persisted `terraformRoot` drives static scans, cached-module indexing,
+  initialization, variable-file selection, and local plan generation.
 - Terraform diagnostics, hover explanations, governed completions, and quick
   actions in VS Code.
 - Interactive plan architecture canvas with dependency, change, risk,
@@ -30,9 +55,17 @@ their general-availability milestone.
   action. The separate Save Sketch control was removed.
 - Cloud Canvas now uses the locally bundled Montserrat typeface and reliably
   clears all services and connections while keeping the action undoable.
-- Cloud Canvas service coverage expanded to 218 searchable Azure products and
+- Cloud Canvas service coverage expanded to 237 searchable Azure products and
   architecture primitives, including current Foundry, data, compute,
   container, migration, networking, security, storage, and web offerings.
+- Cloud Canvas now renders mapped Microsoft Azure Public Service Icons V23
+  SVGs and includes a Generic Architecture category for actors, clients,
+  applications, infrastructure, networking, security, and integration
+  components.
+- Replaced split mapping and control sources with contributor-friendly
+  `catalog/services/<service-id>.json` files. One generated complete catalog
+  now powers scanning, remediation, Canvas parameters, icons, and Terraform
+  prototypes.
 - Redesigned Azure Pre-configuration dashboard with a persisted Terraform
   version constraint for generated Cloud Canvas Terraform.
 - Redesigned plan architecture canvas with configuration-reference

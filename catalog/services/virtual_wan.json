@@ -1,0 +1,22 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "virtual_wan",
+  "displayName": "Azure Virtual WAN",
+  "shortName": "VWAN",
+  "category": "Networking",
+  "description": "GLOBAL TRANSIT NETWORK",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "networking/00860-icon-service-Virtual-WAN-Hub.svg",
+  "terraform": {
+    "resourceType": "azurerm_virtual_wan",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": []
+  },
+  "controls": []
+}

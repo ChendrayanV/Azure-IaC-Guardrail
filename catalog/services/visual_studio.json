@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "visual_studio",
+  "displayName": "Visual Studio",
+  "shortName": "VS",
+  "category": "Developer Tools",
+  "description": "APPLICATION DEVELOPMENT IDE",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/01239-icon-service-Azure-Experimentation-Studio.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

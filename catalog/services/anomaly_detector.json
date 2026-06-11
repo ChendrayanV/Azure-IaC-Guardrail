@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "anomaly_detector",
+  "displayName": "AI Anomaly Detector",
+  "shortName": "ANOM",
+  "category": "AI + Machine Learning",
+  "description": "ANOMALY DETECTION",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00814-icon-service-Anomaly-Detector.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

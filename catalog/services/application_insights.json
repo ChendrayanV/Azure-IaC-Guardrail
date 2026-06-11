@@ -1,0 +1,33 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "application_insights",
+  "displayName": "Application Insights",
+  "shortName": "AI",
+  "category": "DevOps",
+  "description": "APPLICATION MONITORING",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "devops/00012-icon-service-Application-Insights.svg",
+  "terraform": {
+    "resourceType": "azurerm_application_insights",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "application_type",
+        "label": "Application Type",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

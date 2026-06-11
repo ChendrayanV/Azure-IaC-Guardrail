@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_api",
+  "displayName": "API",
+  "shortName": "API",
+  "category": "Generic Architecture",
+  "description": "APPLICATION PROGRAMMING INTERFACE",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "devops/10042-icon-service-API-Management-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

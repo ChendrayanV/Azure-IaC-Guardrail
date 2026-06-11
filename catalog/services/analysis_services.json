@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "analysis_services",
+  "displayName": "Analysis Services",
+  "shortName": "AS",
+  "category": "Analytics",
+  "description": "ENTERPRISE SEMANTIC MODELS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/10148-icon-service-Analysis-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

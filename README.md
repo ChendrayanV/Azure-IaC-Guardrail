@@ -138,7 +138,12 @@ authoring, see the [End-user guide](USER_GUIDE.md).
   service-specific parameter editing, and reviewable Terraform generation.
   Start from a blank canvas or choose an AKS shared-cluster, three-tier Web
   App, Event Hubs, Event Grid, or Service Bus pattern. Its searchable catalog
-  includes more than 200 Azure products and architecture primitives.
+  includes more than 200 Azure products and architecture primitives, rendered
+  with Microsoft Azure public-service SVG icons where available. A Generic
+  Architecture category adds users, developers, architects, devices,
+  applications, servers, databases, networks, and other diagram elements.
+  Contributors customize one file per service under `catalog/services`. The
+  generated `azure-complete-catalog-vscode.json` drives scanning and Canvas.
 - **Preview Safe Fix** displays reviewable before/after Terraform snippets and
   never edits files silently.
 - **Export Evidence Pack** writes `compliance-report.pdf`, `evidence.json`, and
@@ -194,14 +199,25 @@ The extension supports two complementary scan modes:
 
 - **Scan Terraform Files** evaluates supported top-level attributes and resolves
   variable defaults, automatic and selected tfvars, locals, primitive
-  collections, interpolation, and simple boolean conditionals. It remains
-  offline.
+  collections, interpolation, simple boolean conditionals, local modules, and
+  previously initialized registry or Git modules. It remains offline.
+- **Initialize Modules and Scan Terraform Files** runs
+  `terraform init -backend=false`, indexes downloaded module source, and then
+  performs the static scan. It does not create a plan or initialize a remote
+  backend.
 - **Scan Existing Terraform Plan** accepts a binary `.tfplan` or JSON produced
   by `terraform show -json`. It checks resolved values, including variables,
   locals, modules, conditionals, and `for_each` instances.
 - **Create and Scan Local Terraform Plan** runs `terraform plan` in the selected
   workspace and then scans its resolved JSON. Choose automatic variable loading
   (`terraform.tfvars` and `*.auto.tfvars`) or select a specific `.tfvars` file.
+
+Use **Azure IaC Guardrail: Azure Pre-configuration** to choose the Terraform
+root used by all three workflows. Select the folder visually or enter a
+workspace-relative path such as `.`, `infra`, or
+`test/fixtures/three-tier-webapp`. The path is saved as `terraformRoot` in
+`.azure-iac-guardrail/profile.json`. Static scans, module initialization,
+variable-file selection, and local plans then use that same root.
 
 Press `Ctrl+Shift+P` and run:
 
@@ -263,7 +279,8 @@ The `azure-infrastructure-standards/` directory is the versioned source of
 truth for bundled controls:
 
 - `schema/control.schema.json` defines the catalog contract.
-- `controls/*.json` groups controls by Azure service domain.
+- `catalog/services/*.json` owns each service's Canvas, Terraform, control,
+  remediation, and icon metadata.
 - `VERSION` identifies the immutable standards release.
 - `CHANGELOG.md` records control additions and behavioral changes.
 - `tests/` documents standards-specific validation.
@@ -303,8 +320,16 @@ workspace control folders, remain supported for upgrades from earlier builds.
 Terraform files receive Azure IaC Guardrail diagnostics in the VS Code Problems
 panel after a scan or save. Hover a finding to inspect observed and expected
 values, remediation, and tfvars provenance. Quick fixes can rescan, select
-static variable files, or create a resolved Terraform plan. Completion items
-offer governed attribute/value pairs from the loaded control catalog.
+static variable files, initialize unresolved modules, or create a resolved
+Terraform plan. Completion items are filtered to the enclosing Azure resource
+type and offer governed attribute/value pairs from the loaded control catalog.
+
+When a resource value resolves from a selected `.tfvars` file, the same
+diagnostic appears on the exact variable assignment with a link back to the
+affected resource. Safe scalar corrections offer a preferred **Change value
+to...** action. Nested blocks such as `site_config` receive their own relevant
+suggestions, and multiple unresolved plan-only checks are summarized rather
+than listed separately on the resource declaration.
 
 Run **Azure IaC Guardrail: Select Static Scan Variable Files** to select
 environment files. Paths are stored in
@@ -315,6 +340,23 @@ variable files in selection order.
 
 The source parser handles Terraform `resource` blocks, simple top-level
 attributes, variable defaults, tfvars, locals, primitive collections,
-interpolation, and simple boolean conditionals. Provider functions, data
-sources, remote state, module outputs, dynamic blocks, complex comprehensions,
-and provider-computed values remain **Plan required**.
+interpolation, simple boolean conditionals, nested local modules, and
+initialized registry or Git modules. Resolvable module inputs are propagated
+to each module instance, and related-resource controls evaluate across the
+complete static workspace.
+
+An uninitialized remote module produces an explicit module-source finding with
+an **Initialize modules and rescan** quick fix. Modules using `count` or
+`for_each` are scanned once from source, but exact instances remain **Plan
+required**. Provider functions, data sources, remote state, module outputs,
+dynamic blocks, complex comprehensions, and provider-computed values also
+remain **Plan required**.
+
+See [Terraform Local Static Scan Scenarios](docs/wiki/Local-Static-Scan-Scenarios.md)
+for the complete behavior matrix and the working
+`test/fixtures/remote-module-static-scan` registry-module example.
+
+For a visual editor walkthrough, open
+`test/fixtures/intellisense-ux-demo`. It demonstrates exact `.tfvars`
+diagnostics, nested-block suggestions, plain-language hover help, and
+preferred one-click fixes.

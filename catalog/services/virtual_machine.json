@@ -1,0 +1,181 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "virtual_machine",
+  "displayName": "Virtual Machine",
+  "shortName": "VM",
+  "category": "Compute",
+  "description": "ON-DEMAND VIRTUAL MACHINES",
+  "color": "#2563eb",
+  "governanceStatus": "under-review",
+  "icon": "compute/10021-icon-service-Virtual-Machine.svg",
+  "terraform": {
+    "resourceType": "azurerm_linux_virtual_machine",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": [
+      {
+        "key": "disable_password_authentication",
+        "label": "Disable Password Authentication",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-VM-001"
+        ],
+        "remediation": "Set disable_password_authentication = true and configure admin_ssh_key."
+      },
+      {
+        "key": "encryption_at_host_enabled",
+        "label": "Encryption At Host Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-VM-002"
+        ],
+        "remediation": "Set encryption_at_host_enabled = true on supported VM sizes."
+      },
+      {
+        "key": "secure_boot_enabled",
+        "label": "Secure Boot Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-VM-003"
+        ],
+        "remediation": "Use a Trusted Launch compatible image and set secure_boot_enabled = true."
+      },
+      {
+        "key": "vtpm_enabled",
+        "label": "Vtpm Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-VM-004"
+        ],
+        "remediation": "Use a Trusted Launch compatible image and set vtpm_enabled = true."
+      },
+      {
+        "key": "patch_mode",
+        "label": "Patch Mode",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "AutomaticByPlatform",
+        "controlIds": [
+          "AZ-VM-007"
+        ],
+        "remediation": "Set patch_mode = \"AutomaticByPlatform\"."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-VM-001",
+      "title": "Linux VMs must disable password authentication",
+      "description": "Linux virtual machines must use SSH keys instead of password authentication.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_virtual_machine"
+      ],
+      "attribute": "disable_password_authentication",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set disable_password_authentication = true and configure admin_ssh_key.",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-002",
+      "title": "Virtual machines should enable encryption at host",
+      "description": "Temporary disks, caches, and data flows between compute and storage should be encrypted at the host.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_virtual_machine",
+        "azurerm_windows_virtual_machine"
+      ],
+      "attribute": "encryption_at_host_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set encryption_at_host_enabled = true on supported VM sizes.",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-003",
+      "title": "Virtual machines must enable Secure Boot",
+      "description": "Generation 2 virtual machines must use Trusted Launch Secure Boot.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_virtual_machine",
+        "azurerm_windows_virtual_machine"
+      ],
+      "attribute": "secure_boot_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Use a Trusted Launch compatible image and set secure_boot_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-004",
+      "title": "Virtual machines must enable virtual TPM",
+      "description": "Generation 2 virtual machines must use a virtual Trusted Platform Module.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_virtual_machine",
+        "azurerm_windows_virtual_machine"
+      ],
+      "attribute": "vtpm_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Use a Trusted Launch compatible image and set vtpm_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-005",
+      "title": "Windows VMs must enable automatic updates",
+      "description": "Windows virtual machines must receive operating-system security updates.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_windows_virtual_machine"
+      ],
+      "attribute": "automatic_updates_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set automatic_updates_enabled = true and use an approved patch mode.",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-006",
+      "title": "Windows VMs should use platform-managed patching",
+      "description": "Azure platform-managed patch orchestration should maintain Windows security updates.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_windows_virtual_machine"
+      ],
+      "attribute": "patch_mode",
+      "operator": "equals",
+      "expected": "AutomaticByPlatform",
+      "remediation": "Set patch_mode = \"AutomaticByPlatform\".",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    },
+    {
+      "id": "AZ-VM-007",
+      "title": "Linux VMs should use platform-managed patching",
+      "description": "Azure platform-managed patch orchestration should maintain Linux security updates.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_virtual_machine"
+      ],
+      "attribute": "patch_mode",
+      "operator": "equals",
+      "expected": "AutomaticByPlatform",
+      "remediation": "Set patch_mode = \"AutomaticByPlatform\".",
+      "reference": "https://learn.microsoft.com/azure/virtual-machines/security-recommendations"
+    }
+  ]
+}

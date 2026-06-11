@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "chaos_studio",
+  "displayName": "Azure Chaos Studio",
+  "shortName": "CHAOS",
+  "category": "Analytics",
+  "description": "RESILIENCE FAULT INJECTION",
+  "color": "#e11d48",
+  "governanceStatus": "not-approved",
+  "icon": "other/02223-icon-service-Azure-Chaos-Studio.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

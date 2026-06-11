@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "data_box",
+  "displayName": "Azure Data Box",
+  "shortName": "BOX",
+  "category": "Storage",
+  "description": "OFFLINE DATA TRANSFER",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "migrate/10094-icon-service-Data-Box.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

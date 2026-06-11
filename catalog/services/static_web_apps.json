@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "static_web_apps",
+  "displayName": "Static Web Apps",
+  "shortName": "SWA",
+  "category": "Web",
+  "description": "STATIC FULL STACK WEB APPS",
+  "color": "#e11d48",
+  "governanceStatus": "not-approved",
+  "icon": "web/01007-icon-service-Static-Apps.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

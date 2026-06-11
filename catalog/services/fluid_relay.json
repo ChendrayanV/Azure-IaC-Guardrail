@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "fluid_relay",
+  "displayName": "Azure Fluid Relay",
+  "shortName": "FLUID",
+  "category": "Web",
+  "description": "REAL TIME COLLABORATION",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/03423-icon-service-Defender-Relay.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

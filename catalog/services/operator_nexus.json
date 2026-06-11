@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "operator_nexus",
+  "displayName": "Azure Operator Nexus",
+  "shortName": "NEX",
+  "category": "Hybrid + Multicloud",
+  "description": "CARRIER-GRADE HYBRID PLATFORM",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "hybrid + multicloud/03324-icon-service-Azure-Operator-Nexus.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

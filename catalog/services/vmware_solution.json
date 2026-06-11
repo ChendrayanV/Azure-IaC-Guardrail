@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "vmware_solution",
+  "displayName": "Azure VMware Solution",
+  "shortName": "AVS",
+  "category": "Compute",
+  "description": "VMWARE VSPHERE CLUSTERS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/01219-icon-service-Azure-VMware-Solution.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

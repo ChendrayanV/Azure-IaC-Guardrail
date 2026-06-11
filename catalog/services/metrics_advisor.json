@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "metrics_advisor",
+  "displayName": "Azure AI Metrics Advisor",
+  "shortName": "MET",
+  "category": "AI + Machine Learning",
+  "description": "METRIC ANOMALY MONITORING",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/02409-icon-service-Metrics-Advisor.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

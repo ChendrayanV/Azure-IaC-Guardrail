@@ -3,10 +3,10 @@ import {
   defaultWorkspacePolicy,
   loadWorkspacePolicy,
   normalizeWorkspacePolicy,
-  WORKSPACE_POLICY_PATH,
   type WorkspacePolicyProfile,
 } from "../controls/workspacePolicy";
 import { AZURE_PUBLIC_REGIONS } from "../controls/azureRegions";
+import { resolveConfiguredTerraformRoot } from "../terraform/terraformRoot";
 
 export class WorkspacePolicyPanel implements vscode.Disposable {
   private panel: vscode.WebviewPanel | undefined;
@@ -53,12 +53,40 @@ export class WorkspacePolicyPanel implements vscode.Disposable {
   }
 
   private async handleMessage(message: unknown): Promise<void> {
-    if (!isSavePolicyMessage(message) || !this.workspaceFolder) {
+    if (!this.workspaceFolder) {
+      return;
+    }
+    if (isSelectTerraformRootMessage(message)) {
+      await this.selectTerraformRoot();
+      return;
+    }
+    if (!isSavePolicyMessage(message)) {
       return;
     }
     try {
       const panel = this.panel;
       const profile = normalizeWorkspacePolicy(message.profile);
+      const terraformRoot = vscode.Uri.file(
+        resolveConfiguredTerraformRoot(
+          this.workspaceFolder.uri.fsPath,
+          profile.terraformRoot,
+        ),
+      );
+      const rootStat = await vscode.workspace.fs.stat(terraformRoot);
+      if (!(rootStat.type & vscode.FileType.Directory)) {
+        throw new Error("The selected Terraform root is not a folder.");
+      }
+      const entries = await vscode.workspace.fs.readDirectory(terraformRoot);
+      if (
+        !entries.some(
+          ([name, type]) =>
+            type === vscode.FileType.File && name.endsWith(".tf"),
+        )
+      ) {
+        throw new Error(
+          "The selected Terraform root does not contain any .tf files.",
+        );
+      }
       const policyDirectory = vscode.Uri.joinPath(
         this.workspaceFolder.uri,
         ".azure-iac-guardrail",
@@ -75,7 +103,7 @@ export class WorkspacePolicyPanel implements vscode.Disposable {
         ),
       );
       void vscode.window.showInformationMessage(
-        `Azure IaC Guardrail policy saved to ${WORKSPACE_POLICY_PATH}.`,
+        `Azure IaC Guardrail policy saved. Terraform root: ${profile.terraformRoot}.`,
       );
       if (panel) {
         panel.webview.html = renderPolicyHtml(
@@ -92,11 +120,49 @@ export class WorkspacePolicyPanel implements vscode.Disposable {
       );
     }
   }
+
+  private async selectTerraformRoot(): Promise<void> {
+    if (!this.workspaceFolder || !this.panel) {
+      return;
+    }
+    const selected = await vscode.window.showOpenDialog({
+      canSelectFiles: false,
+      canSelectFolders: true,
+      canSelectMany: false,
+      defaultUri: this.workspaceFolder.uri,
+      openLabel: "Use Terraform Root",
+      title: "Select the Terraform root folder",
+    });
+    const selectedUri = selected?.[0];
+    if (!selectedUri) {
+      return;
+    }
+    const relative = vscode.workspace.asRelativePath(selectedUri, false)
+      .replaceAll("\\", "/");
+    if (
+      relative.startsWith("../") ||
+      relative === ".." ||
+      relative.includes(":")
+    ) {
+      void vscode.window.showErrorMessage(
+        "Select a Terraform root inside the current workspace.",
+      );
+      return;
+    }
+    this.panel.webview.postMessage({
+      type: "terraformRootSelected",
+      terraformRoot: relative || ".",
+    });
+  }
 }
 
 interface SavePolicyMessage {
   type: "savePolicy";
   profile: unknown;
+}
+
+interface SelectTerraformRootMessage {
+  type: "selectTerraformRoot";
 }
 
 function isSavePolicyMessage(
@@ -106,6 +172,17 @@ function isSavePolicyMessage(
     !!message &&
     typeof message === "object" &&
     (message as Partial<SavePolicyMessage>).type === "savePolicy"
+  );
+}
+
+function isSelectTerraformRootMessage(
+  message: unknown,
+): message is SelectTerraformRootMessage {
+  return (
+    !!message &&
+    typeof message === "object" &&
+    (message as Partial<SelectTerraformRootMessage>).type ===
+      "selectTerraformRoot"
   );
 }
 
@@ -215,10 +292,13 @@ function renderPolicyHtml(
     .secondary { color: var(--vscode-button-secondaryForeground); background: var(--vscode-button-secondaryBackground); }
     .secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
     .actions { display: flex; gap: 10px; margin-top: 16px; }
+    .path-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; margin-top: 8px; }
+    .path-preview { display: flex; gap: 8px; align-items: center; padding: 9px 11px; border: 1px solid var(--vscode-widget-border); border-radius: 6px; background: color-mix(in srgb, var(--vscode-editor-background) 78%, transparent); }
+    .path-preview strong { flex: 0 0 auto; }
     .save-bar { position: sticky; bottom: 0; display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-top: 18px; padding: 14px 16px; border: 1px solid var(--vscode-widget-border); border-radius: 10px; background: color-mix(in srgb, var(--vscode-editor-background) 93%, transparent); backdrop-filter: blur(12px); box-shadow: 0 -8px 24px #0003; }
     .save-bar .hint { margin: 0; }
     @media (max-width: 900px) { .policy-grid { grid-template-columns: 1fr; } .card.wide-card { grid-column: auto; } .columns { display: none; } .tag-row, .exception-row, .cost-row { grid-template-columns: 1fr; padding-bottom: 12px; border-bottom: 1px solid var(--vscode-widget-border); } }
-    @media (max-width: 580px) { body { padding: 16px; } .hero { align-items: flex-start; } .save-bar { position: static; align-items: stretch; flex-direction: column; } }
+    @media (max-width: 580px) { body { padding: 16px; } .hero { align-items: flex-start; } .save-bar { position: static; align-items: stretch; flex-direction: column; } .path-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -226,11 +306,22 @@ function renderPolicyHtml(
     <div class="hero-icon" aria-hidden="true">✓</div>
     <div class="hero-copy">
       <h1>Azure IaC Guardrail</h1>
-      <p class="intro">Pre-configure Terraform compatibility, Azure governance, cost assumptions, tags, and exceptions for this workspace.</p>
+      <p class="intro">Choose the Terraform root, compatibility, Azure governance, cost assumptions, tags, and exceptions for this workspace.</p>
     </div>
   </header>
   ${status ? `<div class="status">${escapeHtml(status)}</div>` : ""}
   <div class="policy-grid">
+  <div class="card wide-card">
+    <div class="card-heading"><span class="card-icon">RT</span><div><h2>Terraform workspace root</h2><p class="hint">Select the folder containing the root module that Guardrail should scan, initialize, and plan.</p></div></div>
+    <label for="terraformRoot"><strong>Workspace-relative folder</strong></label>
+    <div class="path-row">
+      <input id="terraformRoot" type="text" value="${escapeHtml(profile.terraformRoot)}" placeholder="." aria-describedby="terraformRootHelp">
+      <button id="browseTerraformRoot" class="secondary" type="button">Choose Folder</button>
+      <button id="resetTerraformRoot" class="secondary" type="button">Use Workspace Root</button>
+    </div>
+    <p id="terraformRootHelp" class="hint">Use <code>.</code> for the workspace root or a relative path such as <code>infra</code> or <code>test/fixtures/three-tier-webapp</code>. Paths outside the workspace are rejected.</p>
+    <div class="path-preview"><strong>Guardrail will use</strong><code id="terraformRootPreview">${escapeHtml(profile.terraformRoot)}</code></div>
+  </div>
   <div class="card">
     <div class="card-heading"><span class="card-icon">TF</span><div><h2>Terraform compatibility</h2><p class="hint">Choose the version constraint used by generated Cloud Canvas Terraform.</p></div></div>
     <label for="terraformVersion"><strong>Required Terraform version</strong></label>
@@ -285,6 +376,25 @@ function renderPolicyHtml(
     const vscode = acquireVsCodeApi();
     const rows = document.getElementById("tagRows");
     const exceptionRows = document.getElementById("exceptionRows");
+    const terraformRoot = document.getElementById("terraformRoot");
+    const terraformRootPreview = document.getElementById("terraformRootPreview");
+    const updateTerraformRootPreview = () => {
+      terraformRootPreview.textContent = terraformRoot.value.trim() || ".";
+    };
+    terraformRoot.addEventListener("input", updateTerraformRootPreview);
+    document.getElementById("browseTerraformRoot").addEventListener("click", () => {
+      vscode.postMessage({ type: "selectTerraformRoot" });
+    });
+    document.getElementById("resetTerraformRoot").addEventListener("click", () => {
+      terraformRoot.value = ".";
+      updateTerraformRootPreview();
+    });
+    window.addEventListener("message", event => {
+      if (event.data?.type === "terraformRootSelected") {
+        terraformRoot.value = event.data.terraformRoot;
+        updateTerraformRootPreview();
+      }
+    });
     const addRow = (key = "", value = "") => {
       const row = document.createElement("div");
       row.className = "tag-row";
@@ -317,6 +427,11 @@ function renderPolicyHtml(
       const terraformVersion = document.getElementById("terraformVersion").value.trim();
       if (!terraformVersion || terraformVersion.length > 80 || !/^[0-9<>=!~.,\\s]+$/.test(terraformVersion) || !/\\d+\\.\\d+(?:\\.\\d+)?/.test(terraformVersion)) {
         window.alert('Enter a Terraform version constraint such as ">= 1.8.0, < 2.0.0".');
+        return;
+      }
+      const terraformRootValue = terraformRoot.value.trim().replaceAll("\\\\", "/").replace(/^\\.\\/+/, "").replace(/\\/+$/, "") || ".";
+      if (terraformRootValue.startsWith("/") || /^[A-Za-z]:/.test(terraformRootValue) || terraformRootValue.split("/").some(part => part === ".." || !part)) {
+        window.alert('Choose a folder inside the workspace, for example ".", "infra", or "test/fixtures/three-tier-webapp".');
         return;
       }
       const requiredTags = [];
@@ -395,6 +510,7 @@ function renderPolicyHtml(
         type: "savePolicy",
         profile: {
           version: 1,
+          terraformRoot: terraformRootValue,
           terraformVersion,
           allowedRegions: [...new Set(allowedRegions)],
           costAssumptions,

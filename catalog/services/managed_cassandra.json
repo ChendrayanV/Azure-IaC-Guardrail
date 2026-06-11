@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "managed_cassandra",
+  "displayName": "Azure Managed Instance for Apache Cassandra",
+  "shortName": "CAS",
+  "category": "Databases",
+  "description": "MANAGED CASSANDRA",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/02663-icon-service-Managed-Instance-Apache-Cassandra.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

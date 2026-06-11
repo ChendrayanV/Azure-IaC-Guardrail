@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "defender_cloud",
+  "displayName": "Defender for Cloud",
+  "shortName": "MDC",
+  "category": "Security",
+  "description": "CLOUD SECURITY POSTURE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "security/10241-icon-service-Microsoft-Defender-for-Cloud.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

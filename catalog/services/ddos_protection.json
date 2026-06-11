@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "ddos_protection",
+  "displayName": "DDoS Protection",
+  "shortName": "DDOS",
+  "category": "Security",
+  "description": "NETWORK ATTACK PROTECTION",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "networking/10072-icon-service-DDoS-Protection-Plans.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

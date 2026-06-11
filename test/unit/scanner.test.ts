@@ -163,6 +163,46 @@ resource "azurerm_storage_account_customer_managed_key" "example" {
     expect(planFindings[0].outcome).toBe("compliant");
   });
 
+  it("evaluates visible nested block values during a static scan", () => {
+    const nestedControl: Control = {
+      ...control,
+      id: "AZ-WEB-007",
+      resourceTypes: ["azurerm_linux_web_app"],
+      attribute: "site_config.minimum_tls_version",
+      operator: "oneOf",
+      expected: ["1.2", "1.3"],
+      planOnly: true,
+    };
+    const findings = scanTerraform(
+      `resource "azurerm_linux_web_app" "example" {
+  site_config {
+    minimum_tls_version = "1.2"
+  }
+}`,
+      [nestedControl],
+    );
+
+    expect(findings[0]).toMatchObject({
+      outcome: "compliant",
+      actual: "1.2",
+      line: 2,
+    });
+  });
+
+  it("provides a safe direct-value fix for non-compliant values", () => {
+    const finding = scanTerraform(
+      `resource "azurerm_storage_account" "example" {
+  allow_nested_items_to_be_public = true
+}`,
+      [control],
+    )[0];
+
+    expect(finding.fix).toEqual({
+      kind: "replace-value",
+      value: false,
+    });
+  });
+
   it("can omit plan-only organization controls from static scans", () => {
     const policyControl: Control = {
       ...control,

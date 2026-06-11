@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "red_hat_openshift",
+  "displayName": "Azure Red Hat OpenShift",
+  "shortName": "ARO",
+  "category": "Containers",
+  "description": "MANAGED OPENSHIFT",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "containers/03331-icon-service-Azure-Red-Hat-OpenShift.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

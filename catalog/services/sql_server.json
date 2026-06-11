@@ -1,0 +1,160 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "sql_server",
+  "displayName": "SQL Server",
+  "shortName": "SQL",
+  "category": "Databases",
+  "description": "LOGICAL SQL SERVER",
+  "color": "#0891b2",
+  "governanceStatus": "approved",
+  "icon": "databases/10132-icon-service-SQL-Server.svg",
+  "terraform": {
+    "resourceType": "azurerm_mssql_server",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "version",
+        "label": "Server version",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "12.0",
+        "options": [
+          "12.0"
+        ]
+      },
+      {
+        "key": "administrator_login",
+        "label": "Administrator Login",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "administrator_login_password",
+        "label": "Administrator Login Password",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "minimum_tls_version",
+        "label": "Minimum Tls Version",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "1.2",
+        "controlIds": [
+          "AZ-SQL-001"
+        ],
+        "remediation": "Set minimum_tls_version = \"1.2\"."
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-SQL-002"
+        ],
+        "remediation": "Set public_network_access_enabled = false and configure a private endpoint."
+      },
+      {
+        "key": "outbound_network_restriction_enabled",
+        "label": "Outbound Network Restriction Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-SQL-003"
+        ],
+        "remediation": "Set outbound_network_restriction_enabled = true."
+      },
+      {
+        "key": "minimumTlsVersion",
+        "label": "Minimum TLS",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "1.2",
+        "options": [
+          "1.2"
+        ]
+      },
+      {
+        "key": "publicNetworkAccess",
+        "label": "Public network access",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "administratorLogin",
+        "label": "Entra administrator login",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "current-terraform-principal"
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-SQL-001",
+      "title": "SQL servers require a minimum TLS version",
+      "description": "Azure SQL servers must declare TLS 1.2 or later.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "minimum_tls_version",
+      "operator": "equals",
+      "expected": "1.2",
+      "remediation": "Set minimum_tls_version = \"1.2\".",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-SQL-002",
+      "title": "SQL servers must disable public network access",
+      "description": "Azure SQL logical servers must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set public_network_access_enabled = false and configure a private endpoint.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-SQL-003",
+      "title": "SQL servers must restrict outbound network access",
+      "description": "Outbound network access from Azure SQL must be explicitly restricted.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "outbound_network_restriction_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set outbound_network_restriction_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "stack_edge",
+  "displayName": "Azure Stack Edge",
+  "shortName": "ASE",
+  "category": "Hybrid + Multicloud",
+  "description": "EDGE APPLIANCE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "integration/10095-icon-service-Azure-Stack-Edge.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

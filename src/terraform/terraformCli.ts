@@ -23,6 +23,17 @@ export async function initializeTerraform(
   );
 }
 
+export async function initializeTerraformForStaticScan(
+  terraformPath: string,
+  cwd: string,
+): Promise<void> {
+  await runTerraform(
+    terraformPath,
+    ["init", "-backend=false", "-input=false", "-no-color"],
+    cwd,
+  );
+}
+
 export async function validateTerraformConfiguration(
   terraformPath: string,
   cwd: string,

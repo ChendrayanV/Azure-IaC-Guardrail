@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "windows_iot",
+  "displayName": "Windows for IoT",
+  "shortName": "WIOT",
+  "category": "Internet of Things",
+  "description": "WINDOWS IOT PLATFORM",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "security/02247-icon-service-Microsoft-Defender-for-IoT.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

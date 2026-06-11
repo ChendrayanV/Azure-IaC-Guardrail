@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "entra_id",
+  "displayName": "Microsoft Entra ID",
+  "shortName": "ENTRA",
+  "category": "Identity",
+  "description": "IDENTITY AND ACCESS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "identity/03143-icon-service-Entra-Verified-ID.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

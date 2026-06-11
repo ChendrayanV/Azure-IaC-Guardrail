@@ -1,0 +1,304 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "container_registry",
+  "displayName": "Container Registry",
+  "shortName": "ACR",
+  "category": "Containers",
+  "description": "CONTAINER IMAGE REGISTRY",
+  "color": "#ea580c",
+  "governanceStatus": "approved",
+  "icon": "compute/10049-icon-service-Container-Services-(Deprecated).svg",
+  "terraform": {
+    "resourceType": "azurerm_container_registry",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "SKU",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Premium",
+        "options": [
+          "Basic",
+          "Standard",
+          "Premium"
+        ]
+      },
+      {
+        "key": "admin_enabled",
+        "label": "Admin Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ACR-001"
+        ],
+        "remediation": "Set admin_enabled = false and grant AcrPull or AcrPush roles to managed identities."
+      },
+      {
+        "key": "anonymous_pull_enabled",
+        "label": "Anonymous Pull Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ACR-002"
+        ],
+        "remediation": "Set anonymous_pull_enabled = false."
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ACR-003"
+        ],
+        "remediation": "Use Premium SKU, configure a private endpoint, and set public_network_access_enabled = false."
+      },
+      {
+        "key": "export_policy_enabled",
+        "label": "Export Policy Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ACR-004"
+        ],
+        "remediation": "Set export_policy_enabled = false."
+      },
+      {
+        "key": "tags",
+        "label": "Tags",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-ACR-005"
+        ],
+        "remediation": "Add the required organizational tags to the registry."
+      },
+      {
+        "key": "identity.type",
+        "label": "Identity.type",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-ACR-006"
+        ],
+        "remediation": "Configure a SystemAssigned or UserAssigned identity block."
+      },
+      {
+        "key": "encryption",
+        "label": "Encryption",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-ACR-007"
+        ],
+        "remediation": "Configure registry encryption with a Key Vault key and user-assigned identity."
+      },
+      {
+        "key": "trust_policy_enabled",
+        "label": "Trust Policy Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-ACR-008"
+        ],
+        "remediation": "Set trust_policy_enabled = true on a Premium registry."
+      },
+      {
+        "key": "id",
+        "label": "Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-ACR-009"
+        ],
+        "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the registry."
+      },
+      {
+        "key": "adminEnabled",
+        "label": "Admin account",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "publicNetworkAccess",
+        "label": "Public network access",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-ACR-001",
+      "title": "Container registries must disable the admin account",
+      "description": "Azure Container Registry must use Microsoft Entra identities instead of the shared admin account.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "admin_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set admin_enabled = false and grant AcrPull or AcrPush roles to managed identities.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/"
+    },
+    {
+      "id": "AZ-ACR-002",
+      "title": "Container registries must disable anonymous pulls",
+      "description": "Container images must not be downloadable without authentication.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "anonymous_pull_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set anonymous_pull_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/"
+    },
+    {
+      "id": "AZ-ACR-003",
+      "title": "Container registries must disable public network access",
+      "description": "Container registries must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Use Premium SKU, configure a private endpoint, and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/"
+    },
+    {
+      "id": "AZ-ACR-004",
+      "title": "Container registries must disable artifact export",
+      "description": "Registry artifact export must be disabled to reduce data-exfiltration paths.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "export_policy_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set export_policy_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/"
+    },
+    {
+      "id": "AZ-ACR-005",
+      "title": "Container registries must have tags",
+      "description": "Container registries must include ownership and governance metadata.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "tags",
+      "operator": "exists",
+      "remediation": "Add the required organizational tags to the registry.",
+      "reference": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/acr-has-tags/"
+    },
+    {
+      "id": "AZ-ACR-006",
+      "title": "Container registries must use managed identity",
+      "description": "A managed identity is required for secure access to customer-managed keys and other Azure services.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "identity.type",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure a SystemAssigned or UserAssigned identity block.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-authentication-managed-identity",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/acr-managed-identity-enabled/"
+    },
+    {
+      "id": "AZ-ACR-007",
+      "title": "Premium container registries should use customer-managed encryption",
+      "description": "Customer-managed keys provide control over registry encryption key lifecycle and access.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "encryption",
+      "operator": "exists",
+      "conditions": [
+        {
+          "attribute": "sku",
+          "operator": "equals",
+          "expected": "Premium"
+        }
+      ],
+      "planOnly": true,
+      "remediation": "Configure registry encryption with a Key Vault key and user-assigned identity.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/tutorial-customer-managed-keys",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/acr-cmk-encryption/"
+    },
+    {
+      "id": "AZ-ACR-008",
+      "title": "Premium container registries should enable content trust",
+      "description": "Content trust helps consumers verify signed container images.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "trust_policy_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set trust_policy_enabled = true on a Premium registry.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-content-trust",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/acr-content-trust-enabled/"
+    },
+    {
+      "id": "AZ-ACR-009",
+      "title": "Container registries should send diagnostics to Log Analytics",
+      "description": "Centralized registry logs support auditing and incident response.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_container_registry"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_monitor_diagnostic_setting",
+      "relatedMatchAttribute": "target_resource_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the registry.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/monitor-service",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/container-registry/acr-log-analytics-enabled/"
+    }
+  ]
+}

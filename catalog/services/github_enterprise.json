@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "github_enterprise",
+  "displayName": "GitHub Enterprise",
+  "shortName": "GHE",
+  "category": "DevOps",
+  "description": "ENTERPRISE SOFTWARE DELIVERY",
+  "color": "#171717",
+  "governanceStatus": "not-approved",
+  "icon": "identity/10225-icon-service-Enterprise-Applications.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

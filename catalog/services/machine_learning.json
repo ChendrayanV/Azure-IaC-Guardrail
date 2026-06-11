@@ -1,0 +1,116 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "machine_learning",
+  "displayName": "Machine Learning",
+  "shortName": "ML",
+  "category": "AI + Machine Learning",
+  "description": "MODEL DEVELOPMENT",
+  "color": "#0078d4",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/10166-icon-service-Machine-Learning.svg",
+  "terraform": {
+    "resourceType": "azurerm_machine_learning_workspace",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "application_insights_id",
+        "label": "Application Insights Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "key_vault_id",
+        "label": "Key Vault Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "storage_account_id",
+        "label": "Storage Account Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "identity",
+        "label": "Identity",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ML-001"
+        ],
+        "remediation": "Configure private endpoints and set public_network_access_enabled = false."
+      },
+      {
+        "key": "v1_legacy_mode_enabled",
+        "label": "V1 Legacy Mode Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-ML-002"
+        ],
+        "remediation": "Set v1_legacy_mode_enabled = false."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-ML-001",
+      "title": "Machine Learning workspaces must disable public network access",
+      "description": "Azure Machine Learning workspaces must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_machine_learning_workspace"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure private endpoints and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-ML-002",
+      "title": "Machine Learning workspaces must disable v1 legacy mode",
+      "description": "Legacy Azure Machine Learning v1 compatibility must remain disabled.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_machine_learning_workspace"
+      ],
+      "attribute": "v1_legacy_mode_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set v1_legacy_mode_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    }
+  ]
+}

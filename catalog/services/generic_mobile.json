@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_mobile",
+  "displayName": "Mobile Device",
+  "shortName": "MOB",
+  "category": "Generic Architecture",
+  "description": "PHONE OR TABLET CLIENT",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "general/10822-icon-service-Mobile.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

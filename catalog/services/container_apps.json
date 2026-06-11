@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "container_apps",
+  "displayName": "Container Apps",
+  "shortName": "ACA",
+  "category": "Containers",
+  "description": "SERVERLESS CONTAINERS",
+  "color": "#7c3aed",
+  "governanceStatus": "under-review",
+  "icon": "other/02989-icon-service-Container-Apps-Environments.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

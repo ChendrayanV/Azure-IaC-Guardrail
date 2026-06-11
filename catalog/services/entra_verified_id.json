@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "entra_verified_id",
+  "displayName": "Microsoft Entra Verified ID",
+  "shortName": "VID",
+  "category": "Identity",
+  "description": "VERIFIABLE CREDENTIALS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "identity/03143-icon-service-Entra-Verified-ID.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

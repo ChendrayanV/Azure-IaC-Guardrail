@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "iot_edge",
+  "displayName": "Azure IoT Edge",
+  "shortName": "EDGE",
+  "category": "Hybrid + Multicloud",
+  "description": "EDGE DEVICE COMPUTE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "iot/10186-icon-service-IoT-Edge.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

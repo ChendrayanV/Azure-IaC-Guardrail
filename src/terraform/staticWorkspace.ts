@@ -1,74 +1,51 @@
-import * as path from "node:path";
 import * as vscode from "vscode";
-import {
-  createStaticResolutionContext,
-  type StaticSource,
-} from "../core/staticResolution";
+import { loadWorkspacePolicy } from "../controls/workspacePolicy";
+import { loadStaticModuleWorkspace } from "../core/staticModules";
+import { resolveConfiguredTerraformRoot } from "./terraformRoot";
 
 export async function loadStaticWorkspace(
   workspaceFolder: vscode.WorkspaceFolder,
 ): Promise<{
-  terraformSources: Map<string, StaticSource>;
-  variableSources: StaticSource[];
-  context: ReturnType<typeof createStaticResolutionContext>;
+  workspacePath: string;
+  terraformSources: Array<{
+    uri: string;
+    source: {
+      path: string;
+      content: string;
+    };
+    context: Awaited<
+      ReturnType<typeof loadStaticModuleWorkspace>
+    >["sources"][number]["context"];
+    moduleAddress?: string;
+  }>;
+  issues: Awaited<
+    ReturnType<typeof loadStaticModuleWorkspace>
+  >["issues"];
 }> {
-  const terraformUris = await vscode.workspace.findFiles(
-    new vscode.RelativePattern(workspaceFolder, "**/*.tf"),
-    "**/{.terraform,node_modules}/**",
+  const profile = await loadWorkspacePolicy(workspaceFolder.uri.fsPath);
+  const terraformRoot = resolveConfiguredTerraformRoot(
+    workspaceFolder.uri.fsPath,
+    profile?.terraformRoot ?? ".",
   );
-  const terraformSources = new Map(
-    await Promise.all(
-      terraformUris.map(async (uri) => [
-        uri.toString(),
-        {
-          path: vscode.workspace.asRelativePath(uri, false),
-          content: new TextDecoder("utf-8").decode(
-            await vscode.workspace.fs.readFile(uri),
-          ),
-        },
-      ] as const),
-    ),
-  );
-
   const configured = vscode.workspace
     .getConfiguration("azureIacGuardrail", workspaceFolder.uri)
     .get<string[]>("staticVarFiles", []);
-  const automaticUris = await vscode.workspace.findFiles(
-    new vscode.RelativePattern(
-      workspaceFolder,
-      "{terraform.tfvars,*.auto.tfvars,*.auto.tfvars.json}",
-    ),
-    "**/{.terraform,node_modules}/**",
+  const workspace = await loadStaticModuleWorkspace(
+    terraformRoot,
+    configured,
   );
-  const configuredUris = configured.map((file) =>
-    vscode.Uri.file(path.resolve(workspaceFolder.uri.fsPath, file)),
-  );
-  const uniqueVariableUris = new Map(
-    [...automaticUris, ...configuredUris].map((uri) => [uri.fsPath, uri]),
-  );
-  const variableSources = (
-    await Promise.all(
-      [...uniqueVariableUris.values()].map(async (uri) => {
-        try {
-          return {
-            path: vscode.workspace.asRelativePath(uri, false),
-            content: new TextDecoder("utf-8").decode(
-              await vscode.workspace.fs.readFile(uri),
-            ),
-          };
-        } catch {
-          return undefined;
-        }
-      }),
-    )
-  ).filter((source): source is StaticSource => source !== undefined);
 
   return {
-    terraformSources,
-    variableSources,
-    context: createStaticResolutionContext(
-      [...terraformSources.values()],
-      variableSources,
-    ),
+    workspacePath: terraformRoot,
+    terraformSources: workspace.sources.map((entry) => ({
+      uri: vscode.Uri.file(entry.filePath).toString(),
+      source: {
+        path: entry.displayPath,
+        content: entry.content,
+      },
+      context: entry.context,
+      moduleAddress: entry.moduleAddress,
+    })),
+    issues: workspace.issues,
   };
 }

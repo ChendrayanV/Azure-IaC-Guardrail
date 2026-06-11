@@ -101,6 +101,10 @@
         "title": "Azure IaC Guardrail: Scan Terraform Files"
       },
       {
+        "command": "infraCompliance.initializeAndScanWorkspace",
+        "title": "Azure IaC Guardrail: Initialize Modules and Scan Terraform Files"
+      },
+      {
         "command": "infraCompliance.scanPlan",
         "title": "Azure IaC Guardrail: Scan Existing Terraform Plan"
       },
@@ -181,7 +185,10 @@
     }
   },
   "scripts": {
-    "compile": "node esbuild.mjs",
+    "catalog:build": "node scripts/build-service-catalog.mjs",
+    "catalog:validate": "node scripts/validate-service-catalog.mjs",
+    "catalog:test": "vitest run test/unit/serviceCatalog.test.ts",
+    "compile": "npm run catalog:build && node esbuild.mjs",
     "watch": "node esbuild.mjs --watch",
     "check": "tsc --noEmit",
     "check:terraform-identifiers": "node scripts/check-terraform-identifiers.mjs",
@@ -189,7 +196,7 @@
     "test": "vitest run test/unit",
     "test:watch": "vitest test/unit",
     "test:extension": "npm run compile && vscode-test",
-    "package": "npm run check:terraform-identifiers && npm run check && npm run test && npm run compile && vsce package",
+    "package": "npm run catalog:validate && npm run check:terraform-identifiers && npm run check && npm run test && npm run compile && vsce package",
     "release:verify": "node scripts/verify-release.mjs",
     "release:publish": "vsce publish",
     "prepublishOnly": "npm run package"

@@ -1,0 +1,48 @@
+{
+  "$schema": "./schema/service.schema.json",
+  "serviceId": "example_service",
+  "displayName": "Example Service",
+  "shortName": "EX",
+  "category": "Example",
+  "description": "EXAMPLE AZURE SERVICE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": "azurerm_example",
+    "armResourceTypes": [
+      "Microsoft.Example/resources"
+    ],
+    "automaticArguments": [
+      "name",
+      "location",
+      "resource_group_name"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "SKU",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": ""
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-EXAMPLE-001",
+      "title": "Example resources must use an approved setting",
+      "description": "Example security requirement.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_example"
+      ],
+      "attribute": "approved_setting_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set approved_setting_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/"
+    }
+  ]
+}

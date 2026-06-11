@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "redis_cache",
+  "displayName": "Azure Managed Redis",
+  "shortName": "REDIS",
+  "category": "Databases",
+  "description": "IN-MEMORY DATA STORE",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "new icons/03675-icon-service-Azure-Managed-Redis.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "elastic_san",
+  "displayName": "Azure Elastic SAN",
+  "shortName": "SAN",
+  "category": "Storage",
+  "description": "CLOUD SAN STORAGE",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "other/03190-icon-service-Elastic-SAN.svg",
+  "terraform": {
+    "resourceType": "azurerm_elastic_san",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "base_size_in_tib",
+        "label": "Base Size In Tib",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku",
+        "label": "Sku",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "extended_capacity_size_in_tib",
+        "label": "Extended Capacity Size In Tib",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

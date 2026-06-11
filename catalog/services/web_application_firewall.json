@@ -1,0 +1,77 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "web_application_firewall",
+  "displayName": "Azure Web Application Firewall",
+  "shortName": "WAF",
+  "category": "Networking",
+  "description": "WEB APPLICATION PROTECTION",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "networking/10362-icon-service-Web-Application-Firewall-Policies(WAF).svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": [
+    {
+      "id": "AZ-AGW-003",
+      "title": "Application Gateway WAF policies must inspect request bodies",
+      "description": "Request body inspection enables WAF managed rules to detect attacks in request payloads.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_web_application_firewall_policy"
+      ],
+      "attribute": "policy_settings.request_body_check",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set policy_settings.request_body_check = true.",
+      "reference": "https://learn.microsoft.com/azure/web-application-firewall/ag/application-gateway-waf-request-size-limits"
+    },
+    {
+      "id": "AZ-AGW-004",
+      "title": "Application Gateway WAF policies must limit request body size",
+      "description": "A defined request body limit reduces exposure to oversized request payloads.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_web_application_firewall_policy"
+      ],
+      "attribute": "policy_settings.max_request_body_size_in_kb",
+      "operator": "equals",
+      "expected": 128,
+      "planOnly": true,
+      "remediation": "Set policy_settings.max_request_body_size_in_kb = 128 or update this organizational standard to the approved workload-specific value.",
+      "reference": "https://learn.microsoft.com/azure/web-application-firewall/ag/application-gateway-waf-request-size-limits"
+    },
+    {
+      "id": "AZ-AGW-008",
+      "title": "Application Gateway WAF policies must use prevention mode",
+      "description": "Prevention mode blocks requests that match managed or custom WAF rules.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_web_application_firewall_policy"
+      ],
+      "attribute": "policy_settings.mode",
+      "operator": "equals",
+      "expected": "Prevention",
+      "planOnly": true,
+      "remediation": "Set policy_settings.enabled = true and policy_settings.mode = \"Prevention\".",
+      "reference": "https://learn.microsoft.com/azure/web-application-firewall/ag/web-application-firewall-configuration"
+    },
+    {
+      "id": "AZ-AGW-009",
+      "title": "Application Gateway WAF policies must have tags",
+      "description": "WAF policies must include ownership, environment, and governance metadata.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_web_application_firewall_policy"
+      ],
+      "attribute": "tags",
+      "operator": "exists",
+      "remediation": "Add the required organizational tags to the WAF policy.",
+      "reference": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources"
+    }
+  ]
+}

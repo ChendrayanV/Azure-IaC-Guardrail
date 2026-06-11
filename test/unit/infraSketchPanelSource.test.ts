@@ -14,6 +14,21 @@ describe("Cloud Canvas webview source", () => {
     expect(panelSource).toContain("font-src ${cspSource}");
   });
 
+  it("renders packaged SVG icons in the palette and canvas", () => {
+    expect(panelSource).toContain("completeCatalog");
+    expect(panelSource).toContain("img-src ${cspSource}");
+    expect(panelSource).toContain('class="icon-image"');
+    expect(panelSource).toContain("iconMarkup(item");
+    expect(panelSource).toContain("iconMarkup(service");
+  });
+
+  it("uses mapped parameters and opens the inspector after drop", () => {
+    expect(panelSource).toContain("mappedParameterDefinitions()");
+    expect(panelSource).toContain("definition.required");
+    expect(panelSource).toContain("definition.remediation");
+    expect(panelSource).toContain("selectedId = id");
+  });
+
   it("clears the complete canvas without a confirmation gate", () => {
     const clearHandler = panelSource.match(
       /document\.getElementById\("clearCanvas"\)[\s\S]*?\n {4}\}\);/,

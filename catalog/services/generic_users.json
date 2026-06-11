@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_users",
+  "displayName": "User Group",
+  "shortName": "USRS",
+  "category": "Generic Architecture",
+  "description": "USER OR CUSTOMER GROUP",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "azure stack/10111-icon-service-User-Subscriptions.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

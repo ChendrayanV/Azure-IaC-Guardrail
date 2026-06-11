@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "traffic_manager",
+  "displayName": "Traffic Manager",
+  "shortName": "TM",
+  "category": "Networking",
+  "description": "DNS TRAFFIC ROUTING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "networking/10065-icon-service-Traffic-Manager-Profiles.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

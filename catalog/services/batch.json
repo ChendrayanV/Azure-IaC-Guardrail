@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "batch",
+  "displayName": "Azure Batch",
+  "shortName": "BAT",
+  "category": "Compute",
+  "description": "ON-DEMAND VM CLUSTERS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00028-icon-service-Batch-AI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

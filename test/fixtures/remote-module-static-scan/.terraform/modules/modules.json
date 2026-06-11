@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"network","Source":"registry.terraform.io/Azure/vnet/azurerm","Version":"5.0.1","Dir":".terraform/modules/network"}]}

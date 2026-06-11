@@ -1,5 +1,7 @@
 {
   "version": 1,
+  "terraformRoot": ".",
+  "terraformVersion": ">= 1.15.0, < 2.0.0",
   "allowedRegions": [],
   "costAssumptions": {
     "currency": "USD",

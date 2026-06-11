@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "spring_apps",
+  "displayName": "Azure Spring Apps",
+  "shortName": "SPR",
+  "category": "Compute",
+  "description": "SPRING APP HOSTING",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10370-icon-service-Azure-Spring-Apps.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

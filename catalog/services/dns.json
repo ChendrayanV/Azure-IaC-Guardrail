@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "dns",
+  "displayName": "Azure DNS",
+  "shortName": "DNS",
+  "category": "Networking",
+  "description": "DOMAIN NAME HOSTING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "networking/03459-icon-service-DNS-Multistack.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

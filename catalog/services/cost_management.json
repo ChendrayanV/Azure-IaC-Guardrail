@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "cost_management",
+  "displayName": "Cost Management",
+  "shortName": "COST",
+  "category": "Management + Governance",
+  "description": "COST OPTIMIZATION",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "general/10019-icon-service-Cost-Management.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

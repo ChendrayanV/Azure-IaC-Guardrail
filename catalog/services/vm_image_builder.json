@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "vm_image_builder",
+  "displayName": "Azure VM Image Builder",
+  "shortName": "AIB",
+  "category": "Compute",
+  "description": "AUTOMATED VM IMAGES",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/02866-icon-service-VM-Image-Version.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

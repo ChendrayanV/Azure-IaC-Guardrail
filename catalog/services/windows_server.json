@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "windows_server",
+  "displayName": "Windows Server",
+  "shortName": "WIN",
+  "category": "Compute",
+  "description": "WINDOWS SERVER WORKLOADS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "databases/10132-icon-service-SQL-Server.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

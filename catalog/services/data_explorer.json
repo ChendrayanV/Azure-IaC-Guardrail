@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "data_explorer",
+  "displayName": "Data Explorer",
+  "shortName": "ADX",
+  "category": "Analytics",
+  "description": "REAL TIME ANALYTICS",
+  "color": "#0078d4",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/10145-icon-service-Azure-Data-Explorer-Clusters.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

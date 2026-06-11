@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "container_instances",
+  "displayName": "Container Instances",
+  "shortName": "ACI",
+  "category": "Compute",
+  "description": "ON-DEMAND CONTAINERS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10104-icon-service-Container-Instances.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "foundry_tools",
+  "displayName": "Foundry Tools",
+  "shortName": "TOOLS",
+  "category": "AI + Machine Learning",
+  "description": "AI TOOLS AND APIS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

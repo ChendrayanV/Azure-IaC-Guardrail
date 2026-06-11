@@ -1,0 +1,43 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "database_migration_service",
+  "displayName": "Azure Database Migration Service",
+  "shortName": "DMS",
+  "category": "Migration",
+  "description": "DATABASE MIGRATION",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "databases/10133-icon-service-Azure-Database-Migration-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_database_migration_service",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "subnet_id",
+        "label": "Subnet Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "video_indexer",
+  "displayName": "Azure AI Video Indexer",
+  "shortName": "VID",
+  "category": "AI + Machine Learning",
+  "description": "AUDIO AND VIDEO INSIGHTS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "other/01800-icon-service-Azure-Video-Indexer.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

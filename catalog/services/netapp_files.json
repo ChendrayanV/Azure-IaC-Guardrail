@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "netapp_files",
+  "displayName": "Azure NetApp Files",
+  "shortName": "ANF",
+  "category": "Storage",
+  "description": "ENTERPRISE FILE STORAGE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "storage/10096-icon-service-Azure-NetApp-Files.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

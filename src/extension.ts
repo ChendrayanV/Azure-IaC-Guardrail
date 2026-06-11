@@ -11,23 +11,34 @@ import {
 } from "./core/planComparison";
 import { scanTerraformPlanDetailed } from "./core/planScanner";
 import type { FileScanResult } from "./core/resultsHtml";
-import { scanTerraformWithContext } from "./core/scanner";
+import { scanResources } from "./core/scanner";
+import { parseTerraform } from "./core/terraformParser";
 import { TerraformLanguageFeatures } from "./editor/terraformLanguageFeatures";
+import { resolvedSourceFinding } from "./editor/findingProvenance";
 import {
   createTerraformPlanJson,
   initializeBeforePlanFor,
   initializeTerraform,
+  initializeTerraformForStaticScan,
   retainGeneratedPlanFor,
   showTerraformPlan,
   terraformPathFor,
 } from "./terraform/terraformCli";
-import { findTerraformRoot } from "./terraform/terraformRoot";
+import {
+  findTerraformRoot,
+  resolveConfiguredTerraformRoot,
+} from "./terraform/terraformRoot";
 import { loadStaticWorkspace } from "./terraform/staticWorkspace";
 import { ResultsPanel } from "./ui/resultsPanel";
 import { InfraSketchPanel } from "./ui/infraSketchPanel";
 import { PlanArchitecturePanel } from "./ui/planArchitecturePanel";
 import { WorkspacePolicyPanel } from "./ui/workspacePolicyPanel";
-import type { Finding, PlanAnalysis } from "./types";
+import type {
+  Control,
+  Finding,
+  PlanAnalysis,
+  TerraformResource,
+} from "./types";
 
 let latestPlanView:
   | { analysis: PlanAnalysis; findings: Finding[]; label: string }
@@ -35,6 +46,8 @@ let latestPlanView:
 
 const COMMANDS = {
   scanWorkspace: "infraCompliance.scanWorkspace",
+  initializeAndScanWorkspace:
+    "infraCompliance.initializeAndScanWorkspace",
   scanPlan: "infraCompliance.scanPlan",
   createAndScanPlan: "infraCompliance.createAndScanPlan",
   exportPdf: "infraCompliance.exportPdf",
@@ -61,6 +74,15 @@ export function activate(context: vscode.ExtensionContext): void {
     languageFeatures,
     vscode.commands.registerCommand(COMMANDS.scanWorkspace, () =>
       scanWorkspace(context, resultsPanel, languageFeatures),
+    ),
+    vscode.commands.registerCommand(
+      COMMANDS.initializeAndScanWorkspace,
+      () =>
+        initializeAndScanWorkspace(
+          context,
+          resultsPanel,
+          languageFeatures,
+        ),
     ),
     vscode.commands.registerCommand(COMMANDS.scanPlan, () =>
       scanExistingPlan(context, resultsPanel),
@@ -110,6 +132,40 @@ export function activate(context: vscode.ExtensionContext): void {
 
 export function deactivate(): void {}
 
+async function initializeAndScanWorkspace(
+  context: vscode.ExtensionContext,
+  resultsPanel: ResultsPanel,
+  languageFeatures: TerraformLanguageFeatures,
+): Promise<void> {
+  const folders = vscode.workspace.workspaceFolders ?? [];
+  if (folders.length === 0) {
+    void vscode.window.showWarningMessage(
+      "Open a Terraform workspace before initializing modules.",
+    );
+    return;
+  }
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: "Azure IaC Guardrail: Initializing Terraform modules",
+    },
+    async () => {
+      for (const folder of folders) {
+        const profile = await loadWorkspacePolicy(folder.uri.fsPath);
+        const terraformRoot = resolveConfiguredTerraformRoot(
+          folder.uri.fsPath,
+          profile?.terraformRoot ?? ".",
+        );
+        await initializeTerraformForStaticScan(
+          terraformPathFor(folder.uri),
+          terraformRoot,
+        );
+      }
+    },
+  );
+  await scanWorkspace(context, resultsPanel, languageFeatures);
+}
+
 async function showInitialTagSetup(
   context: vscode.ExtensionContext,
   panel: WorkspacePolicyPanel,
@@ -142,24 +198,71 @@ async function scanWorkspace(
     const workspaces = await Promise.all(
       (vscode.workspace.workspaceFolders ?? []).map(loadStaticWorkspace),
     );
-    const results = workspaces.flatMap((workspace) =>
-      [...workspace.terraformSources.entries()].map(
-        ([uri, source]): FileScanResult => {
-          const findings = scanTerraformWithContext(
-            source.content,
-            controls,
-            workspace.context,
+    const diagnosticsByUri = new Map<string, Finding[]>();
+    const results = workspaces.flatMap((workspace) => {
+      const resources = workspace.terraformSources.flatMap((entry) =>
+        parseTerraform(entry.source.content, entry.context, {
+          sourcePath: entry.source.path,
+          sourceUri: entry.uri,
+          moduleAddress: entry.moduleAddress,
+        }),
+      );
+      const findingsByUri = groupFindingsByUri(
+        scanResources(resources, controls),
+      );
+      addResolvedSourceFindings(findingsByUri, workspace.workspacePath);
+      for (const issue of workspace.issues) {
+        const uri = vscode.Uri.file(issue.callerFilePath).toString();
+        const existing = findingsByUri.get(uri) ?? [];
+        existing.push(moduleIssueFinding(issue, uri));
+        findingsByUri.set(uri, existing);
+      }
+
+      const sourceResults = workspace.terraformSources.map(
+        (entry): FileScanResult => {
+          const findings = (findingsByUri.get(entry.uri) ?? []).filter(
+            (finding) =>
+              finding.resource.moduleAddress === entry.moduleAddress ||
+              (finding.resource.type === "terraform_module" &&
+                finding.resource.sourcePath === entry.source.path),
           );
-          languageFeatures.update(vscode.Uri.parse(uri), findings);
           return {
             scanKind: "static",
-            filePath: source.path,
-            uri,
+            filePath: entry.moduleAddress
+              ? `${entry.source.path} (${entry.moduleAddress})`
+              : entry.source.path,
+            uri: entry.uri,
             findings,
           };
         },
-      ),
-    );
+      );
+      const sourceUris = new Set(
+        workspace.terraformSources.map((entry) => entry.uri),
+      );
+      for (const [uri, findings] of findingsByUri) {
+        diagnosticsByUri.set(uri, [
+          ...(diagnosticsByUri.get(uri) ?? []),
+          ...findings,
+        ]);
+      }
+      return [
+        ...sourceResults,
+        ...[...findingsByUri.entries()]
+          .filter(
+            ([uri]) =>
+              !sourceUris.has(uri) &&
+              !/\.tfvars(?:\.json)?$/i.test(vscode.Uri.parse(uri).fsPath),
+          )
+          .map(([uri, findings]): FileScanResult => ({
+            scanKind: "static",
+            filePath:
+              findings[0]?.resource.sourcePath ?? "Terraform module",
+            uri,
+            findings,
+          })),
+      ];
+    });
+    languageFeatures.replace(diagnosticsByUri);
     resultsPanel.show(results);
   } catch (error) {
     showScanError(resultsPanel, error);
@@ -241,17 +344,23 @@ async function createAndScanPlan(
   if (!workspaceFolder) {
     return;
   }
-  const varFile = await selectVariableFile(workspaceFolder.uri);
-  if (varFile === null) {
+  const terraformRoot = await selectTerraformRoot(workspaceFolder);
+  if (!terraformRoot) {
     return;
   }
-  const terraformRoot = await selectTerraformRoot(workspaceFolder, varFile);
-  if (!terraformRoot) {
+  const varFile = await selectVariableFile(terraformRoot);
+  if (varFile === null) {
     return;
   }
 
   const runScan = () =>
-    runLocalPlanScan(context, resultsPanel, terraformRoot, varFile);
+    runLocalPlanScan(
+      context,
+      resultsPanel,
+      workspaceFolder,
+      terraformRoot,
+      varFile,
+    );
   resultsPanel.setRescanHandler(runScan);
   await runScan();
 }
@@ -259,6 +368,7 @@ async function createAndScanPlan(
 async function runLocalPlanScan(
   context: vscode.ExtensionContext,
   resultsPanel: ResultsPanel,
+  workspaceFolder: vscode.WorkspaceFolder,
   terraformRoot: vscode.Uri,
   varFile: vscode.Uri | undefined,
 ): Promise<void> {
@@ -335,7 +445,9 @@ async function runLocalPlanScan(
             ? `Local plan using ${path.basename(varFile.fsPath)}`
             : "Local plan using automatic variable loading",
         };
-        const profile = await loadWorkspacePolicy(terraformRoot.fsPath);
+        const profile = await loadWorkspacePolicy(
+          workspaceFolder.uri.fsPath,
+        );
         scan.analysis.cost = await estimateTerraformPlanCosts(planJson, {
           assumptions: profile?.costAssumptions,
         });
@@ -397,19 +509,52 @@ async function selectVariableFile(
     openLabel: "Use Variable File",
     title: "Select the Terraform variable file",
   });
-  return selected?.[0] ?? null;
+  const selectedUri = selected?.[0];
+  if (!selectedUri) {
+    return null;
+  }
+  const relative = path.relative(workspaceUri.fsPath, selectedUri.fsPath);
+  if (
+    relative === ".." ||
+    relative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relative)
+  ) {
+    void vscode.window.showErrorMessage(
+      "Select a Terraform variable file inside the configured Terraform root.",
+    );
+    return null;
+  }
+  return selectedUri;
 }
 
 async function selectTerraformRoot(
   workspaceFolder: vscode.WorkspaceFolder,
-  varFile: vscode.Uri | undefined,
 ): Promise<vscode.Uri | undefined> {
+  const profile = await loadWorkspacePolicy(workspaceFolder.uri.fsPath);
+  if (profile) {
+    const configured = resolveConfiguredTerraformRoot(
+      workspaceFolder.uri.fsPath,
+      profile.terraformRoot,
+    );
+    try {
+      const stat = await fs.stat(configured);
+      if (!stat.isDirectory()) {
+        throw new Error("not a directory");
+      }
+      return vscode.Uri.file(configured);
+    } catch {
+      void vscode.window.showErrorMessage(
+        `Configured Terraform root "${profile.terraformRoot}" does not exist. Update Azure Pre-configuration.`,
+      );
+      return undefined;
+    }
+  }
   const activeTerraformFile =
     vscode.window.activeTextEditor?.document.languageId === "terraform"
       ? vscode.window.activeTextEditor.document.uri.fsPath
       : undefined;
   const startPath =
-    varFile?.fsPath ?? activeTerraformFile ?? workspaceFolder.uri.fsPath;
+    activeTerraformFile ?? workspaceFolder.uri.fsPath;
   const detectedRoot = await findTerraformRoot(
     workspaceFolder.uri.fsPath,
     startPath,
@@ -440,7 +585,14 @@ function handleSavedDocument(
     "scanOnSave",
     true,
   );
-  if (!scanOnSave || !document.uri.path.endsWith(".tf")) {
+  if (
+    !scanOnSave ||
+    !(
+      document.uri.path.endsWith(".tf") ||
+      document.uri.path.endsWith(".tfvars") ||
+      document.uri.path.endsWith(".tfvars.json")
+    )
+  ) {
     return;
   }
 
@@ -448,27 +600,112 @@ function handleSavedDocument(
   if (!folder) {
     return;
   }
-  void Promise.all([loadControls(context), loadStaticWorkspace(folder)])
-    .then(([controls, workspace]) => {
-      languageFeatures.setControls(controls);
-      const findings = scanTerraformWithContext(
-        document.getText(),
-        controls,
-        workspace.context,
-      );
-      languageFeatures.update(document.uri, findings);
-      resultsPanel.refresh([
-        {
-          scanKind: "static",
-          filePath: vscode.workspace.asRelativePath(document.uri, false),
-          uri: document.uri.toString(),
-          findings,
-        },
-      ]);
-    })
+  void scanWorkspace(context, resultsPanel, languageFeatures)
     .catch((error: unknown) => {
       showScanError(resultsPanel, error);
     });
+}
+
+function groupFindingsByUri(findings: Finding[]): Map<string, Finding[]> {
+  const grouped = new Map<string, Finding[]>();
+  for (const finding of findings) {
+    const uri = finding.resource.sourceUri;
+    if (!uri) {
+      continue;
+    }
+    const entries = grouped.get(uri) ?? [];
+    entries.push(finding);
+    grouped.set(uri, entries);
+  }
+  return grouped;
+}
+
+function addResolvedSourceFindings(
+  grouped: Map<string, Finding[]>,
+  workspacePath: string,
+): void {
+  const originals = [...grouped.values()].flat();
+  for (const finding of originals) {
+    const resolved = resolvedSourceFinding(workspacePath, finding);
+    if (!resolved) {
+      continue;
+    }
+    const uri = vscode.Uri.file(resolved.filePath).toString();
+    const entries = grouped.get(uri) ?? [];
+    const duplicate = entries.some(
+      (entry) =>
+        entry.control.id === finding.control.id &&
+        entry.line === resolved.finding.line &&
+        entry.resource.sourceUri === finding.resource.sourceUri,
+    );
+    if (duplicate) {
+      continue;
+    }
+    entries.push(resolved.finding);
+    grouped.set(uri, entries);
+  }
+}
+
+function moduleIssueFinding(
+  issue: {
+    callerDisplayPath: string;
+    moduleAddress: string;
+    source: string;
+    line: number;
+    reason:
+      | "not-installed"
+      | "dynamic-source"
+      | "missing-local-source"
+      | "multiple-instances";
+  },
+  sourceUri: string,
+): Finding {
+  const reason =
+    issue.reason === "not-installed"
+      ? "Remote module is not initialized. Run the local plan scan or terraform init to download and index it."
+      : issue.reason === "missing-local-source"
+        ? "Local module source directory was not found."
+        : issue.reason === "multiple-instances"
+          ? "The module uses count or for_each. Static scanning checks its source once, but a Terraform plan is required to evaluate every module instance."
+        : "Module source is dynamic and cannot be resolved by the static scanner.";
+  const controlId =
+    issue.reason === "multiple-instances"
+      ? "IAC-MODULE-002"
+      : "IAC-MODULE-001";
+  const control: Control = {
+    id: controlId,
+    title:
+      issue.reason === "multiple-instances"
+        ? "Module instances require resolved plan evaluation"
+        : "Module source must be available for static scanning",
+    description:
+      "Azure IaC Guardrail scans module resources only when their source code is available locally.",
+    severity: "information",
+    resourceTypes: ["terraform_module"],
+    attribute: "source",
+    operator: "exists",
+    remediation: reason,
+  };
+  const resource: TerraformResource = {
+    type: "terraform_module",
+    name: issue.moduleAddress,
+    sourcePath: issue.callerDisplayPath,
+    sourceUri,
+    moduleAddress: issue.moduleAddress,
+    startLine: issue.line,
+    attributes: new Map(),
+  };
+  return {
+    outcome: "unresolved",
+    control,
+    resource,
+    actual: issue.source,
+    expected: "module source available locally",
+    line: issue.line,
+    startCharacter: 0,
+    endCharacter: 1,
+    message: `${control.id}: ${reason}`,
+  };
 }
 
 async function visualizeExistingPlan(
@@ -531,9 +768,16 @@ async function configureStaticVariables(): Promise<void> {
   if (!folder) {
     return;
   }
+  const profile = await loadWorkspacePolicy(folder.uri.fsPath);
+  const terraformRoot = vscode.Uri.file(
+    resolveConfiguredTerraformRoot(
+      folder.uri.fsPath,
+      profile?.terraformRoot ?? ".",
+    ),
+  );
   const selected = await vscode.window.showOpenDialog({
     canSelectMany: true,
-    defaultUri: folder.uri,
+    defaultUri: terraformRoot,
     filters: {
       "Terraform variables": ["tfvars", "json", "example"],
       "All files": ["*"],
@@ -545,8 +789,17 @@ async function configureStaticVariables(): Promise<void> {
     return;
   }
   const relativeFiles = selected.map((uri) =>
-    path.relative(folder.uri.fsPath, uri.fsPath).replaceAll("\\", "/"),
+    path.relative(terraformRoot.fsPath, uri.fsPath).replaceAll("\\", "/"),
   );
+  const outside = relativeFiles.find(
+    (file) => file === ".." || file.startsWith("../"),
+  );
+  if (outside) {
+    void vscode.window.showErrorMessage(
+      "Static variable files must be inside the configured Terraform root.",
+    );
+    return;
+  }
   await vscode.workspace
     .getConfiguration("azureIacGuardrail", folder.uri)
     .update(

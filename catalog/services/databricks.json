@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "databricks",
+  "displayName": "Azure Databricks",
+  "shortName": "ADB",
+  "category": "Analytics",
+  "description": "LAKEHOUSE ANALYTICS",
+  "color": "#e11d48",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/10787-icon-service-Azure-Databricks.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

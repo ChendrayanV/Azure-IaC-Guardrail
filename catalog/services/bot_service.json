@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "bot_service",
+  "displayName": "Azure Bot Service",
+  "shortName": "BOT",
+  "category": "AI + Machine Learning",
+  "description": "CONVERSATIONAL AI",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/10165-icon-service-Bot-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

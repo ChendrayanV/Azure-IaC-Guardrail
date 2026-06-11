@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "planetary_computer",
+  "displayName": "Microsoft Planetary Computer Pro",
+  "shortName": "PCP",
+  "category": "AI + Machine Learning",
+  "description": "GEOSPATIAL DATA AND AI",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "new icons/03755-icon-service-Planetary-Computer-Pro.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

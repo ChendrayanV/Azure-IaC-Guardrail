@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "queue_storage",
+  "displayName": "Queue Storage",
+  "shortName": "QUEUE",
+  "category": "Storage",
+  "description": "DURABLE MESSAGE QUEUES",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "general/10840-icon-service-Storage-Queue.svg",
+  "terraform": {
+    "resourceType": "azurerm_storage_queue",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

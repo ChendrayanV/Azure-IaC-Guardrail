@@ -61,6 +61,9 @@ export interface TerraformResource {
   type: string;
   name: string;
   address?: string;
+  sourcePath?: string;
+  sourceUri?: string;
+  moduleAddress?: string;
   startLine: number;
   attributes: Map<string, TerraformAttribute>;
 }
@@ -76,6 +79,11 @@ export interface Finding {
   startCharacter: number;
   endCharacter: number;
   message: string;
+  fix?: {
+    kind: "replace-value" | "insert-attribute";
+    value: unknown;
+    attribute?: string;
+  };
 }
 
 export type ChangeAction =

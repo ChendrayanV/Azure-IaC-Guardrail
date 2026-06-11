@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_storage",
+  "displayName": "Storage",
+  "shortName": "ST",
+  "category": "Generic Architecture",
+  "description": "GENERIC STORAGE SYSTEM",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "general/10838-icon-service-Storage-Azure-Files.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

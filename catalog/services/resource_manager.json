@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "resource_manager",
+  "displayName": "Azure Resource Manager",
+  "shortName": "ARM",
+  "category": "Management + Governance",
+  "description": "RESOURCE CONTROL PLANE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10007-icon-service-Resource-Groups.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

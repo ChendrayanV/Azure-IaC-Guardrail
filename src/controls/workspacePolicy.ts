@@ -58,6 +58,7 @@ export const DEFAULT_REGIONAL_RESOURCE_TYPES = [
 
 export interface WorkspacePolicyProfile {
   version: 1;
+  terraformRoot: string;
   terraformVersion: string;
   allowedRegions: string[];
   costAssumptions: CostAssumptions;
@@ -86,6 +87,7 @@ export interface GovernedException {
 export function defaultWorkspacePolicy(): WorkspacePolicyProfile {
   return {
     version: 1,
+    terraformRoot: ".",
     terraformVersion: ">= 1.5.0, < 2.0.0",
     allowedRegions: ["uksouth", "ukwest"],
     costAssumptions: defaultCostAssumptions(),
@@ -132,6 +134,7 @@ export function normalizeWorkspacePolicy(
 
   return {
     version: 1,
+    terraformRoot: normalizeTerraformRoot(value.terraformRoot),
     terraformVersion: normalizeTerraformVersion(value.terraformVersion),
     allowedRegions: normalizeRegions(value.allowedRegions),
     costAssumptions: normalizeCostAssumptions(value.costAssumptions),
@@ -140,6 +143,28 @@ export function normalizeWorkspacePolicy(
     skippedControlIds: normalizeControlIds(value.skippedControlIds),
     exceptions: normalizeExceptions(value.exceptions),
   };
+}
+
+function normalizeTerraformRoot(value: unknown): string {
+  const root = String(value ?? ".")
+    .trim()
+    .replaceAll("\\", "/")
+    .replace(/^\.\/+/, "")
+    .replace(/\/+$/, "");
+  if (!root || root === ".") {
+    return ".";
+  }
+  if (
+    root.length > 260 ||
+    path.isAbsolute(root) ||
+    /^[A-Za-z]:/.test(root) ||
+    root.split("/").some((segment) => segment === ".." || segment === "")
+  ) {
+    throw new Error(
+      'Terraform root must be a workspace-relative folder such as ".", "infra", or "environments/dev".',
+    );
+  }
+  return root;
 }
 
 function normalizeTerraformVersion(value: unknown): string {

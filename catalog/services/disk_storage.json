@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "disk_storage",
+  "displayName": "Disk Storage",
+  "shortName": "DISK",
+  "category": "Storage",
+  "description": "BLOCK STORAGE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10838-icon-service-Storage-Azure-Files.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

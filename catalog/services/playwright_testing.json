@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "playwright_testing",
+  "displayName": "Microsoft Playwright Testing",
+  "shortName": "PWT",
+  "category": "Developer Tools",
+  "description": "MANAGED BROWSER TESTING",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "devops/02423-icon-service-Load-Testing.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

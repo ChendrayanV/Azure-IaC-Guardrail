@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "update_manager",
+  "displayName": "Azure Update Manager",
+  "shortName": "UPD",
+  "category": "Management + Governance",
+  "description": "MACHINE UPDATE MANAGEMENT",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "hybrid + multicloud/03334-icon-service-Azure-Operator-Service-Manager.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

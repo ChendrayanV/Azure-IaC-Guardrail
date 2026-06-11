@@ -1,0 +1,8 @@
+.terraform/providers/
+.terraform/plugin-cache/
+.terraform/environment
+.terraform/terraform.tfstate
+.terraform.lock.hcl
+*.tfplan
+*.tfstate
+*.tfstate.*

@@ -32,4 +32,12 @@ override.tf.json
 !backend.hcl.example
 !backend.tf.example
 
+# Committed scanner fixtures intentionally model selected Terraform inputs and
+# downloaded module source without provider binaries or state.
+!test/fixtures/**/*.tfvars
+!test/fixtures/**/*.tfvars.json
+!test/fixtures/remote-module-static-scan/.terraform/
+!test/fixtures/remote-module-static-scan/.terraform/modules/
+!test/fixtures/remote-module-static-scan/.terraform/modules/**
+
 .azure-iac-guardrail/plans/

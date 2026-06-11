@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "spot_virtual_machine",
+  "displayName": "Azure Spot Virtual Machines",
+  "shortName": "SPOT",
+  "category": "Compute",
+  "description": "INTERRUPTIBLE COMPUTE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10028-icon-service-Virtual-Machines-(Classic).svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "subnet",
+  "displayName": "Subnet",
+  "shortName": "SNET",
+  "category": "Networking",
+  "description": "VIRTUAL NETWORK SEGMENT",
+  "color": "#0284c7",
+  "governanceStatus": "approved",
+  "icon": "networking/02742-icon-service-Subnet.svg",
+  "terraform": {
+    "resourceType": "azurerm_subnet",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": [
+      {
+        "key": "default_outbound_access_enabled",
+        "label": "Default Outbound Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-NET-001"
+        ],
+        "remediation": "Set default_outbound_access_enabled = false and provide approved explicit egress."
+      },
+      {
+        "key": "addressPrefix",
+        "label": "Address prefix",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "10.0.1.0/24"
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-NET-001",
+      "title": "Subnets must disable default outbound access",
+      "description": "Subnets must use an explicit outbound connectivity method instead of implicit default outbound access.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_subnet"
+      ],
+      "attribute": "default_outbound_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set default_outbound_access_enabled = false and provide approved explicit egress.",
+      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
+    }
+  ]
+}

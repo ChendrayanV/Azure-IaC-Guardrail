@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "storage_actions",
+  "displayName": "Azure Storage Actions",
+  "shortName": "ACT",
+  "category": "Storage",
+  "description": "SERVERLESS STORAGE OPERATIONS",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "storage/03502-icon-service-Storage-Actions.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

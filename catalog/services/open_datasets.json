@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "open_datasets",
+  "displayName": "Azure Open Datasets",
+  "shortName": "DATA",
+  "category": "AI + Machine Learning",
+  "description": "CURATED MACHINE LEARNING DATASETS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

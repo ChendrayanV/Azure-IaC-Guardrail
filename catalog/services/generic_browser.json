@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_browser",
+  "displayName": "Web Browser",
+  "shortName": "WEB",
+  "category": "Generic Architecture",
+  "description": "BROWSER CLIENT",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "general/10783-icon-service-Browser.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

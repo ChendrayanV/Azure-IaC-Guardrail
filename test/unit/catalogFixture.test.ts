@@ -1,18 +1,12 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
+import completeCatalog from "../../azure-complete-catalog-vscode.json";
+import type { Control } from "../../src/types";
 import { scanTerraform } from "../../src/core/scanner";
-import type { ControlCatalog } from "../../src/types";
 
 const root = path.resolve(".");
 const standardsRoot = path.join(root, "azure-infrastructure-standards");
-const controlsDirectory = path.join(standardsRoot, "controls");
-
-function readCatalog(fileName: string): ControlCatalog {
-  return JSON.parse(
-    fs.readFileSync(path.join(controlsDirectory, fileName), "utf8"),
-  ) as ControlCatalog;
-}
 
 function terraformFiles(directory: string): string[] {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -30,52 +24,19 @@ function terraformFiles(directory: string): string[] {
 }
 
 describe("bundled standards", () => {
-  it("uses the released version across valid domain catalogs", () => {
+  it("uses the released version in the generated complete catalog", () => {
     const version = fs
       .readFileSync(path.join(standardsRoot, "VERSION"), "utf8")
       .trim();
-    const catalogFiles = fs
-      .readdirSync(controlsDirectory)
-      .filter((fileName) => fileName.endsWith(".json"));
-    const catalogs = catalogFiles.map(readCatalog);
-    const controlIds = catalogs.flatMap((catalog) =>
-      catalog.controls.map((control) => control.id),
-    );
+    const controlIds = completeCatalog.controls.map((control) => control.id);
 
-    expect(catalogFiles.sort()).toEqual([
-      "ai.json",
-      "app-configuration.json",
-      "application-gateway.json",
-      "application-platform.json",
-      "compute.json",
-      "containers.json",
-      "cosmos-db.json",
-      "event-grid.json",
-      "event-hub.json",
-      "key-vault.json",
-      "monitoring.json",
-      "mysql.json",
-      "networking.json",
-      "postgresql.json",
-      "resource-group.json",
-      "service-bus.json",
-      "sql.json",
-      "storage.json",
-    ]);
-    expect(catalogs.every((catalog) => catalog.catalogVersion === version))
-      .toBe(true);
+    expect(completeCatalog.catalogVersion).toBe(version);
+    expect(Object.keys(completeCatalog.services).length).toBe(237);
     expect(new Set(controlIds).size).toBe(controlIds.length);
-    expect(
-      catalogs.every((catalog) => Array.isArray(catalog.controls)),
-    ).toBe(true);
   });
 
   it("defines structurally complete enforceable controls", () => {
-    const controls = fs
-      .readdirSync(controlsDirectory)
-      .filter((fileName) => fileName.endsWith(".json"))
-      .map(readCatalog)
-      .flatMap((catalog) => catalog.controls);
+    const controls = completeCatalog.controls;
     const validOperators = new Set([
       "equals",
       "notEquals",
@@ -120,7 +81,7 @@ describe("bundled standards", () => {
   });
 
   it("recognizes secure storage defaults in the production fixture", () => {
-    const catalog = readCatalog("storage.json");
+    const controls = completeCatalog.services.storage_account.controls as Control[];
     const terraform = fs.readFileSync(
       path.join(
         root,
@@ -135,7 +96,7 @@ describe("bundled standards", () => {
         line.includes("false"),
       );
 
-    const findings = scanTerraform(terraform, catalog.controls);
+    const findings = scanTerraform(terraform, controls);
     const publicAccessFinding = findings.find(
       (finding) => finding.control.id === "AZ-STOR-001",
     );
@@ -189,11 +150,7 @@ describe("bundled standards", () => {
 
   it("has no statically non-compliant production fixture resources", () => {
     const fixtureDirectory = path.join(root, "test/fixtures/production");
-    const controls = fs
-      .readdirSync(controlsDirectory)
-      .filter((fileName) => fileName.endsWith(".json"))
-      .map(readCatalog)
-      .flatMap((catalog) => catalog.controls);
+    const controls = completeCatalog.controls as Control[];
     const findings = terraformFiles(fixtureDirectory).flatMap(
       (fileName) =>
         scanTerraform(
@@ -208,9 +165,9 @@ describe("bundled standards", () => {
   });
 
   it("defines the requested storage standards and platform assurance", () => {
-    const catalog = readCatalog("storage.json");
+    const service = completeCatalog.services.storage_account;
 
-    expect(catalog.controls.map((control) => control.id)).toEqual([
+    expect(service.controls.map((control) => control.id)).toEqual([
       "AZ-STOR-001",
       "AZ-STOR-002",
       "AZ-STOR-003",
@@ -232,7 +189,7 @@ describe("bundled standards", () => {
       "AZ-STOR-020",
       "AZ-STOR-021",
     ]);
-    expect(catalog.assurances).toEqual([
+    expect(service.assurances).toEqual([
       expect.objectContaining({
         id: "AZ-STOR-010",
         implementation: "platform",

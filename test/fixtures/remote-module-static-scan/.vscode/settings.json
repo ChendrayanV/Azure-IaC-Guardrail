@@ -1,0 +1,8 @@
+{
+  "azureIacGuardrail.scanOnSave": true,
+  "azureIacGuardrail.staticVarFiles": [
+    "dev.tfvars"
+  ],
+  "azureIacGuardrail.initializeBeforePlan": true,
+  "azureIacGuardrail.retainGeneratedPlan": false
+}

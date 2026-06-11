@@ -1,0 +1,106 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "database_mysql",
+  "displayName": "Azure Database for MySQL",
+  "shortName": "MYSQL",
+  "category": "Databases",
+  "description": "MANAGED MYSQL",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "databases/10122-icon-service-Azure-Database-MySQL-Server.svg",
+  "terraform": {
+    "resourceType": "azurerm_mysql_flexible_server",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "administrator_login",
+        "label": "Administrator Login",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "administrator_password",
+        "label": "Administrator Password",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-MYSQL-001"
+        ],
+        "remediation": "Set public_network_access_enabled = false and configure private connectivity."
+      },
+      {
+        "key": "geo_redundant_backup_enabled",
+        "label": "Geo Redundant Backup Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-MYSQL-002"
+        ],
+        "remediation": "Set geo_redundant_backup_enabled = true where the selected region and SKU support it."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-MYSQL-001",
+      "title": "MySQL flexible servers must disable public network access",
+      "description": "MySQL flexible servers must use delegated networking or private endpoints.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mysql_flexible_server"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set public_network_access_enabled = false and configure private connectivity.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-MYSQL-002",
+      "title": "MySQL flexible servers should use geo-redundant backups",
+      "description": "Production MySQL servers should protect backups against regional failure.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_mysql_flexible_server"
+      ],
+      "attribute": "geo_redundant_backup_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set geo_redundant_backup_enabled = true where the selected region and SKU support it.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    }
+  ]
+}

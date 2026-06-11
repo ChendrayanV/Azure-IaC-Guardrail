@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "firewall_manager",
+  "displayName": "Azure Firewall Manager",
+  "shortName": "FWM",
+  "category": "Networking",
+  "description": "CENTRAL FIREWALL MANAGEMENT",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "networking/00271-icon-service-Azure-Firewall-Manager.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

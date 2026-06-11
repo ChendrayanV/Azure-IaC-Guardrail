@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "terraformRoot": ".",
+  "terraformVersion": ">= 1.9.0, < 2.0.0",
+  "allowedRegions": [
+    "uksouth",
+    "ukwest"
+  ],
+  "costAssumptions": {
+    "currency": "GBP",
+    "monthlyStorageGb": 32,
+    "monthlyReadOperations": 1000000,
+    "monthlyWriteOperations": 250000,
+    "monthlyEgressGb": 25
+  },
+  "requiredTags": [
+    "environment",
+    "workload",
+    "managed-by"
+  ],
+  "tagValues": {
+    "managed-by": "terraform"
+  },
+  "skippedControlIds": [],
+  "exceptions": []
+}

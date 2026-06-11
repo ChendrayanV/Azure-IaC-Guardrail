@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "github_advanced_security_ado",
+  "displayName": "GitHub Advanced Security for Azure DevOps",
+  "shortName": "GHAS",
+  "category": "DevOps",
+  "description": "DEVOPS CODE SECURITY",
+  "color": "#171717",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

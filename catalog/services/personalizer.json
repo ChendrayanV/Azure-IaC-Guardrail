@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "personalizer",
+  "displayName": "Azure AI Personalizer",
+  "shortName": "PERS",
+  "category": "AI + Machine Learning",
+  "description": "PERSONALIZED USER EXPERIENCES",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00028-icon-service-Batch-AI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

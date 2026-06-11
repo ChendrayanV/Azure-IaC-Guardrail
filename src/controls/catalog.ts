@@ -11,12 +11,11 @@ import {
 export async function loadControls(
   context: vscode.ExtensionContext,
 ): Promise<Control[]> {
-  const builtInDirectory = vscode.Uri.joinPath(
+  const builtInCatalog = vscode.Uri.joinPath(
     context.extensionUri,
-    "azure-infrastructure-standards",
-    "controls",
+    "azure-complete-catalog-vscode.json",
   ).fsPath;
-  const controls = await readCatalogDirectory(builtInDirectory);
+  const controls = await readCompleteCatalog(builtInCatalog);
   const skippedControlIds = new Set<string>();
 
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
@@ -60,6 +59,18 @@ export async function loadControls(
   return [...uniqueControls.values()].filter(
     (control) => !skippedControlIds.has(control.id.toUpperCase()),
   );
+}
+
+async function readCompleteCatalog(filePath: string): Promise<Control[]> {
+  const content = await fs.readFile(filePath, "utf8");
+  const catalog = JSON.parse(content) as {
+    catalogVersion?: string;
+    controls?: Control[];
+  };
+  if (!catalog.catalogVersion || !Array.isArray(catalog.controls)) {
+    throw new Error(`Invalid complete service catalog: ${filePath}`);
+  }
+  return catalog.controls;
 }
 
 function isExpired(expiresOn: string): boolean {

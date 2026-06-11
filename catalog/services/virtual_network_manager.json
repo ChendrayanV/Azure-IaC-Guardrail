@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "virtual_network_manager",
+  "displayName": "Azure Virtual Network Manager",
+  "shortName": "AVNM",
+  "category": "Networking",
+  "description": "CENTRAL NETWORK MANAGEMENT",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "networking/10063-icon-service-Virtual-Network-Gateways.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

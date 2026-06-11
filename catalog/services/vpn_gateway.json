@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "vpn_gateway",
+  "displayName": "VPN Gateway",
+  "shortName": "VPN",
+  "category": "Networking",
+  "description": "ENCRYPTED HYBRID CONNECTIVITY",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "devops/03623-icon-service-Workspace-Gateway.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

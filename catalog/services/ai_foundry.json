@@ -1,0 +1,61 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "ai_foundry",
+  "displayName": "Azure AI Foundry",
+  "shortName": "AIF",
+  "category": "AI + Machine Learning",
+  "description": "GENERATIVE AI PLATFORM",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00028-icon-service-Batch-AI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": [
+    {
+      "id": "AZ-AI-001",
+      "title": "Azure AI accounts must disable public network access",
+      "description": "Azure AI service accounts must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure a private endpoint and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-AI-002",
+      "title": "Azure AI accounts must disable local authentication",
+      "description": "Azure AI clients must use Microsoft Entra identities instead of access keys.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "local_auth_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set local_auth_enabled = false and grant Azure AI data-plane roles.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    },
+    {
+      "id": "AZ-AI-003",
+      "title": "Azure AI accounts should restrict outbound network access",
+      "description": "Outbound access from Azure AI services should be restricted to approved dependencies.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_cognitive_account"
+      ],
+      "attribute": "outbound_network_access_restricted",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set outbound_network_access_restricted = true and configure approved managed network destinations.",
+      "reference": "https://learn.microsoft.com/azure/ai-services/security-features"
+    }
+  ]
+}

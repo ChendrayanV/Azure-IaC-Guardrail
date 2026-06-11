@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "external_attack_surface_management",
+  "displayName": "Defender External Attack Surface Management",
+  "shortName": "EASM",
+  "category": "Management + Governance",
+  "description": "EXTERNAL ATTACK SURFACE",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "other/03403-icon-service-Defender-External-Management.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

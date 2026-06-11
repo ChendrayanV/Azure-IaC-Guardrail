@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "vm_scale_sets",
+  "displayName": "Virtual Machine Scale Sets",
+  "shortName": "VMSS",
+  "category": "Compute",
+  "description": "AUTOSCALING VIRTUAL MACHINES",
+  "color": "#2563eb",
+  "governanceStatus": "under-review",
+  "icon": "compute/10021-icon-service-Virtual-Machine.svg",
+  "terraform": {
+    "resourceType": "azurerm_linux_virtual_machine_scale_set",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "Sku",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "instances",
+        "label": "Instances",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "admin_username",
+        "label": "Admin Username",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

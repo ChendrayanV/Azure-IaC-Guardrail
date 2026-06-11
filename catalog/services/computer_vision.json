@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "computer_vision",
+  "displayName": "AI Vision",
+  "shortName": "VIS",
+  "category": "AI + Machine Learning",
+  "description": "IMAGE AND VIDEO ANALYSIS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00028-icon-service-Batch-AI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

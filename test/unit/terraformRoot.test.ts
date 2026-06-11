@@ -2,7 +2,10 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { findTerraformRoot } from "../../src/terraform/terraformRoot";
+import {
+  findTerraformRoot,
+  resolveConfiguredTerraformRoot,
+} from "../../src/terraform/terraformRoot";
 
 const temporaryDirectories: string[] = [];
 
@@ -43,6 +46,20 @@ describe("Terraform root discovery", () => {
     await fs.writeFile(moduleFile, 'resource "example" "this" {}\n');
 
     expect(await findTerraformRoot(workspace, moduleFile)).toBe(root);
+  });
+
+  it("resolves a configured root inside the workspace", async () => {
+    const workspace = await createWorkspace();
+    expect(
+      resolveConfiguredTerraformRoot(workspace, "infrastructure/platform"),
+    ).toBe(path.join(workspace, "infrastructure", "platform"));
+  });
+
+  it("rejects a configured root outside the workspace", async () => {
+    const workspace = await createWorkspace();
+    expect(() =>
+      resolveConfiguredTerraformRoot(workspace, "../outside"),
+    ).toThrow("outside the workspace");
   });
 });
 

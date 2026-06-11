@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "ai_search",
+  "displayName": "AI Search",
+  "shortName": "AIS",
+  "category": "AI + Machine Learning",
+  "description": "AI ENRICHED SEARCH",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00028-icon-service-Batch-AI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

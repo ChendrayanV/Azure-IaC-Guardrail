@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "cloud_shell",
+  "displayName": "Cloud Shell",
+  "shortName": "SH",
+  "category": "Management + Governance",
+  "description": "BROWSER CLOUD CLI",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/00559-icon-service-Azure-Cloud-Shell.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

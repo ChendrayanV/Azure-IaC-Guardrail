@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "route_table",
+  "displayName": "Route Table",
+  "shortName": "UDR",
+  "category": "Networking",
+  "description": "CUSTOM NETWORK ROUTING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10841-icon-service-Table.svg",
+  "terraform": {
+    "resourceType": "azurerm_route_table",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

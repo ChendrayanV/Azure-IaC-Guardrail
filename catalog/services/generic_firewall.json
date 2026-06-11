@@ -1,0 +1,67 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_firewall",
+  "displayName": "Firewall",
+  "shortName": "FW",
+  "category": "Generic Architecture",
+  "description": "NETWORK SECURITY CONTROL",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "networking/00271-icon-service-Azure-Firewall-Manager.svg",
+  "terraform": {
+    "resourceType": "azurerm_firewall",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_tier",
+        "label": "Sku Tier",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "Premium",
+        "controlIds": [
+          "AZ-NET-005"
+        ],
+        "remediation": "Set sku_tier = \"Premium\" where advanced threat protection is required."
+      },
+      {
+        "key": "ip_configuration",
+        "label": "Ip Configuration",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "threat_intel_mode",
+        "label": "Threat Intel Mode",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Deny",
+        "controlIds": [
+          "AZ-NET-004"
+        ],
+        "remediation": "Set threat_intel_mode = \"Deny\"."
+      }
+    ]
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "information_protection",
+  "displayName": "Azure Information Protection",
+  "shortName": "AIP",
+  "category": "Security",
+  "description": "DATA CLASSIFICATION AND PROTECTION",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "identity/10229-icon-service-Azure-Information-Protection.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

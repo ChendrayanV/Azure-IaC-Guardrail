@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "synapse_analytics",
+  "displayName": "Synapse Analytics",
+  "shortName": "SYN",
+  "category": "Analytics",
+  "description": "UNIFIED DATA ANALYTICS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/00606-icon-service-Azure-Synapse-Analytics.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

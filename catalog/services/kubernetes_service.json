@@ -1,0 +1,329 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "kubernetes_service",
+  "displayName": "Azure Kubernetes Service",
+  "shortName": "AKS",
+  "category": "Compute",
+  "description": "MANAGED KUBERNETES",
+  "color": "#7c3aed",
+  "governanceStatus": "under-review",
+  "icon": "compute/10023-icon-service-Kubernetes-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_kubernetes_cluster",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "dns_prefix",
+        "label": "Dns Prefix",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "default_node_pool",
+        "label": "Default Node Pool",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "identity",
+        "label": "Identity",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "private_cluster_enabled",
+        "label": "Private Cluster Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-001"
+        ],
+        "remediation": "Set private_cluster_enabled = true and configure private DNS connectivity."
+      },
+      {
+        "key": "local_account_disabled",
+        "label": "Local Account Disabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-002"
+        ],
+        "remediation": "Set local_account_disabled = true."
+      },
+      {
+        "key": "role_based_access_control_enabled",
+        "label": "Role Based Access Control Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-003"
+        ],
+        "remediation": "Set role_based_access_control_enabled = true."
+      },
+      {
+        "key": "azure_policy_enabled",
+        "label": "Azure Policy Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-004"
+        ],
+        "remediation": "Set azure_policy_enabled = true."
+      },
+      {
+        "key": "workload_identity_enabled",
+        "label": "Workload Identity Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-005"
+        ],
+        "remediation": "Set oidc_issuer_enabled = true and workload_identity_enabled = true."
+      },
+      {
+        "key": "oidc_issuer_enabled",
+        "label": "Oidc Issuer Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-006"
+        ],
+        "remediation": "Set oidc_issuer_enabled = true."
+      },
+      {
+        "key": "http_application_routing_enabled",
+        "label": "Http Application Routing Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-AKS-007"
+        ],
+        "remediation": "Set http_application_routing_enabled = false and deploy an approved ingress solution."
+      },
+      {
+        "key": "image_cleaner_enabled",
+        "label": "Image Cleaner Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-AKS-008"
+        ],
+        "remediation": "Set image_cleaner_enabled = true."
+      },
+      {
+        "key": "dnsPrefix",
+        "label": "DNS prefix",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": ""
+      },
+      {
+        "key": "privateCluster",
+        "label": "Private cluster",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "localAccountsDisabled",
+        "label": "Disable local accounts",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "azurePolicy",
+        "label": "Azure Policy",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "oidcIssuer",
+        "label": "OIDC issuer",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "workloadIdentity",
+        "label": "Workload identity",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "nodeCount",
+        "label": "System node count",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 3,
+        "min": 1,
+        "max": 100,
+        "step": 1
+      },
+      {
+        "key": "vmSize",
+        "label": "System node VM size",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Standard_D4s_v5"
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-AKS-001",
+      "title": "AKS clusters must be private",
+      "description": "The Kubernetes API server must not be exposed through a public endpoint.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "private_cluster_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set private_cluster_enabled = true and configure private DNS connectivity.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-002",
+      "title": "AKS clusters must disable local accounts",
+      "description": "AKS access must use Microsoft Entra authentication instead of static local administrator credentials.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "local_account_disabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set local_account_disabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-003",
+      "title": "AKS clusters must enable Kubernetes RBAC",
+      "description": "Kubernetes role-based access control must enforce authorization.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "role_based_access_control_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set role_based_access_control_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-004",
+      "title": "AKS clusters must enable Azure Policy",
+      "description": "Azure Policy for Kubernetes must enforce and audit cluster guardrails.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "azure_policy_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set azure_policy_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-005",
+      "title": "AKS clusters should enable workload identity",
+      "description": "Pods should access Azure resources through federated workload identity.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "workload_identity_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set oidc_issuer_enabled = true and workload_identity_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-006",
+      "title": "AKS clusters should enable the OIDC issuer",
+      "description": "The OIDC issuer is required for secure federated workload identities.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "oidc_issuer_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set oidc_issuer_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-007",
+      "title": "AKS clusters must disable HTTP application routing",
+      "description": "The development-focused HTTP application routing add-on must not be used for production ingress.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "http_application_routing_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set http_application_routing_enabled = false and deploy an approved ingress solution.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    },
+    {
+      "id": "AZ-AKS-008",
+      "title": "AKS clusters should enable image cleanup",
+      "description": "Unused images should be removed regularly to reduce vulnerable software retained on nodes.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_kubernetes_cluster"
+      ],
+      "attribute": "image_cleaner_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set image_cleaner_enabled = true.",
+      "reference": "https://learn.microsoft.com/azure/container-registry/container-registry-best-practices"
+    }
+  ]
+}

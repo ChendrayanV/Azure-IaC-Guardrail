@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "automation_account",
+  "displayName": "Automation Accounts",
+  "shortName": "AUT",
+  "category": "Management + Governance",
+  "description": "PROCESS AUTOMATION",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/00022-icon-service-Automation-Accounts.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

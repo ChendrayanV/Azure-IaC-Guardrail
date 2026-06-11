@@ -1,0 +1,317 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "functions",
+  "displayName": "Functions",
+  "shortName": "FUNC",
+  "category": "Compute",
+  "description": "SERVERLESS COMPUTE",
+  "color": "#f59e0b",
+  "governanceStatus": "under-review",
+  "icon": "other/02909-icon-service-Storage-Functions.svg",
+  "terraform": {
+    "resourceType": "azurerm_linux_function_app",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": [
+      {
+        "key": "https_only",
+        "label": "Https Only",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-FUNC-001"
+        ],
+        "remediation": "Set https_only = true."
+      },
+      {
+        "key": "webdeploy_publish_basic_authentication_enabled",
+        "label": "Webdeploy Publish Basic Authentication Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-FUNC-002"
+        ],
+        "remediation": "Set webdeploy_publish_basic_authentication_enabled = false."
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-FUNC-003"
+        ],
+        "remediation": "Configure private ingress and set public_network_access_enabled = false."
+      },
+      {
+        "key": "ftp_publish_basic_authentication_enabled",
+        "label": "Ftp Publish Basic Authentication Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-FUNC-004"
+        ],
+        "remediation": "Set ftp_publish_basic_authentication_enabled = false."
+      },
+      {
+        "key": "site_config.always_on",
+        "label": "Site Config.always On",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-FUNC-005"
+        ],
+        "remediation": "Set site_config.always_on = true on a supported Functions plan."
+      },
+      {
+        "key": "site_config.remote_debugging_enabled",
+        "label": "Site Config.remote Debugging Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-FUNC-006"
+        ],
+        "remediation": "Set site_config.remote_debugging_enabled = false."
+      },
+      {
+        "key": "site_config.minimum_tls_version",
+        "label": "Site Config.minimum Tls Version",
+        "type": "json",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": [
+          "1.2",
+          "1.3"
+        ],
+        "controlIds": [
+          "AZ-FUNC-007"
+        ],
+        "remediation": "Set site_config.minimum_tls_version to \"1.2\" or \"1.3\"."
+      },
+      {
+        "key": "virtual_network_subnet_id",
+        "label": "Virtual Network Subnet Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-FUNC-008"
+        ],
+        "remediation": "Set virtual_network_subnet_id to an App Service delegated subnet."
+      },
+      {
+        "key": "identity.type",
+        "label": "Identity.type",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-FUNC-009"
+        ],
+        "remediation": "Configure a SystemAssigned or UserAssigned identity block."
+      },
+      {
+        "key": "id",
+        "label": "Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-FUNC-010"
+        ],
+        "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the Function App and send logs to Log Analytics."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-FUNC-001",
+      "title": "Function apps must require HTTPS",
+      "description": "Azure Functions endpoints must restrict traffic to HTTPS.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_function_app_flex_consumption",
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "https_only",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set https_only = true.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-FUNC-002",
+      "title": "Function apps must disable Web Deploy basic authentication",
+      "description": "Azure Functions deployments must not use Web Deploy basic credentials.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_function_app_flex_consumption",
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "webdeploy_publish_basic_authentication_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set webdeploy_publish_basic_authentication_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-FUNC-003",
+      "title": "Function apps should disable public network access",
+      "description": "Production function apps should use private endpoints or an approved private ingress architecture.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_function_app_flex_consumption",
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure private ingress and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-FUNC-004",
+      "title": "Function apps must disable FTP basic authentication",
+      "description": "Azure Functions FTP publishing must not use basic credentials.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "ftp_publish_basic_authentication_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set ftp_publish_basic_authentication_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-security",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/"
+    },
+    {
+      "id": "AZ-FUNC-005",
+      "title": "Function apps must enable Always On",
+      "description": "Dedicated and Premium Function Apps must remain loaded for reliable trigger processing.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "site_config.always_on",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set site_config.always_on = true on a supported Functions plan.",
+      "reference": "https://learn.microsoft.com/azure/app-service/configure-common",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-always-on-enabled/"
+    },
+    {
+      "id": "AZ-FUNC-006",
+      "title": "Function apps must disable remote debugging",
+      "description": "Remote debugging must be disabled for production Function Apps.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app",
+        "azurerm_function_app_flex_consumption"
+      ],
+      "attribute": "site_config.remote_debugging_enabled",
+      "operator": "equals",
+      "expected": false,
+      "planOnly": true,
+      "remediation": "Set site_config.remote_debugging_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-dotnet-visual-studio",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-remote-debugging-disabled/"
+    },
+    {
+      "id": "AZ-FUNC-007",
+      "title": "Function apps must require TLS 1.2 or 1.3",
+      "description": "Function Apps must reject legacy TLS protocol versions.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app",
+        "azurerm_function_app_flex_consumption"
+      ],
+      "attribute": "site_config.minimum_tls_version",
+      "operator": "oneOf",
+      "expected": [
+        "1.2",
+        "1.3"
+      ],
+      "planOnly": true,
+      "remediation": "Set site_config.minimum_tls_version to \"1.2\" or \"1.3\".",
+      "reference": "https://learn.microsoft.com/azure/app-service/tls-minimum-version",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/azu-0006/"
+    },
+    {
+      "id": "AZ-FUNC-008",
+      "title": "Function apps must integrate with a virtual network",
+      "description": "VNet integration provides controlled outbound access from Function Apps to private dependencies.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app",
+        "azurerm_function_app_flex_consumption"
+      ],
+      "attribute": "virtual_network_subnet_id",
+      "operator": "exists",
+      "remediation": "Set virtual_network_subnet_id to an App Service delegated subnet.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-vnet-integration",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/web-apps-vnet-integrated/"
+    },
+    {
+      "id": "AZ-FUNC-009",
+      "title": "Function apps must use a managed identity",
+      "description": "Managed identity removes credentials from Function App configuration.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app"
+      ],
+      "attribute": "identity.type",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure a SystemAssigned or UserAssigned identity block.",
+      "reference": "https://learn.microsoft.com/azure/app-service/overview-managed-identity",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/account-identity-registered/"
+    },
+    {
+      "id": "AZ-FUNC-010",
+      "title": "Function apps should send diagnostics to Log Analytics",
+      "description": "Centralized Function App logs support security monitoring and incident response.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_linux_function_app",
+        "azurerm_windows_function_app",
+        "azurerm_function_app_flex_consumption"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_monitor_diagnostic_setting",
+      "relatedMatchAttribute": "target_resource_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the Function App and send logs to Log Analytics.",
+      "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
+    }
+  ]
+}

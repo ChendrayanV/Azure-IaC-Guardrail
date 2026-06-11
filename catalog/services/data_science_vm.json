@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "data_science_vm",
+  "displayName": "Data Science Virtual Machines",
+  "shortName": "DSVM",
+  "category": "AI + Machine Learning",
+  "description": "PRECONFIGURED AI DEVELOPMENT",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10028-icon-service-Virtual-Machines-(Classic).svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

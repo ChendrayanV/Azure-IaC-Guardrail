@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "digital_twins",
+  "displayName": "Digital Twins",
+  "shortName": "ADT",
+  "category": "Internet of Things",
+  "description": "CONNECTED ENVIRONMENT MODELS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "iot/01030-icon-service-Digital-Twins.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "deployment_environments",
+  "displayName": "Azure Deployment Environments",
+  "shortName": "ADE",
+  "category": "Developer Tools",
+  "description": "DEVELOPER INFRASTRUCTURE ENVIRONMENTS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/03251-icon-service-Azure-Deployment-Environments.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

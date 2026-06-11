@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as vscode from "vscode";
+import completeCatalog from "../../azure-complete-catalog-vscode.json";
 import { loadControls } from "../controls/catalog";
 import { loadWorkspacePolicy } from "../controls/workspacePolicy";
 import {
@@ -12,7 +13,6 @@ import {
   type InfraSketch,
 } from "../core/infraSketch";
 import { scanTerraform } from "../core/scanner";
-import serviceStatus from "../data/cloudCanvasServiceStatus.json";
 import {
   terraformPathFor,
   validateTerraformConfiguration,
@@ -47,10 +47,20 @@ export class InfraSketchPanel implements vscode.Disposable {
         "Montserrat-VariableFont_wght.ttf",
       ),
     );
+    const iconBaseUri = panel.webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this.context.extensionUri,
+        "media",
+        "cloud-canvas",
+        "Azure_Public_Service_Icons",
+        "Icons",
+      ),
+    );
     panel.webview.html = renderSketchHtml(
       sketch,
       createNonce(),
       montserratUri.toString(),
+      iconBaseUri.toString(),
       panel.webview.cspSource,
     );
     panel.reveal(vscode.ViewColumn.Active, false);
@@ -290,6 +300,7 @@ function renderSketchHtml(
   sketch: InfraSketch,
   nonce: string,
   montserratUri: string,
+  iconBaseUri: string,
   cspSource: string,
 ): string {
   return `<!doctype html>
@@ -297,7 +308,7 @@ function renderSketchHtml(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${cspSource}; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${cspSource}; img-src ${cspSource}; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}';">
   <title>Cloud Canvas</title>
   <style nonce="${nonce}">
     @font-face { font-family: "Montserrat"; src: url("${montserratUri}") format("truetype"); font-style: normal; font-weight: 100 900; font-display: swap; }
@@ -329,19 +340,22 @@ function renderSketchHtml(
     .search-wrap::after { content: ""; position: absolute; left: 28px; top: 28px; width: 8px; height: 2px; background: #768394; transform: rotate(45deg); }
     #search { width: 100%; height: 52px; padding: 0 15px 0 50px; border: 1px solid #d5dbe3; border-radius: 5px; outline: none; color: #111; background: #fff; font-size: 17px; }
     #search:focus { border-color: var(--azure); box-shadow: 0 0 0 2px #1683ff22; }
-    .category { border-bottom: 1px solid transparent; }
-    .category-toggle { display: grid; grid-template-columns: 34px 1fr 18px; width: 100%; min-height: 58px; align-items: center; padding: 0 8px; border: 0; color: #202020; background: transparent; text-align: left; cursor: pointer; font-size: 17px; }
-    .category-toggle:hover { background: #e9eaec; }
+    .category { margin-bottom: 9px; overflow: hidden; border: 1px solid #d7dce3; border-radius: 8px; background: #fff; box-shadow: 0 2px 7px #1720330c; }
+    .category-toggle { display: grid; grid-template-columns: 34px 1fr auto 18px; width: 100%; min-height: 58px; align-items: center; padding: 0 12px; border: 0; color: #202020; background: #fff; text-align: left; cursor: pointer; font-size: 15px; font-weight: 650; }
+    .category-toggle:hover { background: #f6f9fc; }
     .category-icon { display: grid; place-items: center; width: 24px; height: 24px; border: 1.6px solid #30343a; border-radius: 5px; font-size: 8px; font-weight: 800; }
+    .category-count { min-width: 25px; padding: 3px 7px; border-radius: 999px; color: #586575; background: #eef2f6; text-align: center; font-size: 10px; }
     .chevron { width: 9px; height: 9px; border-right: 1.7px solid currentColor; border-bottom: 1.7px solid currentColor; transform: rotate(45deg) translateY(-3px); transition: transform .15s ease; }
     .category.open .chevron { transform: rotate(225deg) translate(-2px, -1px); }
-    .service-list { display: none; gap: 9px; padding: 2px 0 14px; }
+    .service-list { display: none; gap: 9px; padding: 4px 10px 12px; border-top: 1px solid #edf0f4; }
     .category.open .service-list { display: grid; }
-    .service { position: relative; display: grid; grid-template-columns: 12px 42px 1fr; gap: 10px; min-height: 66px; align-items: center; padding: 8px 10px; border: 1px solid #d7dce3; border-radius: 3px; background: #fff; box-shadow: 0 1px 1px #00000008; cursor: grab; }
+    .service { position: relative; display: grid; grid-template-columns: 12px 42px 1fr; gap: 10px; min-height: 68px; align-items: center; padding: 9px 10px; border: 1px solid #d7dce3; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px #1720330d; cursor: grab; }
     .service:hover { border-color: #8abcf0; box-shadow: 0 2px 6px #00000012; }
     .grip { color: #89929d; font-size: 16px; line-height: 10px; letter-spacing: -1px; }
-    .service-icon, .node-icon { display: grid; place-items: center; color: #fff; background: var(--service-color); font-size: 10px; font-weight: 800; }
-    .service-icon { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 2px #ffffff44; }
+    .service-icon, .node-icon { position: relative; display: grid; overflow: hidden; place-items: center; color: var(--service-color); background: transparent; font-size: 9px; font-weight: 800; }
+    .service-icon { width: 38px; height: 38px; }
+    .icon-image { position: absolute; z-index: 2; width: 100%; height: 100%; object-fit: contain; background: transparent; }
+    .icon-fallback { position: relative; z-index: 1; display: grid; width: 100%; height: 100%; place-items: center; color: var(--service-color); background: transparent; }
     .service-copy { min-width: 0; }
     .service-copy strong { display: block; overflow: hidden; color: #111; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
     .service-copy small { display: block; overflow: hidden; margin-top: 5px; color: #87909b; font-size: 10px; font-weight: 700; letter-spacing: .15px; text-overflow: ellipsis; white-space: nowrap; }
@@ -371,7 +385,7 @@ function renderSketchHtml(
     .node.selected { outline: 2px solid #1683ff; outline-offset: 2px; }
     .node-status { position: absolute; z-index: 6; top: -6px; left: -6px; }
     .node-head { position: relative; z-index: 1; display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center; height: 62px; padding: 8px 12px; }
-    .node-icon { width: 30px; height: 30px; border-radius: 7px; }
+    .node-icon { width: 34px; height: 34px; }
     .node-copy { min-width: 0; }
     .node strong { display: block; overflow: hidden; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
     .node small { display: block; overflow: hidden; margin-top: 3px; color: #7d8793; font-size: 8px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
@@ -385,9 +399,12 @@ function renderSketchHtml(
     .inspector-service { margin: -5px 0 12px; color: #65707c; font-size: 11px; }
     .parameter-heading { margin: 16px 0 2px; padding-top: 12px; border-top: 1px solid #e0e5eb; color: #26313f; font-size: 11px; text-transform: uppercase; }
     .parameter-empty { margin: 10px 0 0; color: #7b8591; font-size: 11px; line-height: 1.4; }
+    .parameter-help { margin: 4px 0 0; color: #7b8591; font-size: 9px; line-height: 1.4; }
+    .required-mark { margin-left: 3px; color: #c4312f; }
     .field { margin-top: 10px; }
     .field label { display: block; margin-bottom: 4px; color: #65707c; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .field input, .field select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid #ced5dd; border-radius: 3px; color: #111; background: #fff; }
+    .field input, .field select, .field textarea { width: 100%; min-height: 32px; padding: 6px 8px; border: 1px solid #ced5dd; border-radius: 3px; color: #111; background: #fff; }
+    .field textarea { min-height: 76px; resize: vertical; font-family: var(--vscode-editor-font-family), monospace; font-size: 11px; }
     .field.checkbox { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .field.checkbox label { margin: 0; text-transform: none; }
     .field.checkbox input { width: 18px; height: 18px; flex: 0 0 18px; }
@@ -478,8 +495,8 @@ function renderSketchHtml(
   </div>
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
-    const catalog = ${JSON.stringify(serviceCatalog())};
-    const parameterDefinitions = ${safeJson(SKETCH_PARAMETER_DEFINITIONS)};
+    const catalog = ${JSON.stringify(serviceCatalog(iconBaseUri))};
+    const parameterDefinitions = ${safeJson(mappedParameterDefinitions())};
     let sketch = ${safeJson(sketch)};
     let selectedId = null;
     let connectionDraft = null;
@@ -527,7 +544,7 @@ function renderSketchHtml(
         const isOpen = term.length > 0 || openCategories.has(categoryName);
         category.className = 'category' + (isOpen ? ' open' : '');
         const initials = categoryName.split(/\\s+/).filter(word => /[A-Za-z]/.test(word[0] || '')).slice(0, 2).map(word => word[0]).join('');
-        category.innerHTML = '<button class="category-toggle" type="button"><span class="category-icon">' + escapeText(initials) + '</span><span>' + escapeText(categoryName) + '</span><span class="chevron"></span></button><div class="service-list"></div>';
+        category.innerHTML = '<button class="category-toggle" type="button"><span class="category-icon">' + escapeText(initials) + '</span><span>' + escapeText(categoryName) + '</span><span class="category-count">' + items.length + '</span><span class="chevron"></span></button><div class="service-list"></div>';
         category.querySelector('.category-toggle').addEventListener('click', () => {
           if (openCategories.has(categoryName)) openCategories.delete(categoryName); else openCategories.add(categoryName);
           category.classList.toggle('open');
@@ -539,7 +556,7 @@ function renderSketchHtml(
           card.draggable = true;
           card.dataset.type = item.type;
           card.style.setProperty('--service-color', item.color);
-          card.innerHTML = '<span class="grip">::</span><span class="service-icon">' + escapeText(item.short) + '</span><span class="service-copy"><strong>' + escapeText(item.title) + '</strong><small>' + escapeText(item.description) + '</small></span>';
+          card.innerHTML = '<span class="grip">::</span>' + iconMarkup(item, "service-icon") + '<span class="service-copy"><strong>' + escapeText(item.title) + '</strong><small>' + escapeText(item.description) + '</small></span>';
           card.addEventListener('dragstart', event => event.dataTransfer.setData('text/service', item.type));
           card.addEventListener('dblclick', () => addNode(item, 440, 160 + sketch.nodes.length * 28));
           list.appendChild(card);
@@ -561,7 +578,7 @@ function renderSketchHtml(
         card.style.left = node.x + "px";
         card.style.top = node.y + "px";
         card.style.setProperty("--service-color", service.color);
-        card.innerHTML = '<span class="node-status status-dot ' + service.status + '" title="' + escapeText(statusLabel(service.status)) + '"></span><div class="node-head"><span class="node-icon">' + escapeText(service.short) + '</span><div class="node-copy"><strong>' + escapeText(node.name) + '</strong><small>' + escapeText(service.description) + '</small></div></div><button class="port" type="button" title="Drag to create a Terraform dependency"></button>';
+        card.innerHTML = '<span class="node-status status-dot ' + service.status + '" title="' + escapeText(statusLabel(service.status)) + '"></span><div class="node-head">' + iconMarkup(service, "node-icon") + '<div class="node-copy"><strong>' + escapeText(node.name) + '</strong><small>' + escapeText(service.description) + '</small></div></div><button class="port" type="button" title="Drag to create a Terraform dependency"></button>';
         card.addEventListener("pointerdown", event => beginDrag(event, node));
         card.addEventListener("click", event => selectNode(event, node));
         card.querySelector('.port').addEventListener('pointerdown', event => beginConnection(event, node));
@@ -673,7 +690,9 @@ function renderSketchHtml(
         const service = catalog.find(item => item.type === node.serviceType);
         nodeName.value = node.name;
         nodeRegion.value = node.region;
-        document.getElementById("inspectorService").textContent = service?.title || node.serviceType;
+        document.getElementById("inspectorService").textContent = service
+          ? service.title + (service.terraformType ? " · " + service.terraformType : " · Diagram only")
+          : node.serviceType;
         renderServiceParameters(node);
       }
     }
@@ -689,10 +708,17 @@ function renderSketchHtml(
         const field = document.createElement("div");
         field.className = "field" + (definition.type === "boolean" ? " checkbox" : "");
         const label = document.createElement("label");
-        label.textContent = definition.label;
+        label.innerHTML = escapeText(definition.label) + (definition.required ? '<span class="required-mark">*</span>' : '');
         label.htmlFor = "parameter-" + definition.key;
         const control = createParameterControl(node, definition);
         field.append(label, control);
+        const guidance = [definition.controlIds?.length ? 'Controls: ' + definition.controlIds.join(', ') : '', definition.remediation || '', definition.nestedBlock ? 'Enter this nested Terraform block as JSON for the prototype.' : ''].filter(Boolean).join(' ');
+        if (guidance) {
+          const help = document.createElement("p");
+          help.className = "parameter-help";
+          help.textContent = guidance;
+          field.appendChild(help);
+        }
         serviceParameters.appendChild(field);
       });
     }
@@ -707,6 +733,8 @@ function renderSketchHtml(
           item.textContent = option;
           control.appendChild(item);
         });
+      } else if (definition.type === "json") {
+        control = document.createElement("textarea");
       } else {
         control = document.createElement("input");
         control.type = definition.type === "boolean" ? "checkbox" : definition.type;
@@ -719,14 +747,24 @@ function renderSketchHtml(
         ? node.parameters[definition.key]
         : definition.defaultValue;
       if (definition.type === "boolean") control.checked = Boolean(current);
+      else if (definition.type === "json") control.value = JSON.stringify(current, null, 2);
       else control.value = String(current);
       control.addEventListener("change", () => {
         node.parameters = node.parameters || {};
-        node.parameters[definition.key] = definition.type === "boolean"
-          ? control.checked
-          : definition.type === "number"
-            ? Number(control.value)
-            : control.value;
+        try {
+          node.parameters[definition.key] = definition.type === "boolean"
+            ? control.checked
+            : definition.type === "number"
+              ? Number(control.value)
+              : definition.type === "json"
+                ? JSON.parse(control.value || "{}")
+                : control.value;
+          control.setCustomValidity("");
+        } catch {
+          control.setCustomValidity("Enter valid JSON.");
+          control.reportValidity();
+          return;
+        }
         remember();
       });
       return control;
@@ -738,14 +776,16 @@ function renderSketchHtml(
 
     function addNode(service, x, y) {
       remember();
+      const id = 'node-' + Date.now() + '-' + sequence;
       sketch.nodes.push({
-        id: 'node-' + Date.now() + '-' + sequence,
+        id,
         serviceType: service.type,
         name: service.type.replaceAll('_', '-') + '-' + sequence++,
         region: 'uksouth',
         x: Math.max(0, x),
         y: Math.max(0, y)
       });
+      selectedId = id;
       render();
     }
 
@@ -1112,6 +1152,10 @@ function renderSketchHtml(
       return status === 'approved' ? 'Approved' : status === 'under-review' ? 'Under review' : 'Not approved';
     }
 
+    function iconMarkup(service, className) {
+      return '<span class="' + className + '"><span class="icon-fallback">' + escapeText(service.short) + '</span><img class="icon-image" src="' + escapeText(service.iconUri) + '" alt="" draggable="false"></span>';
+    }
+
     function escapeText(value) {
       const span = document.createElement("span");
       span.textContent = value;
@@ -1128,16 +1172,34 @@ function safeJson(value: unknown): string {
   return JSON.stringify(value).replaceAll("<", "\\u003c");
 }
 
-function serviceCatalog() {
-  const approved = new Set(serviceStatus.approved);
-  const underReview = new Set(serviceStatus.underReview);
+function mappedParameterDefinitions() {
+  return Object.fromEntries(
+    SKETCH_SERVICES.map((service) => [
+      service.type,
+      SKETCH_PARAMETER_DEFINITIONS[service.type] ?? [],
+    ]),
+  );
+}
+
+function serviceCatalog(iconBaseUri: string) {
+  const mapped = completeCatalog.services as Record<
+    string,
+    {
+      icon: string;
+      governanceStatus: "approved" | "under-review" | "not-approved";
+      terraform: { resourceType: string | null };
+      controls: unknown[];
+    }
+  >;
   return SKETCH_SERVICES.map((service) => ({
     ...service,
-    status: approved.has(service.type)
-      ? "approved"
-      : underReview.has(service.type)
-        ? "under-review"
-        : "not-approved",
+    iconUri: `${iconBaseUri}/${mapped[service.type].icon
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`,
+    terraformType: mapped[service.type].terraform.resourceType,
+    controls: mapped[service.type].controls,
+    status: mapped[service.type].governanceStatus,
   }));
 }
 

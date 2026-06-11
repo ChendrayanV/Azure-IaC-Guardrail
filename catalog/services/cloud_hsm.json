@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "cloud_hsm",
+  "displayName": "Azure Cloud HSM",
+  "shortName": "HSM",
+  "category": "Security",
+  "description": "DEDICATED HARDWARE SECURITY MODULE",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10030-icon-service-Cloud-Services-(Classic).svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

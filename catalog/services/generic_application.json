@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_application",
+  "displayName": "Application",
+  "shortName": "APP",
+  "category": "Generic Architecture",
+  "description": "GENERIC SOFTWARE APPLICATION",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "compute/00329-icon-service-Application-Group.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "confidential_ledger",
+  "displayName": "Azure Confidential Ledger",
+  "shortName": "ACL",
+  "category": "Databases",
+  "description": "TAMPER-PROOF LEDGER",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "other/02668-icon-service-Confidential-Ledgers.svg",
+  "terraform": {
+    "resourceType": "azurerm_confidential_ledger",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "ledger_type",
+        "label": "Ledger Type",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "azuread_based_service_principal",
+        "label": "Azuread Based Service Principal",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

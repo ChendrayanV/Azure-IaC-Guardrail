@@ -1,0 +1,49 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "resource_group",
+  "displayName": "Resource Group",
+  "shortName": "RG",
+  "category": "Management + Governance",
+  "description": "RESOURCE CONTAINER",
+  "color": "#0078d4",
+  "governanceStatus": "approved",
+  "icon": "general/10830-icon-service-Resource-Group-List.svg",
+  "terraform": {
+    "resourceType": "azurerm_resource_group",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "tags",
+        "label": "Tags",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-RG-001"
+        ],
+        "remediation": "Add the required organizational tags to the resource group."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-RG-001",
+      "title": "Resource groups must have tags",
+      "description": "Resource groups must include ownership, environment, and governance metadata.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_resource_group"
+      ],
+      "attribute": "tags",
+      "operator": "exists",
+      "remediation": "Add the required organizational tags to the resource group.",
+      "reference": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources",
+      "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/resource-group/resource-group-has-tags/"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "dev_box",
+  "displayName": "Microsoft Dev Box",
+  "shortName": "DEV",
+  "category": "Developer Tools",
+  "description": "CLOUD DEVELOPER WORKSTATIONS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/03250-icon-service-Microsoft-Dev-Box.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

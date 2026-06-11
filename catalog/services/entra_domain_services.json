@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "entra_domain_services",
+  "displayName": "Entra Domain Services",
+  "shortName": "DS",
+  "category": "Identity",
+  "description": "MANAGED DOMAIN SERVICES",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "identity/10222-icon-service-Entra-Domain-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

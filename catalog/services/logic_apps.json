@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "logic_apps",
+  "displayName": "Logic Apps",
+  "shortName": "LA",
+  "category": "Integration",
+  "description": "WORKFLOW AUTOMATION",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "integration/02631-icon-service-Logic-Apps.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

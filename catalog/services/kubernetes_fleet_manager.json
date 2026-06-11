@@ -1,0 +1,22 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "kubernetes_fleet_manager",
+  "displayName": "Azure Kubernetes Fleet Manager",
+  "shortName": "KFM",
+  "category": "Containers",
+  "description": "MULTI-CLUSTER MANAGEMENT",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "other/03134-icon-service-Kubernetes-Fleet-Manager.svg",
+  "terraform": {
+    "resourceType": "azurerm_kubernetes_fleet_manager",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": []
+  },
+  "controls": []
+}

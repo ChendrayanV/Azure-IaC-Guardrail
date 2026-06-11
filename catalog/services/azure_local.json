@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "azure_local",
+  "displayName": "Azure Local",
+  "shortName": "LOCAL",
+  "category": "Hybrid + Multicloud",
+  "description": "DISTRIBUTED INFRASTRUCTURE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "new icons/033745116-icon-service-Azure-Local.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

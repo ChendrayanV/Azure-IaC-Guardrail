@@ -1,0 +1,47 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "sql_database",
+  "displayName": "SQL Database",
+  "shortName": "DB",
+  "category": "Databases",
+  "description": "MANAGED RELATIONAL DATABASE",
+  "color": "#0e7490",
+  "governanceStatus": "approved",
+  "icon": "databases/10130-icon-service-SQL-Database.svg",
+  "terraform": {
+    "resourceType": "azurerm_mssql_database",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name"
+    ],
+    "parameters": [
+      {
+        "key": "server_id",
+        "label": "Server Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "skuName",
+        "label": "SKU",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "S0"
+      },
+      {
+        "key": "zoneRedundant",
+        "label": "Zone redundant",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      }
+    ]
+  },
+  "controls": []
+}

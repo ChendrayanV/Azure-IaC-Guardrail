@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "network_function_manager",
+  "displayName": "Azure Network Function Manager",
+  "shortName": "NFM",
+  "category": "Networking",
+  "description": "NETWORK FUNCTION LIFECYCLE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/02740-icon-service-Azure-Network-Function-Manager.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

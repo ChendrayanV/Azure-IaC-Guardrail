@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_database",
+  "displayName": "Database",
+  "shortName": "DB",
+  "category": "Generic Architecture",
+  "description": "GENERIC DATA STORE",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "databases/03490-icon-service-Oracle-Database.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

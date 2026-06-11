@@ -1,0 +1,71 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "network_security_group",
+  "displayName": "Network Security Group",
+  "shortName": "NSG",
+  "category": "Networking",
+  "description": "NETWORK ACCESS CONTROL",
+  "color": "#dc2626",
+  "governanceStatus": "approved",
+  "icon": "networking/10067-icon-service-Network-Security-Groups.svg",
+  "terraform": {
+    "resourceType": "azurerm_network_security_group",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": [
+    {
+      "id": "AZ-NET-002",
+      "title": "Inbound NSG rules must not allow every source",
+      "description": "Inbound allow rules must not use a wildcard source address.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_network_security_rule"
+      ],
+      "attribute": "source_address_prefix",
+      "operator": "notEquals",
+      "expected": "*",
+      "conditions": [
+        {
+          "attribute": "direction",
+          "operator": "equals",
+          "expected": "Inbound"
+        },
+        {
+          "attribute": "access",
+          "operator": "equals",
+          "expected": "Allow"
+        }
+      ],
+      "remediation": "Replace source_address_prefix = \"*\" with approved CIDR ranges, service tags, or application security groups.",
+      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
+    },
+    {
+      "id": "AZ-NET-003",
+      "title": "Inbound NSG rules must not allow every destination port",
+      "description": "Inbound allow rules must restrict destination ports.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_network_security_rule"
+      ],
+      "attribute": "destination_port_range",
+      "operator": "notEquals",
+      "expected": "*",
+      "conditions": [
+        {
+          "attribute": "direction",
+          "operator": "equals",
+          "expected": "Inbound"
+        },
+        {
+          "attribute": "access",
+          "operator": "equals",
+          "expected": "Allow"
+        }
+      ],
+      "remediation": "Replace destination_port_range = \"*\" with only the required ports.",
+      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
+    }
+  ]
+}

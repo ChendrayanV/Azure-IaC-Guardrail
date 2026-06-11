@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "custom_vision",
+  "displayName": "Azure AI Custom Vision",
+  "shortName": "CV",
+  "category": "AI + Machine Learning",
+  "description": "CUSTOM VISION MODELS",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/00793-icon-service-Custom-Vision.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

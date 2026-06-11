@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "front_door",
+  "displayName": "Front Door",
+  "shortName": "FD",
+  "category": "Networking",
+  "description": "GLOBAL APPLICATION DELIVERY",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "lighthouse",
+  "displayName": "Azure Lighthouse",
+  "shortName": "LH",
+  "category": "Management + Governance",
+  "description": "CROSS-TENANT MANAGEMENT",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/00471-icon-service-Azure-Lighthouse.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

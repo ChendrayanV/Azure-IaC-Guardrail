@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "storage_mover",
+  "displayName": "Azure Storage Mover",
+  "shortName": "STM",
+  "category": "Migration",
+  "description": "STORAGE DATA MIGRATION",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/03091-icon-service-Azure-Storage-Mover.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

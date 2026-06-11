@@ -2,6 +2,12 @@
 
 ## Variable-aware offline scanning
 
+Azure Pre-configuration stores a workspace-relative `terraformRoot` in
+`.azure-iac-guardrail/profile.json`. Use the folder picker for monorepos so
+static scanning, module initialization, variable selection, and local plans
+all operate on the same root module. The value is `.` for the VS Code workspace
+root or a path such as `infra/application`.
+
 Azure IaC Guardrail resolves a bounded subset of Terraform expressions without
 running Terraform:
 
@@ -11,20 +17,27 @@ running Terraform:
 - Locals that depend on resolved variables or earlier locals.
 - Strings, numbers, booleans, null, lists, maps, interpolation, and simple
   boolean conditionals.
+- Nested local modules and registry or Git modules already downloaded by
+  Terraform.
+- Resolvable module inputs and cross-file resource relationships.
 
 Run **Azure IaC Guardrail: Select Static Scan Variable Files** to save
 environment-specific paths in `azureIacGuardrail.staticVarFiles`.
 
-Resolution is intentionally conservative. Data sources, remote state, provider
-functions, module outputs, dynamic blocks, complex comprehensions, and
-provider-computed values remain **Plan required**.
+Uninitialized remote modules produce an explicit finding. The **Initialize
+modules and rescan** action runs `terraform init -backend=false` and indexes
+the downloaded source without creating a plan. Resolution remains
+conservative: exact `count`/`for_each` module instances, data sources, remote
+state, provider functions, module outputs, dynamic blocks, complex
+comprehensions, and provider-computed values remain **Plan required**.
 
 ## Editor experience
 
 Scans publish findings to the Problems panel. Hover text includes the control,
 observed and expected values, remediation, and variable provenance. Quick
-actions can rescan source, select variable files, or create a resolved plan.
-Completion items are derived from the active control catalog.
+actions can rescan source, select variable files, initialize modules, or create
+a resolved plan. Completion items are resource-aware and derived from the
+active control catalog.
 
 ## Plan architecture canvas
 
@@ -54,6 +67,30 @@ The catalog tracks the Microsoft Azure products directory and contains more
 than 200 unique products and architecture primitives. Newly added products
 default to diagram-only/not-approved until governance review and Terraform
 generation support are explicitly implemented.
+
+Azure services use the Microsoft Azure Public Service Icons V23 SVG set when
+the archive contains a direct or high-confidence match. Products newer than
+the icon release use a neutral Azure resource icon. The **Generic
+Architecture** category adds actors and technology-neutral components for
+users, developers, architects, clients, applications, data, networking,
+security, messaging, repositories, and external systems.
+
+The Microsoft icon FAQ and terms of use are packaged with the extension in
+`media/cloud-canvas`.
+
+## Custom service catalog
+
+Each file under `catalog/services` owns one service's:
+
+- Category cards and original Microsoft SVG folder paths.
+- Terraform resource-type selection.
+- Required and governed inspector parameters.
+- Expected control values, remediation guidance, references, and catalog
+  provenance.
+
+Use `npm run catalog:validate` to validate sources and rebuild
+`azure-complete-catalog-vscode.json`. Both scanning and Cloud Canvas consume
+that generated artifact.
 
 The AKS pattern models multiple namespaces on one private cluster. Messaging
 patterns include producer and worker applications, storage where appropriate,

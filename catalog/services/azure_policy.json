@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "azure_policy",
+  "displayName": "Azure Policy",
+  "shortName": "POL",
+  "category": "Management + Governance",
+  "description": "GOVERNANCE AND COMPLIANCE",
+  "color": "#7f56d9",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/10316-icon-service-Policy.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

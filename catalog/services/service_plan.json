@@ -1,0 +1,63 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "service_plan",
+  "displayName": "App Service Plan",
+  "shortName": "ASP",
+  "category": "Compute",
+  "description": "APP SERVICE COMPUTE",
+  "color": "#db2777",
+  "governanceStatus": "approved",
+  "icon": "app services/00046-icon-service-App-Service-Plans.svg",
+  "terraform": {
+    "resourceType": "azurerm_service_plan",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "os_type",
+        "label": "Os Type",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "osType",
+        "label": "Operating system",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Linux",
+        "options": [
+          "Linux",
+          "Windows"
+        ]
+      },
+      {
+        "key": "skuName",
+        "label": "SKU",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "P1v3"
+      }
+    ]
+  },
+  "controls": []
+}

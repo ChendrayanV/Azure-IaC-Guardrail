@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "data_share",
+  "displayName": "Azure Data Share",
+  "shortName": "SHARE",
+  "category": "Analytics",
+  "description": "SECURE DATA SHARING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "storage/10097-icon-service-Data-Share-Invitations.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

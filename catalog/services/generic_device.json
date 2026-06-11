@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_device",
+  "displayName": "Client Device",
+  "shortName": "DEV",
+  "category": "Generic Architecture",
+  "description": "DESKTOP OR MANAGED DEVICE",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "intune/10331-icon-service-Client-Apps.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

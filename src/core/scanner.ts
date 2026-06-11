@@ -17,8 +17,13 @@ export function scanTerraformWithContext(
   source: string,
   controls: Control[],
   context: StaticResolutionContext,
+  origin?: {
+    sourcePath?: string;
+    sourceUri?: string;
+    moduleAddress?: string;
+  },
 ): Finding[] {
-  return scanResources(parseTerraform(source, context), controls);
+  return scanResources(parseTerraform(source, context, origin), controls);
 }
 
 export function scanResources(
@@ -39,11 +44,8 @@ function evaluateControl(
   control: Control,
   resources: TerraformResource[],
 ): Finding[] {
-  if (control.planOnly && !resource.address) {
-    if (control.skipStatic) {
-      return [];
-    }
-    return [createFinding(resource, control, undefined, "unresolved")];
+  if (control.planOnly && !resource.address && control.skipStatic) {
+    return [];
   }
   const applicability = evaluateConditions(resource, control.conditions ?? []);
   if (applicability === false) {
@@ -51,6 +53,9 @@ function evaluateControl(
   }
 
   const attribute = getControlAttribute(resource, control);
+  if (control.planOnly && !resource.address && !attribute) {
+    return [createFinding(resource, control, undefined, "unresolved")];
+  }
   if (applicability === undefined) {
     return [createFinding(resource, control, attribute, "unresolved")];
   }
@@ -218,7 +223,7 @@ function createFinding(
   attribute: TerraformAttribute | undefined,
   outcome: Finding["outcome"],
 ): Finding {
-  return {
+  const finding: Finding = {
     outcome,
     control,
     resource,
@@ -233,6 +238,33 @@ function createFinding(
     endCharacter: attribute?.endCharacter ?? 1,
     message: `${control.id}: ${control.title}`,
   };
+  const fixValue = preferredFixValue(control);
+  if (
+    outcome === "noncompliant" &&
+    fixValue !== undefined &&
+    control.operator !== "relatedResourceExists"
+  ) {
+    finding.fix = attribute
+      ? { kind: "replace-value", value: fixValue }
+      : !control.attribute.includes(".")
+        ? {
+            kind: "insert-attribute",
+            attribute: control.attribute,
+            value: fixValue,
+          }
+        : undefined;
+  }
+  return finding;
+}
+
+function preferredFixValue(control: Control): unknown {
+  if (control.operator === "equals") {
+    return control.expected;
+  }
+  if (control.operator === "oneOf" && Array.isArray(control.expected)) {
+    return control.expected[0];
+  }
+  return undefined;
 }
 
 function evaluate(
@@ -321,6 +353,10 @@ function getAttributeValues(
   resource: TerraformResource,
   attributePath: string,
 ): unknown[] | undefined {
+  const direct = resource.attributes.get(attributePath);
+  if (direct) {
+    return direct.resolved ? [direct.value] : undefined;
+  }
   const [root, ...segments] = attributePath.split(".");
   const attribute = resource.attributes.get(root);
   if (!attribute || !attribute.resolved) {

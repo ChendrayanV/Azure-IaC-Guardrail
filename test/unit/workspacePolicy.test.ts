@@ -9,6 +9,7 @@ describe("workspace policy", () => {
   it("provides the recommended Azure tag defaults", () => {
     expect(defaultWorkspacePolicy()).toEqual({
       version: 1,
+      terraformRoot: ".",
       terraformVersion: ">= 1.5.0, < 2.0.0",
       allowedRegions: ["uksouth", "ukwest"],
       costAssumptions: {
@@ -50,6 +51,7 @@ describe("workspace policy", () => {
     expect(profile.tagValues).toEqual({ managed_by: "terraform" });
     expect(profile).toEqual({
       version: 1,
+      terraformRoot: ".",
       terraformVersion: ">= 1.5.0, < 2.0.0",
       allowedRegions: [],
       costAssumptions: {
@@ -180,5 +182,22 @@ describe("workspace policy", () => {
     expect(() =>
       normalizeWorkspacePolicy({ terraformVersion: "latest" }),
     ).toThrow("Terraform version");
+  });
+
+  it("normalizes a workspace-relative Terraform root", () => {
+    expect(
+      normalizeWorkspacePolicy({
+        terraformRoot: "./infrastructure/platform/",
+      }).terraformRoot,
+    ).toBe("infrastructure/platform");
+  });
+
+  it("rejects Terraform roots outside the workspace", () => {
+    expect(() =>
+      normalizeWorkspacePolicy({ terraformRoot: "../shared" }),
+    ).toThrow("workspace-relative");
+    expect(() =>
+      normalizeWorkspacePolicy({ terraformRoot: "C:\\external" }),
+    ).toThrow("workspace-relative");
   });
 });

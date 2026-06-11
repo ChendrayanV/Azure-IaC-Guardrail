@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "immersive_reader",
+  "displayName": "Azure AI Immersive Reader",
+  "shortName": "IR",
+  "category": "AI + Machine Learning",
+  "description": "READING ACCESSIBILITY",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10001-icon-service-All-Resources.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

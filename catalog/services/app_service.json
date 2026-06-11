@@ -1,0 +1,43 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "app_service",
+  "displayName": "App Services",
+  "shortName": "APP",
+  "category": "Compute",
+  "description": "WEB HOSTING",
+  "color": "#2563eb",
+  "governanceStatus": "under-review",
+  "icon": "app services/10035-icon-service-App-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_service_plan",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "os_type",
+        "label": "Os Type",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

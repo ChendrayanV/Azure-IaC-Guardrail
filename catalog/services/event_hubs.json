@@ -1,0 +1,308 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "event_hubs",
+  "displayName": "Event Hubs",
+  "shortName": "EH",
+  "category": "Analytics",
+  "description": "STREAMING INGESTION",
+  "color": "#7c3aed",
+  "governanceStatus": "under-review",
+  "icon": "analytics/00039-icon-service-Event-Hubs.svg",
+  "terraform": {
+    "resourceType": "azurerm_eventhub_namespace",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "Namespace SKU",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Standard",
+        "options": [
+          "Basic",
+          "Standard",
+          "Premium"
+        ]
+      },
+      {
+        "key": "local_authentication_enabled",
+        "label": "Local Authentication Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-EH-001"
+        ],
+        "remediation": "Set local_authentication_enabled = false and grant Event Hubs data-plane roles to managed identities."
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-EH-002"
+        ],
+        "remediation": "Configure a private endpoint and set public_network_access_enabled = false."
+      },
+      {
+        "key": "minimum_tls_version",
+        "label": "Minimum Tls Version",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "1.2",
+        "controlIds": [
+          "AZ-EH-003"
+        ],
+        "remediation": "Set minimum_tls_version = \"1.2\"."
+      },
+      {
+        "key": "auto_inflate_enabled",
+        "label": "Auto Inflate Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-EH-004"
+        ],
+        "remediation": "Set auto_inflate_enabled = true and configure maximum_throughput_units for the expected peak load."
+      },
+      {
+        "key": "id",
+        "label": "Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-EH-005",
+          "AZ-EH-006"
+        ],
+        "remediation": "Create an azurerm_eventhub_namespace_customer_managed_key resource linked through eventhub_namespace_id and grant its managed identity access to the Key Vault key. Create an azurerm_monitor_diagnostic_setting targeting the Event Hubs namespace and send the required logs and metrics to Log Analytics."
+      },
+      {
+        "key": "tags",
+        "label": "Tags",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-EH-007"
+        ],
+        "remediation": "Add the required organizational tags to the Event Hubs namespace."
+      },
+      {
+        "key": "identity.type",
+        "label": "Identity.type",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-EH-008"
+        ],
+        "remediation": "Configure a SystemAssigned or UserAssigned identity block on the Event Hubs namespace."
+      },
+      {
+        "key": "capacity",
+        "label": "Namespace capacity",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 1,
+        "min": 1,
+        "max": 20,
+        "step": 1
+      },
+      {
+        "key": "publicNetworkAccess",
+        "label": "Public network access",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "localAuthentication",
+        "label": "Local authentication",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "eventHubName",
+        "label": "Event Hub name",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "events"
+      },
+      {
+        "key": "partitionCount",
+        "label": "Partition count",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 4,
+        "min": 1,
+        "max": 32,
+        "step": 1
+      },
+      {
+        "key": "messageRetention",
+        "label": "Message retention days",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 1,
+        "min": 1,
+        "max": 7,
+        "step": 1
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-EH-001",
+      "title": "Event Hubs namespaces must disable local authentication",
+      "description": "Event Hubs clients must use Microsoft Entra identities instead of shared access keys.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "local_authentication_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set local_authentication_enabled = false and grant Event Hubs data-plane roles to managed identities.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/authenticate-managed-identity"
+    },
+    {
+      "id": "AZ-EH-002",
+      "title": "Event Hubs namespaces must disable public network access",
+      "description": "Event Hubs namespaces must use private connectivity instead of public endpoints.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Configure a private endpoint and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/private-link-service"
+    },
+    {
+      "id": "AZ-EH-003",
+      "title": "Event Hubs namespaces must require TLS 1.2",
+      "description": "Event Hubs namespaces must reject legacy TLS protocol versions.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "minimum_tls_version",
+      "operator": "equals",
+      "expected": "1.2",
+      "remediation": "Set minimum_tls_version = \"1.2\".",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/transport-layer-security-configure-minimum-version"
+    },
+    {
+      "id": "AZ-EH-004",
+      "title": "Event Hubs namespaces should enable auto-inflate",
+      "description": "Standard Event Hubs namespaces should automatically increase throughput capacity during demand spikes.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "auto_inflate_enabled",
+      "operator": "equals",
+      "expected": true,
+      "conditions": [
+        {
+          "attribute": "sku",
+          "operator": "equals",
+          "expected": "Standard"
+        }
+      ],
+      "remediation": "Set auto_inflate_enabled = true and configure maximum_throughput_units for the expected peak load.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/event-hubs-auto-inflate"
+    },
+    {
+      "id": "AZ-EH-005",
+      "title": "Premium Event Hubs namespaces should use customer-managed keys",
+      "description": "Premium Event Hubs namespaces should use customer-managed keys to control encryption key lifecycle and access.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_eventhub_namespace_customer_managed_key",
+      "relatedMatchAttribute": "eventhub_namespace_id",
+      "conditions": [
+        {
+          "attribute": "sku",
+          "operator": "equals",
+          "expected": "Premium"
+        }
+      ],
+      "planOnly": true,
+      "remediation": "Create an azurerm_eventhub_namespace_customer_managed_key resource linked through eventhub_namespace_id and grant its managed identity access to the Key Vault key.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/configure-customer-managed-key"
+    },
+    {
+      "id": "AZ-EH-006",
+      "title": "Event Hubs namespaces should send diagnostic logs to Log Analytics",
+      "description": "Centralized Event Hubs logs support security monitoring, operational analysis, and incident response.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_monitor_diagnostic_setting",
+      "relatedMatchAttribute": "target_resource_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the Event Hubs namespace and send the required logs and metrics to Log Analytics.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/monitor-event-hubs"
+    },
+    {
+      "id": "AZ-EH-007",
+      "title": "Event Hubs namespaces must have tags",
+      "description": "Event Hubs namespaces must include ownership, environment, and governance metadata.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "tags",
+      "operator": "exists",
+      "remediation": "Add the required organizational tags to the Event Hubs namespace.",
+      "reference": "https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources"
+    },
+    {
+      "id": "AZ-EH-008",
+      "title": "Event Hubs namespaces must use managed identity",
+      "description": "Event Hubs namespaces must use managed identity for secure access to customer-managed keys and dependent Azure services.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_eventhub_namespace"
+      ],
+      "attribute": "identity.type",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure a SystemAssigned or UserAssigned identity block on the Event Hubs namespace.",
+      "reference": "https://learn.microsoft.com/azure/event-hubs/authenticate-managed-identity"
+    }
+  ]
+}

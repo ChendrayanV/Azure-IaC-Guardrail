@@ -1,0 +1,35 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "kubernetes_namespace",
+  "displayName": "Kubernetes Namespace",
+  "shortName": "NS",
+  "category": "Containers",
+  "description": "SHARED CLUSTER TENANCY",
+  "color": "#5b6ee1",
+  "governanceStatus": "under-review",
+  "icon": "compute/10023-icon-service-Kubernetes-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": [
+      {
+        "key": "managedBy",
+        "label": "Managed-by label",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "terraform"
+      },
+      {
+        "key": "tenancyPattern",
+        "label": "Tenancy pattern label",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "shared-cluster"
+      }
+    ]
+  },
+  "controls": []
+}

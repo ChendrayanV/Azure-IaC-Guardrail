@@ -1,0 +1,96 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "firewall",
+  "displayName": "Azure Firewall",
+  "shortName": "FW",
+  "category": "Networking",
+  "description": "MANAGED NETWORK FIREWALL",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "networking/00271-icon-service-Azure-Firewall-Manager.svg",
+  "terraform": {
+    "resourceType": "azurerm_firewall",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_tier",
+        "label": "Sku Tier",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "Premium",
+        "controlIds": [
+          "AZ-NET-005"
+        ],
+        "remediation": "Set sku_tier = \"Premium\" where advanced threat protection is required."
+      },
+      {
+        "key": "ip_configuration",
+        "label": "Ip Configuration",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "threat_intel_mode",
+        "label": "Threat Intel Mode",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Deny",
+        "controlIds": [
+          "AZ-NET-004"
+        ],
+        "remediation": "Set threat_intel_mode = \"Deny\"."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-NET-004",
+      "title": "Azure Firewall threat intelligence must deny malicious traffic",
+      "description": "Azure Firewall must deny traffic identified as malicious by threat intelligence.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_firewall"
+      ],
+      "attribute": "threat_intel_mode",
+      "operator": "equals",
+      "expected": "Deny",
+      "remediation": "Set threat_intel_mode = \"Deny\".",
+      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
+    },
+    {
+      "id": "AZ-NET-005",
+      "title": "Azure Firewall should use Premium tier",
+      "description": "Premium tier enables TLS inspection and intrusion detection and prevention capabilities.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_firewall"
+      ],
+      "attribute": "sku_tier",
+      "operator": "equals",
+      "expected": "Premium",
+      "remediation": "Set sku_tier = \"Premium\" where advanced threat protection is required.",
+      "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
+    }
+  ]
+}

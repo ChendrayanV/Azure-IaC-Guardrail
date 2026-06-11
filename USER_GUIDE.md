@@ -92,6 +92,12 @@ Open VS Code's **Welcome** page and select
 
 Use this mode for fast feedback while editing.
 
+Before scanning a monorepo, run **Azure IaC Guardrail: Azure
+Pre-configuration** and choose **Terraform workspace root**. Use **Choose
+Folder**, enter a workspace-relative path, or select **Use Workspace Root**.
+The saved root applies consistently to static scans, downloaded-module
+initialization, selected `.tfvars` files, and local plan scans.
+
 1. Open the Terraform root folder in VS Code.
 2. Open the Command Palette with `Ctrl+Shift+P`.
 3. Run **Azure IaC Guardrail: Scan Terraform Files**.
@@ -100,13 +106,18 @@ Use this mode for fast feedback while editing.
 The static scanner reads Terraform resource blocks and supported top-level
 attributes. It resolves variable defaults, `terraform.tfvars`,
 `*.auto.tfvars`, selected variable files, locals, lists, maps, interpolation,
-and simple boolean conditionals.
+simple boolean conditionals, local modules, and initialized registry or Git
+modules. Resolvable root inputs are propagated into each child-module scan.
 
 Run **Azure IaC Guardrail: Select Static Scan Variable Files** to select one or
 more environment files for offline scanning. Selected paths are stored in
 `azureIacGuardrail.staticVarFiles`.
 
-Static scans are offline and do not invoke Terraform.
+Ordinary static scans are offline and do not invoke Terraform. When a remote
+module has not been downloaded, the result identifies it as unresolved. Use
+the **Initialize modules and rescan** Quick Fix to run
+`terraform init -backend=false`, index the downloaded source, and repeat the
+static scan without creating a plan or configuring remote state.
 
 ### Editor diagnostics and IntelliSense
 
@@ -115,12 +126,31 @@ After a scan or Terraform file save:
 - Non-compliant and unresolved controls appear in the Problems panel.
 - Hover a marked line for observed and expected values, remediation, and
   variable-file provenance.
-- Use Quick Fix to rescan, select static variable files, or create a plan.
-- Completion suggestions offer governed attribute/value pairs from the loaded
-  control catalogs.
+- Use Quick Fix to rescan, select static variable files, initialize module
+  source, or create a plan.
+- Completion suggestions are filtered to the Azure resource block under the
+  cursor and offer governed attribute/value pairs from the loaded catalogs.
+- A value loaded from `.tfvars` is marked directly in that file and links back
+  to the resource that uses it. Supported scalar failures include a preferred
+  one-click replacement.
+- Suggestions inside nested blocks such as `site_config` only show settings
+  relevant to that block. Multiple plan-required checks on one resource are
+  combined into one informational message.
 
-Provider functions, data sources, module outputs, remote state, dynamic blocks,
-complex comprehensions, and provider-computed values remain **Plan required**.
+Nested local modules and downloaded remote modules are scanned across file
+boundaries, including related-resource controls. Exact `count` and `for_each`
+module instances, provider functions, data sources, module outputs, remote
+state, dynamic blocks, complex comprehensions, and provider-computed values
+remain **Plan required**.
+
+A complete scenario matrix and a working downloaded registry-module fixture
+are documented in
+[`docs/wiki/Local-Static-Scan-Scenarios.md`](docs/wiki/Local-Static-Scan-Scenarios.md).
+
+To see the diagnostics and IntelliSense experience immediately, open
+`test/fixtures/intellisense-ux-demo` as a VS Code workspace and follow its
+README. The fixture contains safe, intentional failures covering `.tfvars`,
+nested blocks, missing attributes, hover explanations, and one-click fixes.
 
 ## 4. Create and scan a resolved plan
 
@@ -193,6 +223,12 @@ Palette. The command ID is `sketchyourinfra`.
    containers, databases, developer tools, DevOps, hybrid, identity,
    integration, IoT, management, migration, networking, security, storage,
    virtual desktop, and web categories.
+   Azure items use the Microsoft Azure Public Service Icons V23 set where a
+   direct match exists. Newer products use a neutral Azure resource icon.
+   **Generic Architecture** provides users, user groups, developers, IT
+   architects, client devices, browsers, internet, applications, APIs,
+   servers, databases, storage, networks, firewalls, load balancers, queues,
+   repositories, and external systems.
 3. Rename, move, add, or remove services. Left-click and drag a service to move
    it, or left-click and drag the blank canvas to pan horizontally and
    vertically.
@@ -218,6 +254,28 @@ Newly cataloged services default to the red **Not approved or not yet
 reviewed** state. They can be used in diagrams immediately. Services without a
 Terraform template are emitted as review comments rather than guessed
 resources.
+
+The packaged Microsoft icon FAQ and terms are included under
+`media/cloud-canvas`. Azure icons remain Microsoft trademarks and should be
+used according to the supplied terms.
+
+### Customize a service
+
+Each built-in service is managed in one contributor-friendly file under
+`catalog/services`.
+
+Each service can customize:
+
+- Category and display name.
+- Preserved SVG path beneath the Microsoft icon folder.
+- Terraform resource type and ARM resource types.
+- Inspector parameters, types, defaults, required status, and nested blocks.
+- Associated controls, expected values, remediation, references, and source
+  control file.
+
+Run `npm run catalog:validate` to validate source files and regenerate
+`azure-complete-catalog-vscode.json`. Both scanning and Cloud Canvas consume
+that generated file. Do not edit it manually.
 
 ### Interactive plan architecture
 
@@ -408,7 +466,7 @@ trusted process.
 Bundled standards are stored by domain under:
 
 ```text
-azure-infrastructure-standards/controls/
+catalog/services/
 ```
 
 The bundled catalogs cover security-relevant settings for storage, Key Vault,

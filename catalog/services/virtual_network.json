@@ -1,0 +1,41 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "virtual_network",
+  "displayName": "Virtual Network",
+  "shortName": "VNET",
+  "category": "Networking",
+  "description": "PRIVATE CLOUD NETWORK",
+  "color": "#2563eb",
+  "governanceStatus": "approved",
+  "icon": "networking/10063-icon-service-Virtual-Network-Gateways.svg",
+  "terraform": {
+    "resourceType": "azurerm_virtual_network",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "address_space",
+        "label": "Address Space",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "addressSpace",
+        "label": "Address space",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "10.0.0.0/16"
+      }
+    ]
+  },
+  "controls": []
+}

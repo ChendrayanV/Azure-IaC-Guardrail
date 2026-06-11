@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "site_recovery",
+  "displayName": "Azure Site Recovery",
+  "shortName": "ASR",
+  "category": "Migration",
+  "description": "DISASTER RECOVERY",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/00017-icon-service-Recovery-Services-Vaults.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ChendrayanV/Azure-IaC-Guardrail/blob/main/catalog/schema/service.schema.json",
+  "title": "Azure IaC Guardrail service catalog entry",
+  "type": "object",
+  "required": [
+    "serviceId",
+    "displayName",
+    "category",
+    "description",
+    "icon",
+    "terraform",
+    "controls"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "serviceId": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shortName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "governanceStatus": {
+      "enum": [
+        "approved",
+        "under-review",
+        "not-approved"
+      ]
+    },
+    "icon": {
+      "type": "string",
+      "minLength": 1
+    },
+    "terraform": {
+      "type": "object",
+      "required": [
+        "resourceType",
+        "armResourceTypes",
+        "automaticArguments",
+        "parameters"
+      ],
+      "properties": {
+        "resourceType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "armResourceTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "automaticArguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/parameter"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "$ref": "../../azure-infrastructure-standards/schema/control.schema.json#/$defs/control"
+      }
+    },
+    "assurances": {
+      "type": "array",
+      "items": {
+        "$ref": "../../azure-infrastructure-standards/schema/control.schema.json#/$defs/assurance"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "parameter": {
+      "type": "object",
+      "required": [
+        "key",
+        "label",
+        "type",
+        "required",
+        "nestedBlock",
+        "defaultValue"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "text",
+            "number",
+            "boolean",
+            "select",
+            "json"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "nestedBlock": {
+          "type": "boolean"
+        },
+        "defaultValue": {},
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "step": {
+          "type": "number"
+        },
+        "controlIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "remediation": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

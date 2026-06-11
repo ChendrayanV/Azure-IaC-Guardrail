@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "container_storage",
+  "displayName": "Azure Container Storage",
+  "shortName": "ACS",
+  "category": "Containers",
+  "description": "PERSISTENT CONTAINER VOLUMES",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "general/10839-icon-service-Storage-Container.svg",
+  "terraform": {
+    "resourceType": "azurerm_storage_container",
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

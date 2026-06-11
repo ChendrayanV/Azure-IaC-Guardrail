@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "expressroute",
+  "displayName": "ExpressRoute",
+  "shortName": "ER",
+  "category": "Networking",
+  "description": "PRIVATE WAN CONNECTIVITY",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "networking/10079-icon-service-ExpressRoute-Circuits.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

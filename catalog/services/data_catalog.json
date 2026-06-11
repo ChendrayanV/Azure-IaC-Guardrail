@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "data_catalog",
+  "displayName": "Data Catalog",
+  "shortName": "CAT",
+  "category": "Analytics",
+  "description": "ENTERPRISE DATA CATALOG",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "integration/10216-icon-service-Azure-Data-Catalog.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

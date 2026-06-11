@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "iot_hub",
+  "displayName": "IoT Hub",
+  "shortName": "IOT",
+  "category": "Internet of Things",
+  "description": "DEVICE MESSAGING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "iot/10182-icon-service-IoT-Hub.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

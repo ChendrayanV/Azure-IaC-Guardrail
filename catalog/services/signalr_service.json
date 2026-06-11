@@ -1,0 +1,33 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "signalr_service",
+  "displayName": "Azure SignalR Service",
+  "shortName": "SIG",
+  "category": "Integration",
+  "description": "REAL TIME WEB MESSAGING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "web/10052-icon-service-SignalR.svg",
+  "terraform": {
+    "resourceType": "azurerm_signalr_service",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "Sku",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

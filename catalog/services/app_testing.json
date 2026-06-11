@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "app_testing",
+  "displayName": "Azure App Testing",
+  "shortName": "TEST",
+  "category": "Developer Tools",
+  "description": "APPLICATION TESTING",
+  "color": "#e11d48",
+  "governanceStatus": "not-approved",
+  "icon": "new icons/033805167-icon-service-Azure-App-Testing.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

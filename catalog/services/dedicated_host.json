@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "dedicated_host",
+  "displayName": "Dedicated Host",
+  "shortName": "HOST",
+  "category": "Compute",
+  "description": "PHYSICAL SERVERS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "compute/00328-icon-service-Host-Pools.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,5 @@
+subscription_id      = "00000000-0000-0000-0000-000000000000"
+tenant_id            = "00000000-0000-0000-0000-000000000000"
+resource_group_name  = "rg-remote-module-scan-dev"
+location             = "uksouth"
+virtual_network_name = "vnet-remote-module-scan-dev"

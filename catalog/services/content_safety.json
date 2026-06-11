@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "content_safety",
+  "displayName": "AI Content Safety",
+  "shortName": "SAFE",
+  "category": "AI + Machine Learning",
+  "description": "CONTENT MODERATION",
+  "color": "#dc2626",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/03390-icon-service-Content-Safety.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "notification_hubs",
+  "displayName": "Notification Hubs",
+  "shortName": "NH",
+  "category": "Internet of Things",
+  "description": "MOBILE PUSH NOTIFICATIONS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "app services/10045-icon-service-Notification-Hubs.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

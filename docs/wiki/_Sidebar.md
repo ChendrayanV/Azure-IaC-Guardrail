@@ -5,6 +5,7 @@
 - [Roadmap](Roadmap)
 - [Architecture](Architecture)
 - [Authoring and Plan Canvas](Authoring-and-Plan-Canvas)
+- [Local Static Scan Scenarios](Local-Static-Scan-Scenarios)
 - [Delivery Playbook](Delivery-Playbook)
 - [Contributing](Contributing)
 - [Security and Privacy](Security-and-Privacy)

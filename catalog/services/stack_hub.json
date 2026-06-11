@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "stack_hub",
+  "displayName": "Azure Stack Hub",
+  "shortName": "ASH",
+  "category": "Hybrid + Multicloud",
+  "description": "AZURE IN DATACENTERS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10814-icon-service-Journey-Hub.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

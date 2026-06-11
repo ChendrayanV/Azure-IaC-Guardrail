@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "iot_operations",
+  "displayName": "Azure IoT Operations",
+  "shortName": "IOTO",
+  "category": "Internet of Things",
+  "description": "EDGE IOT OPERATIONS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "iot/03485-icon-service-Azure-IoT-Operations.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

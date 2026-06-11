@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_repository",
+  "displayName": "Code Repository",
+  "shortName": "REPO",
+  "category": "Generic Architecture",
+  "description": "SOURCE CODE REPOSITORY",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "devops/03455-icon-service-Code-Optimization.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

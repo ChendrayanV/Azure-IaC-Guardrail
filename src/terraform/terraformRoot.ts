@@ -44,6 +44,23 @@ export async function findTerraformRoot(
   return nearestTerraformDirectory;
 }
 
+export function resolveConfiguredTerraformRoot(
+  workspaceRoot: string,
+  configuredRoot: string,
+): string {
+  const workspace = path.resolve(workspaceRoot);
+  const resolved = path.resolve(
+    workspace,
+    configuredRoot === "." ? "" : configuredRoot,
+  );
+  if (!isWithin(workspace, resolved)) {
+    throw new Error(
+      `Configured Terraform root "${configuredRoot}" is outside the workspace.`,
+    );
+  }
+  return resolved;
+}
+
 async function filesWithExtension(
   directory: string,
   extension: string,

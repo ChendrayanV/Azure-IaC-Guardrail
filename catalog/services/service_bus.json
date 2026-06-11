@@ -1,0 +1,169 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "service_bus",
+  "displayName": "Service Bus",
+  "shortName": "SB",
+  "category": "Integration",
+  "description": "ENTERPRISE MESSAGING",
+  "color": "#7c3aed",
+  "governanceStatus": "under-review",
+  "icon": "integration/10836-icon-service-Azure-Service-Bus.svg",
+  "terraform": {
+    "resourceType": "azurerm_servicebus_namespace",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "Namespace SKU",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Premium",
+        "options": [
+          "Basic",
+          "Standard",
+          "Premium"
+        ]
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-SB-001"
+        ],
+        "remediation": "Use Premium SKU, configure a private endpoint, and set public_network_access_enabled = false."
+      },
+      {
+        "key": "local_auth_enabled",
+        "label": "Local Auth Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-SB-002"
+        ],
+        "remediation": "Set local_auth_enabled = false and grant Service Bus data-plane roles."
+      },
+      {
+        "key": "minimum_tls_version",
+        "label": "Minimum Tls Version",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "1.2",
+        "controlIds": [
+          "AZ-SB-003"
+        ],
+        "remediation": "Set minimum_tls_version = \"1.2\"."
+      },
+      {
+        "key": "capacity",
+        "label": "Messaging units",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 1,
+        "min": 1,
+        "max": 16,
+        "step": 1
+      },
+      {
+        "key": "publicNetworkAccess",
+        "label": "Public network access",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "localAuthentication",
+        "label": "Local authentication",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false
+      },
+      {
+        "key": "queueName",
+        "label": "Queue name",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "messages"
+      },
+      {
+        "key": "partitioning",
+        "label": "Queue partitioning",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true
+      },
+      {
+        "key": "maxSizeMegabytes",
+        "label": "Queue max size (MB)",
+        "type": "number",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": 1024,
+        "min": 1024,
+        "max": 81920,
+        "step": 1024
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-SB-001",
+      "title": "Service Bus namespaces must disable public network access",
+      "description": "Service Bus namespaces must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_servicebus_namespace"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Use Premium SKU, configure a private endpoint, and set public_network_access_enabled = false.",
+      "reference": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-authentication-and-authorization"
+    },
+    {
+      "id": "AZ-SB-002",
+      "title": "Service Bus namespaces must disable local authentication",
+      "description": "Service Bus clients must use Microsoft Entra identities instead of shared access keys.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_servicebus_namespace"
+      ],
+      "attribute": "local_auth_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set local_auth_enabled = false and grant Service Bus data-plane roles.",
+      "reference": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-authentication-and-authorization"
+    },
+    {
+      "id": "AZ-SB-003",
+      "title": "Service Bus namespaces must require TLS 1.2",
+      "description": "Service Bus must reject legacy TLS protocol versions.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_servicebus_namespace"
+      ],
+      "attribute": "minimum_tls_version",
+      "operator": "equals",
+      "expected": "1.2",
+      "remediation": "Set minimum_tls_version = \"1.2\".",
+      "reference": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-authentication-and-authorization"
+    }
+  ]
+}

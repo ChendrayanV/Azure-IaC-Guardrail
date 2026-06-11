@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "azure_arc",
+  "displayName": "Azure Arc",
+  "shortName": "ARC",
+  "category": "Hybrid + Multicloud",
+  "description": "HYBRID MANAGEMENT",
+  "color": "#0078d4",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/00756-icon-service-Azure-Arc.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

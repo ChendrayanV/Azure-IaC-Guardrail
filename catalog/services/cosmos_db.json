@@ -1,0 +1,168 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "cosmos_db",
+  "displayName": "Azure Cosmos DB",
+  "shortName": "COS",
+  "category": "Databases",
+  "description": "GLOBALLY DISTRIBUTED NOSQL",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "databases/10121-icon-service-Azure-Cosmos-DB.svg",
+  "terraform": {
+    "resourceType": "azurerm_cosmosdb_account",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "offer_type",
+        "label": "Offer Type",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "kind",
+        "label": "Kind",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "consistency_policy",
+        "label": "Consistency Policy",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "geo_location",
+        "label": "Geo Location",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "public_network_access_enabled",
+        "label": "Public Network Access Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": false,
+        "controlIds": [
+          "AZ-COSMOS-001"
+        ],
+        "remediation": "Set public_network_access_enabled = false and configure private endpoints."
+      },
+      {
+        "key": "local_authentication_disabled",
+        "label": "Local Authentication Disabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-COSMOS-002"
+        ],
+        "remediation": "Set local_authentication_disabled = true and grant Cosmos DB data-plane roles."
+      },
+      {
+        "key": "minimal_tls_version",
+        "label": "Minimal Tls Version",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "Tls12",
+        "controlIds": [
+          "AZ-COSMOS-003"
+        ],
+        "remediation": "Set minimal_tls_version = \"Tls12\"."
+      },
+      {
+        "key": "automatic_failover_enabled",
+        "label": "Automatic Failover Enabled",
+        "type": "boolean",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": true,
+        "controlIds": [
+          "AZ-COSMOS-004"
+        ],
+        "remediation": "Set automatic_failover_enabled = true for multi-region workloads."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-COSMOS-001",
+      "title": "Cosmos DB accounts must disable public network access",
+      "description": "Cosmos DB accounts must use private connectivity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cosmosdb_account"
+      ],
+      "attribute": "public_network_access_enabled",
+      "operator": "equals",
+      "expected": false,
+      "remediation": "Set public_network_access_enabled = false and configure private endpoints.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-COSMOS-002",
+      "title": "Cosmos DB accounts must disable local authentication",
+      "description": "Cosmos DB clients must use Microsoft Entra identities instead of account keys.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cosmosdb_account"
+      ],
+      "attribute": "local_authentication_disabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set local_authentication_disabled = true and grant Cosmos DB data-plane roles.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-COSMOS-003",
+      "title": "Cosmos DB accounts must require TLS 1.2",
+      "description": "Cosmos DB must reject legacy TLS protocol versions.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_cosmosdb_account"
+      ],
+      "attribute": "minimal_tls_version",
+      "operator": "equals",
+      "expected": "Tls12",
+      "remediation": "Set minimal_tls_version = \"Tls12\".",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    },
+    {
+      "id": "AZ-COSMOS-004",
+      "title": "Cosmos DB accounts should enable automatic failover",
+      "description": "Multi-region Cosmos DB accounts should automate regional failover.",
+      "severity": "warning",
+      "resourceTypes": [
+        "azurerm_cosmosdb_account"
+      ],
+      "attribute": "automatic_failover_enabled",
+      "operator": "equals",
+      "expected": true,
+      "remediation": "Set automatic_failover_enabled = true for multi-region workloads.",
+      "reference": "https://learn.microsoft.com/azure/postgresql/flexible-server/security-overview"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "private_endpoint",
+  "displayName": "Private Endpoint",
+  "shortName": "PE",
+  "category": "Networking",
+  "description": "PRIVATE SERVICE ACCESS",
+  "color": "#16a34a",
+  "governanceStatus": "under-review",
+  "icon": "analytics/00562-icon-service-Endpoint-Analytics.svg",
+  "terraform": {
+    "resourceType": "azurerm_private_endpoint",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "subnet_id",
+        "label": "Subnet Id",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "private_service_connection",
+        "label": "Private Service Connection",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

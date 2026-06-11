@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "managed_identity",
+  "displayName": "Managed Identities",
+  "shortName": "MI",
+  "category": "Identity",
+  "description": "WORKLOAD IDENTITY",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "identity/10227-icon-service-Managed-Identities.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

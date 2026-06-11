@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "blueprints",
+  "displayName": "Azure Blueprints",
+  "shortName": "BP",
+  "category": "Management + Governance",
+  "description": "GOVERNED ENVIRONMENT TEMPLATES",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "management + governance/00006-icon-service-Blueprints.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "lab_services",
+  "displayName": "Azure Lab Services",
+  "shortName": "LAB",
+  "category": "Virtual Desktop Infrastructure",
+  "description": "MANAGED CLASSROOM LABS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "devops/10265-icon-service-Lab-Services.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

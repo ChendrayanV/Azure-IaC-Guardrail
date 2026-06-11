@@ -1,0 +1,22 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "nat_gateway",
+  "displayName": "NAT Gateway",
+  "shortName": "NAT",
+  "category": "Networking",
+  "description": "OUTBOUND CONNECTIVITY",
+  "color": "#0284c7",
+  "governanceStatus": "not-approved",
+  "icon": "devops/03623-icon-service-Workspace-Gateway.svg",
+  "terraform": {
+    "resourceType": "azurerm_nat_gateway",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": []
+  },
+  "controls": []
+}

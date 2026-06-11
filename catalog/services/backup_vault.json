@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "backup_vault",
+  "displayName": "Backup Vault",
+  "shortName": "BKP",
+  "category": "Storage",
+  "description": "CLOUD DATA PROTECTION",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "other/02361-icon-service-Backup-Vault.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

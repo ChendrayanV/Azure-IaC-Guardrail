@@ -1,0 +1,53 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "api_management",
+  "displayName": "API Management",
+  "shortName": "APIM",
+  "category": "Integration",
+  "description": "API GATEWAY AND MANAGEMENT",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "devops/10042-icon-service-API-Management-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_api_management",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "publisher_name",
+        "label": "Publisher Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "publisher_email",
+        "label": "Publisher Email",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      },
+      {
+        "key": "sku_name",
+        "label": "Sku Name",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

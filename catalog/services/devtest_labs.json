@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "devtest_labs",
+  "displayName": "Azure DevTest Labs",
+  "shortName": "DTL",
+  "category": "Developer Tools",
+  "description": "DEVELOPMENT TEST ENVIRONMENTS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "devops/10264-icon-service-DevTest-Labs.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "cloud_services",
+  "displayName": "Cloud Services",
+  "shortName": "CS",
+  "category": "Compute",
+  "description": "CLASSIC CLOUD APPLICATIONS",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "compute/10030-icon-service-Cloud-Services-(Classic).svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

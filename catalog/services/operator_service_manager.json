@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "operator_service_manager",
+  "displayName": "Azure Operator Service Manager",
+  "shortName": "OSM",
+  "category": "Hybrid + Multicloud",
+  "description": "OPERATOR SERVICE LIFECYCLE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "hybrid + multicloud/03334-icon-service-Azure-Operator-Service-Manager.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

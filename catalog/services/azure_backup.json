@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "azure_backup",
+  "displayName": "Azure Backup",
+  "shortName": "BACK",
+  "category": "Management + Governance",
+  "description": "CLOUD BACKUP",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "azure stack/10108-icon-service-Infrastructure-Backup.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

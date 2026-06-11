@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "managed_grafana",
+  "displayName": "Managed Grafana",
+  "shortName": "GRAF",
+  "category": "DevOps",
+  "description": "OBSERVABILITY DASHBOARDS",
+  "color": "#f97316",
+  "governanceStatus": "not-approved",
+  "icon": "other/02905-icon-service-Azure-Managed-Grafana.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

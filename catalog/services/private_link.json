@@ -1,0 +1,33 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "private_link",
+  "displayName": "Azure Private Link",
+  "shortName": "PL",
+  "category": "Networking",
+  "description": "PRIVATE SERVICE CONNECTIVITY",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "analytics/02209-icon-service-Private-Link-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_private_link_service",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "nat_ip_configuration",
+        "label": "Nat Ip Configuration",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "sentinel",
+  "displayName": "Microsoft Sentinel",
+  "shortName": "SENT",
+  "category": "Security",
+  "description": "CLOUD NATIVE SIEM",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "security/10248-icon-service-Azure-Sentinel.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

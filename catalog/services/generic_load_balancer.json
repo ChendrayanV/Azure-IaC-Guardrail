@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "generic_load_balancer",
+  "displayName": "Generic Load Balancer",
+  "shortName": "LB",
+  "category": "Generic Architecture",
+  "description": "GENERIC TRAFFIC DISTRIBUTION",
+  "color": "#5b6472",
+  "governanceStatus": "not-approved",
+  "icon": "networking/02302-icon-service-Load-Balancer-Hub.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

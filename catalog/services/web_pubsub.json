@@ -1,0 +1,33 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "web_pubsub",
+  "displayName": "Azure Web PubSub",
+  "shortName": "WPS",
+  "category": "Integration",
+  "description": "REAL TIME WEB MESSAGING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "general/10849-icon-service-Web-Slots.svg",
+  "terraform": {
+    "resourceType": "azurerm_web_pubsub",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": [
+      {
+        "key": "sku",
+        "label": "Sku",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

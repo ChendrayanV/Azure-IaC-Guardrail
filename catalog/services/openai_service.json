@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "openai_service",
+  "displayName": "Azure OpenAI",
+  "shortName": "AOAI",
+  "category": "AI + Machine Learning",
+  "description": "GENERATIVE AI MODELS",
+  "color": "#0f766e",
+  "governanceStatus": "not-approved",
+  "icon": "ai + machine learning/03438-icon-service-Azure-OpenAI.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

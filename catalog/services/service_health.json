@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "service_health",
+  "displayName": "Service Health",
+  "shortName": "HLTH",
+  "category": "Management + Governance",
+  "description": "SERVICE STATUS",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "general/10004-icon-service-Service-Health.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "load_testing",
+  "displayName": "Azure Load Testing",
+  "shortName": "LOAD",
+  "category": "DevOps",
+  "description": "PERFORMANCE TESTING",
+  "color": "#e11d48",
+  "governanceStatus": "not-approved",
+  "icon": "devops/02423-icon-service-Load-Testing.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

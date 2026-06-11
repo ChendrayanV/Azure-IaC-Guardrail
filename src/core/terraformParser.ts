@@ -7,15 +7,23 @@ import {
 const resourcePattern =
   /^\s*resource\s+"([^"]+)"\s+"([^"]+)"\s*\{/;
 const attributePattern = /^(\s*)([A-Za-z0-9_-]+)\s*=\s*(.+?)\s*$/;
+const nestedBlockPattern =
+  /^\s*([A-Za-z][A-Za-z0-9_-]*)(?:\s+"[^"]+")?\s*\{/;
 
 export function parseTerraform(
   source: string,
   context?: StaticResolutionContext,
+  origin?: {
+    sourcePath?: string;
+    sourceUri?: string;
+    moduleAddress?: string;
+  },
 ): TerraformResource[] {
   const lines = source.split(/\r?\n/);
   const resources: TerraformResource[] = [];
   let current: TerraformResource | undefined;
   let depth = 0;
+  let blocks: Array<{ name: string; depth: number }> = [];
 
   for (let lineNumber = 0; lineNumber < lines.length; lineNumber += 1) {
     const line = lines[lineNumber];
@@ -29,35 +37,45 @@ export function parseTerraform(
       current = {
         type: resourceMatch[1],
         name: resourceMatch[2],
+        ...origin,
         startLine: lineNumber,
         attributes: new Map(),
       };
       depth = braceDelta(line);
+      blocks = [];
       resources.push(current);
       continue;
     }
 
-    if (depth === 1) {
-      const attributeMatch = line.match(attributePattern);
-      if (attributeMatch) {
-        const [, whitespace, name, rawValue] = attributeMatch;
-        const normalised = normaliseValue(rawValue, context);
-        current.attributes.set(name, {
-          name,
-          value: normalised.value,
-          resolved: normalised.resolved,
-          source: normalised.source,
-          line: lineNumber,
-          startCharacter: whitespace.length,
-          endCharacter: line.length,
-        });
+    const attributeMatch = line.match(attributePattern);
+    if (attributeMatch) {
+      const [, whitespace, name, rawValue] = attributeMatch;
+      const attributeName = [...blocks.map((block) => block.name), name].join(
+        ".",
+      );
+      const normalised = normaliseValue(rawValue, context);
+      current.attributes.set(attributeName, {
+        name: attributeName,
+        value: normalised.value,
+        resolved: normalised.resolved,
+        source: normalised.source,
+        line: lineNumber,
+        startCharacter: whitespace.length,
+        endCharacter: line.length,
+      });
+    } else {
+      const blockMatch = line.match(nestedBlockPattern);
+      if (blockMatch) {
+        blocks.push({ name: blockMatch[1], depth });
       }
     }
 
     depth += braceDelta(line);
+    blocks = blocks.filter((block) => block.depth < depth);
     if (depth <= 0) {
       current = undefined;
       depth = 0;
+      blocks = [];
     }
   }
 

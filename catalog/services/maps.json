@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "maps",
+  "displayName": "Azure Maps",
+  "shortName": "MAP",
+  "category": "Internet of Things",
+  "description": "GEOSPATIAL SERVICES",
+  "color": "#16a34a",
+  "governanceStatus": "not-approved",
+  "icon": "iot/10185-icon-service-Azure-Maps-Accounts.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

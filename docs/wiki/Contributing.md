@@ -26,13 +26,18 @@ npm run compile
 
 ## Control contributions
 
-Provide:
+Create or edit one file in `catalog/services`. Start from
+`catalog/service-template.json.example`. Provide:
 
 - Azure service and Terraform resource types.
+- Canvas category, icon path, parameters, and governance status.
 - Exact policy condition and severity.
 - Microsoft or benchmark reference.
 - Compliant, non-compliant, unresolved, and related-resource scenarios.
 - Remediation wording that is safe and specific.
+
+Run `npm run catalog:validate` and `npm run catalog:test`. Commit the generated
+`azure-complete-catalog-vscode.json`, but do not edit it directly.
 
 ## Preview features
 

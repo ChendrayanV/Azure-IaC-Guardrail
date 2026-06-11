@@ -1,0 +1,32 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "communication_services",
+  "displayName": "Communication Services",
+  "shortName": "ACS",
+  "category": "Integration",
+  "description": "VOICE VIDEO AND CHAT",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/00968-icon-service-Azure-Communication-Services.svg",
+  "terraform": {
+    "resourceType": "azurerm_communication_service",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name"
+    ],
+    "parameters": [
+      {
+        "key": "data_location",
+        "label": "Data Location",
+        "type": "text",
+        "required": true,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [],
+        "remediation": ""
+      }
+    ]
+  },
+  "controls": []
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "network_watcher",
+  "displayName": "Azure Network Watcher",
+  "shortName": "NW",
+  "category": "Management + Governance",
+  "description": "NETWORK MONITORING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "monitor/10066-icon-service-Network-Watcher.svg",
+  "terraform": {
+    "resourceType": "azurerm_network_watcher",
+    "armResourceTypes": [],
+    "automaticArguments": [
+      "name",
+      "resource_group_name",
+      "location"
+    ],
+    "parameters": []
+  },
+  "controls": []
+}

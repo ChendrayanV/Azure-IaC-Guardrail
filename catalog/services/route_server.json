@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "route_server",
+  "displayName": "Azure Route Server",
+  "shortName": "ARS",
+  "category": "Networking",
+  "description": "DYNAMIC NETWORK ROUTING",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "databases/10132-icon-service-SQL-Server.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

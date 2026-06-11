@@ -1,4 +1,5 @@
 .github/**
+.tmp/**
 .infra-compliance/**
 .azure-code-guard/**
 .azure-iac-guardrail/**
@@ -11,6 +12,7 @@ scripts/**
 docs/**
 node_modules/**
 coverage/**
+catalog/**
 eslint.config.mjs
 esbuild.mjs
 tsconfig.json

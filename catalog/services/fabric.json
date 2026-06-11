@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "fabric",
+  "displayName": "Microsoft Fabric",
+  "shortName": "FAB",
+  "category": "Analytics",
+  "description": "UNIFIED DATA PLATFORM",
+  "color": "#7c3aed",
+  "governanceStatus": "not-approved",
+  "icon": "compute/02370-icon-service-Managed-Service-Fabric.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}

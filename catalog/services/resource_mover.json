@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "resource_mover",
+  "displayName": "Azure Resource Mover",
+  "shortName": "MOVE",
+  "category": "Migration",
+  "description": "CROSS-REGION RESOURCE MOVE",
+  "color": "#2563eb",
+  "governanceStatus": "not-approved",
+  "icon": "other/02200-icon-service-Resource-Mover.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [],
+    "automaticArguments": [],
+    "parameters": []
+  },
+  "controls": []
+}
