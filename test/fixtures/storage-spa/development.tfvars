@@ -1,5 +1,5 @@
-subscription_id     = "5d0dd3e3-3afe-4098-9766-c88bbd37dd3a"
-tenant_id           = "1d65e300-b646-47ad-aef0-b428a3205ed6"
+subscription_id     = "<SUBSCRIPTION-ID>"
+tenant_id           = "<TENANT-ID>"
 location            = "uksouth"
 resource_group_name = "rg-storage-spa-dev"
 
