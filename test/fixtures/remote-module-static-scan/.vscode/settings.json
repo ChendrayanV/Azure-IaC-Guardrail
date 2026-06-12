@@ -1,5 +1,5 @@
 {
-  "azureIacGuardrail.scanOnSave": true,
+  "azureIacGuardrail.scanOnSave": false,
   "azureIacGuardrail.staticVarFiles": [
     "dev.tfvars"
   ],

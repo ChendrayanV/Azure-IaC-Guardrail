@@ -1,5 +1,5 @@
-subscription_id      = "00000000-0000-0000-0000-000000000000"
-tenant_id            = "00000000-0000-0000-0000-000000000000"
+subscription_id      = "5d0dd3e3-3afe-4098-9766-c88bbd37dd3a"
+tenant_id            = "1d65e300-b646-47ad-aef0-b428a3205ed6"
 resource_group_name  = "rg-remote-module-scan-dev"
 location             = "uksouth"
 virtual_network_name = "vnet-remote-module-scan-dev"

@@ -51,7 +51,7 @@ resource "azurerm_subnet" "subnet_count" {
   private_endpoint_network_policies             = (lookup(var.subnet_enforce_private_link_endpoint_network_policies, var.subnet_names[count.index], false) != null) ? (lookup(var.subnet_enforce_private_link_endpoint_network_policies, var.subnet_names[count.index], false) ? ("Disabled") : ("Enabled")) : ("Enabled")
   private_link_service_network_policies_enabled = (lookup(var.subnet_enforce_private_link_service_network_policies, var.subnet_names[count.index], false) != null) ? (!lookup(var.subnet_enforce_private_link_service_network_policies, var.subnet_names[count.index], false)) : (true)
   service_endpoints                             = lookup(var.subnet_service_endpoints, var.subnet_names[count.index], null)
-  
+  # default_outbound_access_enabled               = false
   dynamic "delegation" {
     for_each = lookup(var.subnet_delegation, var.subnet_names[count.index], {})
 
@@ -78,7 +78,7 @@ resource "azurerm_subnet" "subnet_for_each" {
   private_endpoint_network_policies             = (lookup(var.subnet_enforce_private_link_endpoint_network_policies, each.value, false) != null) ? (lookup(var.subnet_enforce_private_link_endpoint_network_policies, each.value, false) ? ("Disabled") : ("Enabled")) : ("Enabled")
   private_link_service_network_policies_enabled = (lookup(var.subnet_enforce_private_link_service_network_policies, each.value, false) != null) ? (!lookup(var.subnet_enforce_private_link_service_network_policies, each.value, false)) : (true)
   service_endpoints                             = lookup(var.subnet_service_endpoints, each.value, null)
-
+  # default_outbound_access_enabled               = false
   dynamic "delegation" {
     for_each = lookup(var.subnet_delegation, each.value, {})
 

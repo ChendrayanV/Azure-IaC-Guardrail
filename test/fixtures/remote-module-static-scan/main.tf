@@ -9,6 +9,6 @@ module "network" {
   subnet_names        = ["application"]
   subnet_prefixes     = ["10.60.1.0/24"]
   use_for_each        = true
-
+  
   tags = local.tags
 }
