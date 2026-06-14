@@ -195,8 +195,8 @@
     "lint": "eslint .",
     "test": "vitest run test/unit",
     "test:watch": "vitest test/unit",
-    "test:extension": "npm run compile && vscode-test",
-    "package": "npm run catalog:validate && npm run check:terraform-identifiers && npm run check && npm run test && npm run compile && vsce package",
+    "test:extension": "npm run compile && node scripts/run-extension-tests.mjs",
+    "package": "npm run catalog:validate && npm run check:terraform-identifiers && npm run check && npm run lint && npm run test && npm run compile && vsce package",
     "release:verify": "node scripts/verify-release.mjs",
     "release:publish": "vsce publish",
     "prepublishOnly": "npm run package"
@@ -208,11 +208,11 @@
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.0",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.1",
     "eslint": "^9.0.0",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.0.0",
-    "vitest": "^3.2.0"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "pdf-lib": "^1.17.1"

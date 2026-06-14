@@ -35,6 +35,9 @@ jobs:
       - name: Check Terraform identifiers
         run: npm run check:terraform-identifiers
 
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
       - name: Type check
         run: npm run check
 
@@ -46,6 +49,9 @@ jobs:
 
       - name: Compile extension
         run: npm run compile
+
+      - name: Run Extension Host smoke tests
+        run: xvfb-run -a npm run test:extension
 
       - name: Package VSIX
         run: npx vsce package --out azure-iac-guardrail-ci.vsix

@@ -1,10 +1,10 @@
-import assert from "node:assert/strict";
-import * as vscode from "vscode";
+const assert = require("node:assert/strict");
+const vscode = require("vscode");
 
 suite("Azure IaC Guardrail extension", () => {
   test("activates and registers the workspace scan command", async () => {
     const extension = vscode.extensions.getExtension(
-      "your-publisher.azure-iac-guardrail",
+      "azure-iac-guardrail.azure-iac-guardrail",
     );
 
     assert.ok(extension, "Development extension was not discovered");
@@ -12,6 +12,7 @@ suite("Azure IaC Guardrail extension", () => {
 
     const commands = await vscode.commands.getCommands(true);
     assert.ok(commands.includes("infraCompliance.scanWorkspace"));
+    assert.ok(commands.includes("infraCompliance.initializeAndScanWorkspace"));
     assert.ok(commands.includes("infraCompliance.scanPlan"));
     assert.ok(commands.includes("infraCompliance.createAndScanPlan"));
     assert.ok(commands.includes("infraCompliance.exportPdf"));
@@ -21,6 +22,7 @@ suite("Azure IaC Guardrail extension", () => {
     assert.ok(commands.includes("infraCompliance.configureStaticVariables"));
     assert.ok(commands.includes("infraCompliance.visualizePlan"));
     assert.ok(commands.includes("infraCompliance.comparePlans"));
+    assert.ok(commands.includes("sketchyourinfra"));
   });
 
   test("opens the results pane after a Terraform file scan", async () => {

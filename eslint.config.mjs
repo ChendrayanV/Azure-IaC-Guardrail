@@ -18,4 +18,22 @@ export default tseslint.config(
       },
     },
   },
+  {
+    files: [
+      "scripts/extension-test-runner.cjs",
+      "test/extension/**/*.cjs",
+    ],
+    languageOptions: {
+      globals: {
+        module: "readonly",
+        process: "readonly",
+        require: "readonly",
+        suite: "readonly",
+        test: "readonly",
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 );

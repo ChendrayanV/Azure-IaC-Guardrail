@@ -19,6 +19,10 @@ their general-availability milestone.
   release status, quality indicators, and clearer product workflow visuals.
 - Consolidated service standards, schemas, and catalog versioning under
   `catalog/`.
+- Added a minimum-supported VS Code Extension Host smoke test to CI and release
+  validation.
+- Made Marketplace publisher identity immutable between source and release
+  artifacts.
 
 ### Added
 

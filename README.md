@@ -14,10 +14,11 @@
 </p>
 
 <p align="center">
+  <img alt="Release status: Public Preview" src="https://img.shields.io/badge/release-Public_Preview-f59e0b">
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml"><img alt="Extension CI" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml"><img alt="Release" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml/badge.svg"></a>
   <img alt="Unit tests: 106 passing" src="https://img.shields.io/badge/unit_tests-106_passing-16a34a">
-  <img alt="Catalog: 237 services and 139 controls" src="https://img.shields.io/badge/catalog-237_services_%7C_139_controls-0078d4">
+  <img alt="Control coverage: 25 services and 139 controls" src="https://img.shields.io/badge/controls-25_services_%7C_139_controls-0078d4">
   <img alt="VS Code 1.100 or later" src="https://img.shields.io/badge/VS_Code-%5E1.100.0-007ACC?logo=visualstudiocode">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2563eb"></a>
 </p>
@@ -33,6 +34,12 @@
 > Azure IaC Guardrail never runs `terraform apply`. Static scans are offline.
 > Plan scans use your local Terraform executable and the authentication already
 > configured for the selected workspace.
+
+> **Public Preview:** Guardrail is suitable for evaluation and guarded
+> engineering review, not as the sole deployment approval control. The Cloud
+> Canvas catalog contains 237 visual entries; 25 currently have executable
+> controls, 48 have Terraform mappings, and only governance-approved services
+> should be treated as supported generation targets.
 
 ## From Terraform to Evidence
 
