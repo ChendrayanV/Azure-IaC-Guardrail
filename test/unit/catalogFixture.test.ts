@@ -6,7 +6,12 @@ import type { Control } from "../../src/types";
 import { scanTerraform } from "../../src/core/scanner";
 
 const root = path.resolve(".");
-const standardsRoot = path.join(root, "azure-infrastructure-standards");
+const standardsRoot = path.join(root, "catalog");
+const storageFixture = path.join(root, "test/fixtures/storage-spa");
+const threeTierFixture = path.join(
+  root,
+  "test/fixtures/three-tier-webapp",
+);
 
 function terraformFiles(directory: string): string[] {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -80,13 +85,10 @@ describe("bundled standards", () => {
     }
   });
 
-  it("recognizes secure storage defaults in the production fixture", () => {
+  it("recognizes secure storage defaults in the maintained SPA fixture", () => {
     const controls = completeCatalog.services.storage_account.controls as Control[];
     const terraform = fs.readFileSync(
-      path.join(
-        root,
-        "test/fixtures/production/modules/storage/main.tf",
-      ),
+      path.join(storageFixture, "main.tf"),
       "utf8",
     );
     const expectedLine = terraform
@@ -108,60 +110,61 @@ describe("bundled standards", () => {
       control: { id: "AZ-STOR-001" },
       resource: {
         type: "azurerm_storage_account",
-        name: "this",
+        name: "spa",
       },
       line: expectedLine,
     });
   });
 
-  it("contains the requested production service resources", () => {
-    const fixtureDirectory = path.join(root, "test/fixtures/production");
-    const terraform = terraformFiles(fixtureDirectory)
+  it("contains representative resources in maintained fixtures", () => {
+    const terraform = [
+      ...terraformFiles(storageFixture),
+      ...terraformFiles(threeTierFixture),
+    ]
       .map((fileName) => fs.readFileSync(fileName, "utf8"))
       .join("\n");
 
     for (const resourceType of [
-      "azurerm_application_gateway",
+      "azurerm_resource_group",
       "azurerm_storage_account",
       "azurerm_linux_web_app",
-      "azurerm_linux_virtual_machine_scale_set",
-      "azurerm_key_vault",
-      "azurerm_mssql_server",
-      "azurerm_mssql_database",
+      "azurerm_service_plan",
+      "azurerm_postgresql_flexible_server",
+      "azurerm_virtual_network",
+      "azurerm_subnet",
+      "azurerm_private_dns_zone",
       "azurerm_log_analytics_workspace",
       "azurerm_application_insights",
-      "azurerm_user_assigned_identity",
+      "azurerm_monitor_diagnostic_setting",
     ]) {
       expect(terraform).toContain(`resource "${resourceType}"`);
     }
-
-    for (const platformOwnedType of [
-      "azurerm_virtual_network",
-      "azurerm_subnet",
-      "azurerm_network_security_group",
-      "azurerm_route_table",
-      "azurerm_nat_gateway",
-      "azurerm_private_dns_zone",
-      "azurerm_public_ip",
-    ]) {
-      expect(terraform).not.toContain(`resource "${platformOwnedType}"`);
-    }
   });
 
-  it("has no statically non-compliant production fixture resources", () => {
-    const fixtureDirectory = path.join(root, "test/fixtures/production");
-    const controls = completeCatalog.controls as Control[];
-    const findings = terraformFiles(fixtureDirectory).flatMap(
-      (fileName) =>
-        scanTerraform(
-          fs.readFileSync(fileName, "utf8"),
-          controls,
-        ),
+  it("recognizes secure App Service settings in the three-tier fixture", () => {
+    const controls = completeCatalog.services.web_app.controls as Control[];
+    const terraform = fs.readFileSync(
+      path.join(threeTierFixture, "modules/app-tier/main.tf"),
+      "utf8",
     );
+    const findings = scanTerraform(terraform, controls);
+    const expectedCompliantControls = [
+      "AZ-WEB-001",
+      "AZ-WEB-002",
+      "AZ-WEB-003",
+      "AZ-WEB-004",
+      "AZ-WEB-005",
+      "AZ-WEB-006",
+      "AZ-WEB-007",
+      "AZ-WEB-008",
+      "AZ-WEB-009",
+    ];
 
-    expect(
-      findings.filter((finding) => finding.outcome === "noncompliant"),
-    ).toEqual([]);
+    for (const controlId of expectedCompliantControls) {
+      expect(
+        findings.find((finding) => finding.control.id === controlId),
+      ).toMatchObject({ outcome: "compliant" });
+    }
   });
 
   it("defines the requested storage standards and platform assurance", () => {

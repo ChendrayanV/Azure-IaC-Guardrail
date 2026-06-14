@@ -15,18 +15,25 @@ teams design, scan, review, and evidence Azure Terraform before deployment.
 
 ## Start here
 
+- [Installation and Quick Start](Installation-and-Quick-Start)
+- [Feature Guide](Features)
 - [Product Vision](Product-Vision)
 - [Roadmap](Roadmap)
 - [Architecture](Architecture)
-- [Authoring and Plan Canvas](Authoring-and-Plan-Canvas)
-- [Delivery Playbook](Delivery-Playbook)
+- [Static Scanning](Static-Scanning)
+- [Plan Scanning and Review](Plan-Scanning-and-Review)
+- [Editor Experience](Editor-Experience)
+- [Workspace Governance](Workspace-Governance)
+- [Resource Cost](Resource-Cost)
+- [Cloud Canvas](Cloud-Canvas)
+- [Evidence and Reporting](Evidence-and-Reporting)
 - [Contributing](Contributing)
 - [Security and Privacy](Security-and-Privacy)
 - [Release Management](Release-Management)
 
 ## Current status
 
-The project is pre-GA. Resource Cost and Sketch Your Infra are Preview
+The project is pre-GA. Resource Cost and Cloud Canvas are Preview
 features. Preview output must be reviewed and must not be treated as an Azure
 bill or deployment-ready architecture.
 

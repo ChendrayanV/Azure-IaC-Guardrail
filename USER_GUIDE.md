@@ -507,7 +507,7 @@ The extension loads these catalogs in addition to bundled standards. Start from
 `.azure-iac-guardrail/controls/example.json` and validate the structure against:
 
 ```text
-azure-infrastructure-standards/schema/control.schema.json
+catalog/schema/control.schema.json
 ```
 
 Control IDs must be unique. Supported operators are:

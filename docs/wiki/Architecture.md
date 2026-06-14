@@ -15,7 +15,7 @@ execution, webview panels, and exports.
 | Control catalog | Built-in and workspace controls |
 | Workspace policy | Regions, tags, exceptions, exclusions, cost assumptions |
 | Results webview | Findings, architecture, change impact, and cost preview |
-| Sketch Your Infra | Visual model, connectivity, and Terraform scaffolding |
+| Cloud Canvas | Visual model, connectivity, and Terraform scaffolding |
 | Plan architecture canvas | Configuration-reference and resolved-ID topology, dependency-aware layout, connectivity highlighting, filtering, and SVG export |
 | Evidence and PDF export | Human and machine-readable review artifacts |
 

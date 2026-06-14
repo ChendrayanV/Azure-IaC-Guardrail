@@ -20,7 +20,3 @@ tsconfig.json
 dist/*.map
 media/*.svg
 media/screenshots/*.svg
-azure-infrastructure-standards/CHANGELOG.md
-azure-infrastructure-standards/VERSION
-azure-infrastructure-standards/schema/**
-azure-infrastructure-standards/tests/**

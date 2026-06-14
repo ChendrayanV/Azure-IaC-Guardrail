@@ -91,13 +91,13 @@
     "controls": {
       "type": "array",
       "items": {
-        "$ref": "../../azure-infrastructure-standards/schema/control.schema.json#/$defs/control"
+        "$ref": "./control.schema.json#/$defs/control"
       }
     },
     "assurances": {
       "type": "array",
       "items": {
-        "$ref": "../../azure-infrastructure-standards/schema/control.schema.json#/$defs/assurance"
+        "$ref": "./control.schema.json#/$defs/assurance"
       }
     }
   },

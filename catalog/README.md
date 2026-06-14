@@ -4,6 +4,9 @@
 scanning metadata. Each Azure service has one JSON file named after its
 `serviceId`.
 
+Catalog contracts live under `catalog/schema`, and `catalog/VERSION` records
+the version embedded in the generated runtime catalog.
+
 ## Add or change a service
 
 1. Copy `catalog/service-template.json.example`.
@@ -24,6 +27,8 @@ runtime artifact used by both scanning and Cloud Canvas.
 - Use unique control IDs.
 - Include Microsoft documentation for each control.
 - Write actionable remediation without environment-specific IDs.
+- Add compliant, non-compliant, unresolved, and plan-only tests as applicable.
+- Use `assurances` for Azure platform guarantees that users cannot configure.
 - Mark required Terraform parameters accurately.
 - Preserve the SVG path beneath
   `media/cloud-canvas/Azure_Public_Service_Icons/Icons`.

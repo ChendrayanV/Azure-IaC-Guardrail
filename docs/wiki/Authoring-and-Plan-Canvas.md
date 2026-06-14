@@ -126,7 +126,7 @@ retention policy.
 
 This increment advances:
 
-- [#8 Sketch Your Infra v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8):
+- [#8 Cloud Canvas v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8):
   common-pattern and blank-canvas tabs, zoom, undo/redo, connection deletion,
   validation, and export.
 - [#9 Validated Terraform generation](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/9):

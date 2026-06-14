@@ -101,10 +101,7 @@ function validateService(service, file) {
 
 function readCatalogVersion() {
   return fs
-    .readFileSync(
-      path.join(root, "azure-infrastructure-standards", "VERSION"),
-      "utf8",
-    )
+    .readFileSync(path.join(root, "catalog", "VERSION"), "utf8")
     .trim();
 }
 

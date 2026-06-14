@@ -24,7 +24,7 @@ Outcome: mature visual design and plan-architecture experiences with safer
 Terraform generation.
 
 - [Resource Cost Preview v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/7)
-- [Sketch Your Infra v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8)
+- [Cloud Canvas v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8)
 - [Validated Terraform generation and modules](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/9)
 - [Interactive plan architecture diagram](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/10)
 - Variable-aware static scan and editor diagnostics
