@@ -7,6 +7,19 @@ their general-availability milestone.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-06-14
+
+### Changed
+
+- Replaced the extension and report logo with the circular infrastructure
+  inspection lens.
+- Replaced the placeholder extension publisher with the
+  `azure-iac-guardrail` publisher ID.
+- Refreshed the Marketplace README with a compact centered logo, CI and
+  release status, quality indicators, and clearer product workflow visuals.
+- Consolidated service standards, schemas, and catalog versioning under
+  `catalog/`.
+
 ### Added
 
 - GitHub Actions validation and Visual Studio Marketplace release automation.

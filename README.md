@@ -1,22 +1,46 @@
-# Azure IaC Guardrail
+<p align="center">
+  <img src="media/azure-iac-guardrail.png" alt="Azure IaC Guardrail" width="112">
+</p>
 
-![Azure IaC Guardrail logo](media/azure-iac-guardrail.png)
+<h1 align="center">Azure IaC Guardrail</h1>
 
 <p align="center">
   <strong>Review Azure Terraform security, compliance, architecture, and change impact before deployment.</strong>
 </p>
 
 <p align="center">
-  Azure IaC Guardrail brings local static analysis, resolved plan assurance,
-  architecture review, governed exceptions, and audit evidence into Visual
-  Studio Code.
+  Local static analysis, resolved plan assurance, architecture review,
+  governed exceptions, and audit evidence inside Visual Studio Code.
 </p>
 
-![Azure IaC Guardrail results](media/screenshots/results-overview.png)
+<p align="center">
+  <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml"><img alt="Extension CI" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml"><img alt="Release" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml/badge.svg"></a>
+  <img alt="Unit tests: 106 passing" src="https://img.shields.io/badge/unit_tests-106_passing-16a34a">
+  <img alt="Catalog: 237 services and 139 controls" src="https://img.shields.io/badge/catalog-237_services_%7C_139_controls-0078d4">
+  <img alt="VS Code 1.100 or later" src="https://img.shields.io/badge/VS_Code-%5E1.100.0-007ACC?logo=visualstudiocode">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2563eb"></a>
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#features">Features</a> ·
+  <a href="USER_GUIDE.md">User guide</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a>
+</p>
 
 > Azure IaC Guardrail never runs `terraform apply`. Static scans are offline.
 > Plan scans use your local Terraform executable and the authentication already
 > configured for the selected workspace.
+
+## From Terraform to Evidence
+
+![Azure IaC Guardrail review workflow](media/screenshots/workflow.png)
+
+The workflow stays local and reviewable: open the Terraform root, choose the
+appropriate scan, inspect findings and remediation, then export evidence for
+the pull request or deployment approval.
 
 ## Why Guardrail
 
@@ -67,22 +91,17 @@ for upgrades, uninstalling, and troubleshooting.
 
 For the complete operating guide, see [USER_GUIDE.md](USER_GUIDE.md).
 
-## Review Pipeline
-
-```mermaid
-flowchart LR
-    A[Terraform authoring] --> B[Offline static scan]
-    B --> C[Editor diagnostics and safe-fix preview]
-    C --> D[Local or existing Terraform plan]
-    D --> E[Resolved control evaluation]
-    E --> F[Architecture, exposure, cost, and blast radius]
-    F --> G[PDF, JSON, and Markdown evidence]
-    G --> H[Pull request and deployment approval]
-```
 
 Static feedback starts in the editor. A Terraform plan adds authoritative
 resolved values and relationships. Reviewers then use the same findings,
 architecture context, and exported evidence before approving deployment.
+
+## Product View
+
+![Azure IaC Guardrail results](media/screenshots/results-overview.png)
+
+<sub>Illustrative product view. The extension evaluates Terraform; resource
+names and findings shown here are representative sample data.</sub>
 
 ## Features
 

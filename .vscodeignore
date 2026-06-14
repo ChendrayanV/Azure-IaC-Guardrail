@@ -17,6 +17,7 @@ eslint.config.mjs
 esbuild.mjs
 tsconfig.json
 *.vsix
+*.log
 dist/*.map
 media/*.svg
 media/screenshots/*.svg
