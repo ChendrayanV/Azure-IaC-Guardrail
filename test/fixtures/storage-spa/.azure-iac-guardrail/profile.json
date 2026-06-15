@@ -2,7 +2,12 @@
   "version": 1,
   "terraformRoot": ".",
   "terraformVersion": ">= 1.15.0, < 2.0.0",
-  "allowedRegions": [],
+  "allowedRegions": [
+    "eastus2",
+    "uksouth",
+    "ukwest",
+    "swedencentral"
+  ],
   "costAssumptions": {
     "currency": "USD",
     "monthlyStorageGb": 1,

@@ -4,6 +4,8 @@ import {
   defaultWorkspacePolicy,
   normalizeWorkspacePolicy,
 } from "../../src/controls/workspacePolicy";
+import { scanTerraformPlan } from "../../src/core/planScanner";
+import { scanTerraform } from "../../src/core/scanner";
 
 describe("workspace policy", () => {
   it("provides the recommended Azure tag defaults", () => {
@@ -119,6 +121,55 @@ describe("workspace policy", () => {
       severity: "error",
       planOnly: true,
       skipStatic: true,
+    });
+  });
+
+  it("defers approved regions to plan data and rejects an invalid location", () => {
+    const profile = normalizeWorkspacePolicy({
+      allowedRegions: ["uksouth", "ukwest"],
+      requiredTags: [],
+      tagValues: {},
+      skippedControlIds: [],
+      exceptions: [],
+    });
+    const control = createWorkspacePolicyControls(profile).find(
+      (candidate) => candidate.id === "ORG-REGION-LOCATION",
+    );
+    expect(control).toBeDefined();
+
+    expect(
+      scanTerraform(
+        `resource "azurerm_storage_account" "example" {
+  location = azurerm_resource_group.example.location
+}`,
+        [control!],
+      ),
+    ).toEqual([]);
+
+    const findings = scanTerraformPlan(
+      JSON.stringify({
+        planned_values: {
+          root_module: {
+            resources: [
+              {
+                address: "azurerm_storage_account.example",
+                mode: "managed",
+                type: "azurerm_storage_account",
+                name: "example",
+                values: { location: "swedencentral" },
+              },
+            ],
+          },
+        },
+      }),
+      [control!],
+    );
+
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      outcome: "noncompliant",
+      actual: "swedencentral",
+      expected: ["uksouth", "ukwest"],
     });
   });
 

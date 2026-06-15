@@ -11,11 +11,7 @@
   "terraform": {
     "resourceType": "azurerm_storage_account",
     "armResourceTypes": [],
-    "automaticArguments": [
-      "name",
-      "resource_group_name",
-      "location"
-    ],
+    "automaticArguments": ["name", "resource_group_name", "location"],
     "parameters": [
       {
         "key": "account_tier",
@@ -33,15 +29,8 @@
         "type": "json",
         "required": true,
         "nestedBlock": false,
-        "defaultValue": [
-          "GRS",
-          "RAGRS",
-          "GZRS",
-          "RAGZRS"
-        ],
-        "controlIds": [
-          "AZ-STOR-019"
-        ],
+        "defaultValue": ["GRS", "RAGRS", "GZRS", "RAGZRS"],
+        "controlIds": ["AZ-STOR-019"],
         "remediation": "Use GRS, RAGRS, GZRS, or RAGZRS where regional resilience is required."
       },
       {
@@ -51,9 +40,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-STOR-001"
-        ],
+        "controlIds": ["AZ-STOR-001"],
         "remediation": "Set allow_nested_items_to_be_public = false."
       },
       {
@@ -63,9 +50,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-STOR-002"
-        ],
+        "controlIds": ["AZ-STOR-002"],
         "remediation": "Set public_network_access_enabled = false."
       },
       {
@@ -92,9 +77,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-STOR-007"
-        ],
+        "controlIds": ["AZ-STOR-007"],
         "remediation": "Set https_traffic_only_enabled = true."
       },
       {
@@ -104,9 +87,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "TLS1_2",
-        "controlIds": [
-          "AZ-STOR-008"
-        ],
+        "controlIds": ["AZ-STOR-008"],
         "remediation": "Set min_tls_version = \"TLS1_2\"."
       },
       {
@@ -116,9 +97,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-STOR-009"
-        ],
+        "controlIds": ["AZ-STOR-009"],
         "remediation": "Set shared_access_key_enabled = false and configure the AzureRM provider to use Microsoft Entra authentication for supported data-plane operations."
       },
       {
@@ -128,9 +107,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-STOR-012"
-        ],
+        "controlIds": ["AZ-STOR-012"],
         "remediation": "Set default_to_oauth_authentication = true."
       },
       {
@@ -140,9 +117,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-STOR-013"
-        ],
+        "controlIds": ["AZ-STOR-013"],
         "remediation": "Set cross_tenant_replication_enabled = false."
       },
       {
@@ -152,9 +127,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-STOR-014"
-        ],
+        "controlIds": ["AZ-STOR-014"],
         "remediation": "Set infrastructure_encryption_enabled = true when supported by the account type."
       },
       {
@@ -164,9 +137,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-STOR-015"
-        ],
+        "controlIds": ["AZ-STOR-015"],
         "remediation": "Set local_user_enabled = false."
       },
       {
@@ -176,9 +147,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "Deny",
-        "controlIds": [
-          "AZ-STOR-016"
-        ],
+        "controlIds": ["AZ-STOR-016"],
         "remediation": "Set network_rules.default_action = \"Deny\"."
       },
       {
@@ -188,9 +157,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "AzureServices",
-        "controlIds": [
-          "AZ-STOR-017"
-        ],
+        "controlIds": ["AZ-STOR-017"],
         "remediation": "Include \"AzureServices\" in network_rules.bypass."
       },
       {
@@ -200,9 +167,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-STOR-018"
-        ],
+        "controlIds": ["AZ-STOR-018"],
         "remediation": "Configure blob_properties.delete_retention_policy with an approved retention period."
       },
       {
@@ -212,10 +177,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "Standard",
-        "options": [
-          "Standard",
-          "Premium"
-        ]
+        "options": ["Standard", "Premium"]
       },
       {
         "key": "replicationType",
@@ -224,12 +186,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "LRS",
-        "options": [
-          "LRS",
-          "ZRS",
-          "GRS",
-          "GZRS"
-        ]
+        "options": ["LRS", "ZRS", "GRS", "GZRS"]
       },
       {
         "key": "minimumTlsVersion",
@@ -238,9 +195,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "TLS1_2",
-        "options": [
-          "TLS1_2"
-        ]
+        "options": ["TLS1_2"]
       },
       {
         "key": "publicNetworkAccess",
@@ -274,9 +229,7 @@
       "title": "Storage accounts must block public blob access",
       "description": "Azure Storage accounts must explicitly disable nested item public access.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "allow_nested_items_to_be_public",
       "operator": "equals",
       "expected": false,
@@ -289,9 +242,7 @@
       "title": "Storage accounts must disable public network access",
       "description": "Azure Storage accounts must only be reachable through approved private connectivity.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "public_network_access_enabled",
       "operator": "equals",
       "expected": false,
@@ -304,9 +255,7 @@
       "title": "Storage accounts require a blob private endpoint",
       "description": "Each Azure Storage account must have a private endpoint for the blob subresource.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "expected": "blob",
@@ -322,9 +271,7 @@
       "title": "Storage accounts require a file private endpoint",
       "description": "Each Azure Storage account must have a private endpoint for the file subresource.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "expected": "file",
@@ -340,9 +287,7 @@
       "title": "Storage accounts require a table private endpoint",
       "description": "Each Azure Storage account must have a private endpoint for the table subresource.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "expected": "table",
@@ -358,9 +303,7 @@
       "title": "Storage accounts require a queue private endpoint",
       "description": "Each Azure Storage account must have a private endpoint for the queue subresource.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "expected": "queue",
@@ -376,9 +319,7 @@
       "title": "Storage accounts must require secure transfer",
       "description": "Azure Storage accounts must reject unencrypted HTTP traffic and require HTTPS.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "https_traffic_only_enabled",
       "operator": "equals",
       "expected": true,
@@ -391,9 +332,7 @@
       "title": "Storage accounts must require TLS 1.2 or higher",
       "description": "Azure Storage accounts must use TLS 1.2 as the minimum supported protocol version.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "min_tls_version",
       "operator": "equals",
       "expected": "TLS1_2",
@@ -406,9 +345,7 @@
       "title": "Storage accounts must disable Shared Key authorization",
       "description": "Azure Storage requests must use Microsoft Entra authorization instead of account access keys.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "shared_access_key_enabled",
       "operator": "equals",
       "expected": false,
@@ -421,9 +358,7 @@
       "title": "Production storage with sensitive data should use customer-managed keys",
       "description": "Storage accounts tagged as production and sensitive should use a customer-managed key for additional control over key lifecycle and access.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "relatedResourceType": "azurerm_storage_account_customer_managed_key",
@@ -449,9 +384,7 @@
       "title": "Storage accounts should default to Microsoft Entra authorization",
       "description": "Azure portal data operations should default to Microsoft Entra authorization instead of Shared Key authorization.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "default_to_oauth_authentication",
       "operator": "equals",
       "expected": true,
@@ -464,9 +397,7 @@
       "title": "Storage accounts must disable cross-tenant replication",
       "description": "Object replication across Microsoft Entra tenants must be disabled unless explicitly required and approved.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "cross_tenant_replication_enabled",
       "operator": "equals",
       "expected": false,
@@ -479,9 +410,7 @@
       "title": "Storage accounts should use infrastructure encryption",
       "description": "A second encryption layer should protect storage data for defense in depth.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "infrastructure_encryption_enabled",
       "operator": "equals",
       "expected": true,
@@ -494,9 +423,7 @@
       "title": "Storage local users must be disabled",
       "description": "SFTP and local-user authentication must remain disabled unless explicitly required.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "local_user_enabled",
       "operator": "equals",
       "expected": false,
@@ -509,9 +436,7 @@
       "title": "Storage network rules must deny by default",
       "description": "Storage firewall rules must deny traffic that does not match an explicit rule.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "network_rules.default_action",
       "operator": "equals",
       "expected": "Deny",
@@ -525,9 +450,7 @@
       "title": "Storage firewall should allow trusted Azure services",
       "description": "Trusted Microsoft services should be allowed to bypass storage firewall rules when required.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "network_rules.bypass",
       "operator": "contains",
       "expected": "AzureServices",
@@ -541,9 +464,7 @@
       "title": "Storage accounts must enable blob soft delete",
       "description": "Blob soft delete protects data from accidental deletion or overwrite.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "blob_properties.delete_retention_policy",
       "operator": "exists",
       "planOnly": true,
@@ -556,17 +477,10 @@
       "title": "Production storage should use geo-redundant replication",
       "description": "Production storage should protect data against regional failure.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "account_replication_type",
       "operator": "oneOf",
-      "expected": [
-        "GRS",
-        "RAGRS",
-        "GZRS",
-        "RAGZRS"
-      ],
+      "expected": ["GRS", "RAGRS", "GZRS", "RAGZRS"],
       "conditions": [
         {
           "attribute": "tags.environment",
@@ -583,9 +497,7 @@
       "title": "Storage queue logging must be enabled",
       "description": "Queue read, write, and delete operations should be logged for auditing.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account_queue_properties"
-      ],
+      "resourceTypes": ["azurerm_storage_account_queue_properties"],
       "attribute": "logging",
       "operator": "exists",
       "planOnly": true,
@@ -598,9 +510,7 @@
       "title": "Storage accounts should send diagnostics to Log Analytics",
       "description": "Centralized storage logs support security monitoring and incident response.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_storage_account"
-      ],
+      "resourceTypes": ["azurerm_storage_account"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "relatedResourceType": "azurerm_monitor_diagnostic_setting",

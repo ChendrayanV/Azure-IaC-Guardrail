@@ -11,7 +11,7 @@ variable "tenant_id" {
 variable "location" {
   description = "Azure region for the resource group and storage account."
   type        = string
-  default     = "uksouth"
+  default     = "eastus2"
 }
 
 variable "resource_group_name" {
