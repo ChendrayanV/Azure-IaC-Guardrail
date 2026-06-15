@@ -4,7 +4,7 @@ const vscode = require("vscode");
 suite("Azure IaC Guardrail extension", () => {
   test("activates and registers the workspace scan command", async () => {
     const extension = vscode.extensions.getExtension(
-      "azure-iac-guardrail.azure-iac-guardrail",
+      "ChendrayanVenkatesan.azure-iac-guardrail",
     );
 
     assert.ok(extension, "Development extension was not discovered");

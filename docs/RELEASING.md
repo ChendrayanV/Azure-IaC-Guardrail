@@ -13,7 +13,9 @@ The repository has two GitHub Actions workflows:
 2. Create an Azure DevOps Personal Access Token with **Marketplace: Manage**
    scope and an appropriate expiration date.
 3. In GitHub, create the repository variable:
-   - `VSCE_PUBLISHER`: the immutable Marketplace publisher ID.
+   - `VSCE_PUBLISHER`: `ChendrayanVenkatesan`, the immutable Marketplace
+     publisher ID. This must match `package.json`; it is separate from the
+     user-facing extension display name.
 4. In GitHub, create the `vscode-marketplace` environment.
 5. Add the environment secret:
    - `VSCE_PAT`: the Azure DevOps Marketplace PAT.

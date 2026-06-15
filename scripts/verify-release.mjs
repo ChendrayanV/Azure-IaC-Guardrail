@@ -1,5 +1,6 @@
 import fs from "node:fs";
 
+const EXPECTED_PUBLISHER = "ChendrayanVenkatesan";
 const manifest = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const lockfile = JSON.parse(fs.readFileSync("package-lock.json", "utf8"));
 const tag = (process.env.RELEASE_TAG ?? "").trim();
@@ -11,8 +12,10 @@ if (!/^[a-zA-Z0-9][a-zA-Z0-9-]*$/.test(manifest.publisher)) {
   );
 }
 
-if (manifest.publisher === "your-publisher") {
-  throw new Error("package.json must not use the placeholder publisher.");
+if (manifest.publisher !== EXPECTED_PUBLISHER) {
+  throw new Error(
+    `package.json publisher must be "${EXPECTED_PUBLISHER}", found "${manifest.publisher}".`,
+  );
 }
 
 if (publisher && publisher !== manifest.publisher) {
@@ -51,5 +54,5 @@ if (output) {
 }
 
 console.log(
-  `Release metadata validated for ${manifest.publisher}.${manifest.name} v${version}.`,
+  `Release metadata validated for publisher ${EXPECTED_PUBLISHER} v${version}.`,
 );

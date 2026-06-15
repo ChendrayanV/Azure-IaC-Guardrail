@@ -3,7 +3,7 @@
   "displayName": "Azure IaC Guardrail",
   "description": "Review Azure Terraform security, compliance, architecture risk, and plan changes directly inside VS Code.",
   "version": "0.1.2",
-  "publisher": "azure-iac-guardrail",
+  "publisher": "ChendrayanVenkatesan",
   "license": "MIT",
   "icon": "media/azure-iac-guardrail.png",
   "repository": {
