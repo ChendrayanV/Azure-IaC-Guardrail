@@ -94,6 +94,9 @@
         "$ref": "./control.schema.json#/$defs/control"
       }
     },
+    "canvas": {
+      "$ref": "#/$defs/canvas"
+    },
     "assurances": {
       "type": "array",
       "items": {
@@ -161,6 +164,65 @@
         },
         "remediation": {
           "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "canvas": {
+      "type": "object",
+      "required": [
+        "variants"
+      ],
+      "properties": {
+        "variantParameterKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/canvasVariant"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "canvasVariant": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "description",
+        "requiredDependencies",
+        "optionalDependencies"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          }
+        },
+        "optionalDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          }
         }
       },
       "additionalProperties": false

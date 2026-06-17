@@ -12,7 +12,48 @@
     "resourceType": null,
     "armResourceTypes": [],
     "automaticArguments": [],
-    "parameters": []
+    "parameters": [
+      {
+        "key": "hostingModel",
+        "label": "Hosting Model",
+        "type": "select",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "standard",
+        "options": [
+          "standard",
+          "consumption"
+        ],
+        "remediation": "Choose the Logic App runtime model before adding dependent services."
+      }
+    ]
   },
-  "controls": []
+  "controls": [],
+  "canvas": {
+    "variantParameterKey": "hostingModel",
+    "variants": [
+      {
+        "id": "standard",
+        "label": "Logic App Standard",
+        "description": "Single-tenant runtime with shared App Service hosting, storage, and optional private networking.",
+        "requiredDependencies": [
+          "service_plan",
+          "storage_account"
+        ],
+        "optionalDependencies": [
+          "log_analytics",
+          "subnet"
+        ]
+      },
+      {
+        "id": "consumption",
+        "label": "Logic App Consumption",
+        "description": "Serverless workflow runtime with lighter platform requirements and recommended monitoring.",
+        "requiredDependencies": [],
+        "optionalDependencies": [
+          "log_analytics"
+        ]
+      }
+    ]
+  }
 }

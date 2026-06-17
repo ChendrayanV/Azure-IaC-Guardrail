@@ -33,6 +33,11 @@ describe("contributor service catalog", () => {
 
   it("contains complete scanning and Canvas metadata", () => {
     const storage = completeCatalog.services.storage_account;
+    const logicApps = completeCatalog.services.logic_apps;
+    const subnet = completeCatalog.services.subnet;
+    const functions = completeCatalog.services.functions;
+    const webApp = completeCatalog.services.web_app;
+    const sqlDatabase = completeCatalog.services.sql_database;
 
     expect(storage.icon).toMatch(/\.svg$/);
     expect(storage.terraform.resourceType).toBe("azurerm_storage_account");
@@ -43,6 +48,45 @@ describe("contributor service catalog", () => {
         id: expect.stringMatching(/^AZ-/),
         remediation: expect.any(String),
         reference: expect.stringMatching(/^https:\/\/learn\.microsoft\.com\//),
+      }),
+    );
+    expect(logicApps.canvas).toEqual(
+      expect.objectContaining({
+        variantParameterKey: "hostingModel",
+        variants: expect.arrayContaining([
+          expect.objectContaining({
+            id: "standard",
+            requiredDependencies: ["service_plan", "storage_account"],
+          }),
+          expect.objectContaining({
+            id: "consumption",
+            optionalDependencies: ["log_analytics"],
+          }),
+        ]),
+      }),
+    );
+    expect(subnet.canvas?.variants[0]).toEqual(
+      expect.objectContaining({
+        id: "default",
+        requiredDependencies: ["virtual_network"],
+      }),
+    );
+    expect(functions.canvas?.variants[0]).toEqual(
+      expect.objectContaining({
+        requiredDependencies: ["service_plan", "storage_account"],
+        optionalDependencies: ["subnet", "log_analytics"],
+      }),
+    );
+    expect(webApp.canvas?.variants[0]).toEqual(
+      expect.objectContaining({
+        requiredDependencies: ["service_plan"],
+        optionalDependencies: ["subnet", "log_analytics"],
+      }),
+    );
+    expect(sqlDatabase.canvas?.variants[0]).toEqual(
+      expect.objectContaining({
+        requiredDependencies: ["sql_server"],
+        optionalDependencies: ["subnet", "log_analytics"],
       }),
     );
   });

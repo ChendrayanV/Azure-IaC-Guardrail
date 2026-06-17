@@ -16,6 +16,8 @@ export interface SketchNode {
   x: number;
   y: number;
   parameters?: Record<string, SketchParameterValue>;
+  creationSource?: "manual" | "dependency" | "image-draft";
+  autoCreatedFor?: string;
 }
 
 export interface SketchConnection {
@@ -23,12 +25,22 @@ export interface SketchConnection {
   source: string;
   target: string;
   bidirectional?: boolean;
+  style?: "solid" | "dotted" | "animated-dotted" | "dashed";
+}
+
+export interface SketchReferenceImage {
+  path: string;
+  x: number;
+  y: number;
+  width: number;
+  opacity?: number;
 }
 
 export interface InfraSketch {
   version: 1;
   nodes: SketchNode[];
   connections: SketchConnection[];
+  referenceImage?: SketchReferenceImage;
 }
 
 export const SKETCH_SERVICES = Object.values(completeCatalog.services).map(
@@ -72,9 +84,48 @@ export function normalizeInfraSketch(input: unknown): InfraSketch {
       source,
       target,
       ...(entry.bidirectional === true ? { bidirectional: true } : {}),
+      ...(isConnectionStyle(entry.style) ? { style: entry.style } : {}),
     };
   });
-  return { version: 1, nodes, connections };
+  return {
+    version: 1,
+    nodes,
+    connections,
+    ...(value.referenceImage
+      ? { referenceImage: normalizeReferenceImage(value.referenceImage) }
+      : {}),
+  };
+}
+
+function isConnectionStyle(
+  value: unknown,
+): value is SketchConnection["style"] {
+  return (
+    value === "solid" ||
+    value === "dotted" ||
+    value === "animated-dotted" ||
+    value === "dashed"
+  );
+}
+
+function normalizeReferenceImage(input: unknown): SketchReferenceImage {
+  if (!input || typeof input !== "object") {
+    throw new Error("Reference image must be an object.");
+  }
+  const value = input as Record<string, unknown>;
+  const imagePath = String(value.path ?? "").trim();
+  if (!imagePath) {
+    throw new Error("Reference image path is required.");
+  }
+  return {
+    path: imagePath,
+    x: finiteNumber(value.x, 80),
+    y: finiteNumber(value.y, 80),
+    width: Math.max(240, finiteNumber(value.width, 720)),
+    ...(typeof value.opacity === "number" && Number.isFinite(value.opacity)
+      ? { opacity: Math.min(1, Math.max(0.1, value.opacity)) }
+      : {}),
+  };
 }
 
 export function generateTerraformFromSketch(
@@ -181,7 +232,24 @@ function normalizeNode(input: unknown, index: number): SketchNode {
     x: finiteNumber(value.x, 80),
     y: finiteNumber(value.y, 80),
     parameters: normalizeParameters(value.parameters),
+    ...(isCreationSource(value.creationSource)
+      ? { creationSource: value.creationSource }
+      : {}),
+    ...(typeof value.autoCreatedFor === "string" &&
+    value.autoCreatedFor.trim().length > 0
+      ? { autoCreatedFor: value.autoCreatedFor.trim() }
+      : {}),
   };
+}
+
+function isCreationSource(
+  value: unknown,
+): value is SketchNode["creationSource"] {
+  return (
+    value === "manual" ||
+    value === "dependency" ||
+    value === "image-draft"
+  );
 }
 
 function normalizeParameters(
@@ -283,8 +351,11 @@ function renderNode(
         dependsOn,
       ]);
     case "subnet": {
-      const vnet = connectedNode(node, sketch, "virtual_network") ??
-        sketch.nodes.find((candidate) => candidate.serviceType === "virtual_network");
+      const vnet = connectedNodeOrFirst(
+        node,
+        sketch,
+        "virtual_network",
+      );
       if (!vnet) {
         return commentOnly(node, "Add and connect a Virtual Network before generating this subnet.");
       }
@@ -293,6 +364,7 @@ function renderNode(
         `  resource_group_name  = ${rgReference}`,
         `  virtual_network_name = azurerm_virtual_network.${context.labels.get(vnet.id)}.name`,
         `  address_prefixes     = [${JSON.stringify(parameterString(node, "addressPrefix", "10.0.1.0/24"))}]`,
+        `  default_outbound_access_enabled = ${parameterBoolean(node, "default_outbound_access_enabled", false)}`,
         dependsOn,
       ]);
     }
@@ -341,17 +413,60 @@ function renderNode(
         tags,
         dependsOn,
       ]);
+    case "functions": {
+      const plan = connectedNodeOrFirst(node, sketch, "service_plan");
+      if (!plan) {
+        return commentOnly(
+          node,
+          "Add and connect an App Service Plan before generating this Function App.",
+        );
+      }
+      const storage = connectedNodeOrFirst(
+        node,
+        sketch,
+        "storage_account",
+      );
+      if (!storage) {
+        return commentOnly(
+          node,
+          "Add and connect a Storage Account before generating this Function App.",
+        );
+      }
+      const subnetReference = appSubnetReference(node, sketch, context.labels);
+      return block("azurerm_linux_function_app", label, [
+        `  name                       = ${JSON.stringify(node.name)}`,
+        `  location                   = ${locationReference}`,
+        `  resource_group_name        = ${rgReference}`,
+        `  service_plan_id            = azurerm_service_plan.${context.labels.get(plan.id)}.id`,
+        `  storage_account_name       = azurerm_storage_account.${context.labels.get(storage.id)}.name`,
+        `  storage_account_access_key = azurerm_storage_account.${context.labels.get(storage.id)}.primary_access_key`,
+        `  https_only                 = ${parameterBoolean(node, "https_only", true)}`,
+        `  public_network_access_enabled = ${parameterBoolean(node, "public_network_access_enabled", false)}`,
+        `  ftp_publish_basic_authentication_enabled = ${parameterBoolean(node, "ftp_publish_basic_authentication_enabled", false)}`,
+        `  webdeploy_publish_basic_authentication_enabled = ${parameterBoolean(node, "webdeploy_publish_basic_authentication_enabled", false)}`,
+        ...(subnetReference
+          ? [`  virtual_network_subnet_id = ${subnetReference}`]
+          : []),
+        "",
+        "  identity {",
+        `    type = ${JSON.stringify(parameterString(node, "identity.type", "SystemAssigned"))}`,
+        "  }",
+        "",
+        "  site_config {",
+        `    always_on                = ${parameterBoolean(node, "site_config.always_on", true)}`,
+        `    remote_debugging_enabled = ${parameterBoolean(node, "site_config.remote_debugging_enabled", false)}`,
+        `    minimum_tls_version      = ${JSON.stringify(parameterString(node, "site_config.minimum_tls_version", "1.2"))}`,
+        "  }",
+        tags,
+        dependsOn,
+      ]);
+    }
     case "web_app": {
-      const plan = connectedNode(node, sketch, "service_plan") ??
-        sketch.nodes.find((candidate) => candidate.serviceType === "service_plan");
+      const plan = connectedNodeOrFirst(node, sketch, "service_plan");
       if (!plan) {
         return commentOnly(node, "Add and connect an App Service Plan before generating this web app.");
       }
-      const virtualNetworkSubnetId = parameterString(
-        node,
-        "virtual_network_subnet_id",
-        "",
-      );
+      const subnetReference = appSubnetReference(node, sketch, context.labels);
       return block("azurerm_linux_web_app", label, [
         `  name                = ${JSON.stringify(node.name)}`,
         `  location            = ${locationReference}`,
@@ -361,9 +476,9 @@ function renderNode(
         `  public_network_access_enabled = ${parameterBoolean(node, "public_network_access_enabled", parameterBoolean(node, "publicNetworkAccess", false))}`,
         `  ftp_publish_basic_authentication_enabled = ${parameterBoolean(node, "ftp_publish_basic_authentication_enabled", false)}`,
         `  webdeploy_publish_basic_authentication_enabled = ${parameterBoolean(node, "webdeploy_publish_basic_authentication_enabled", false)}`,
-        ...(virtualNetworkSubnetId
+        ...(subnetReference
           ? [
-              `  virtual_network_subnet_id = ${JSON.stringify(virtualNetworkSubnetId)}`,
+              `  virtual_network_subnet_id = ${subnetReference}`,
             ]
           : []),
         "",
@@ -446,8 +561,7 @@ function renderNode(
         dependsOn,
       ]);
     case "sql_database": {
-      const server = connectedNode(node, sketch, "sql_server") ??
-        sketch.nodes.find((candidate) => candidate.serviceType === "sql_server");
+      const server = connectedNodeOrFirst(node, sketch, "sql_server");
       if (!server) {
         return commentOnly(node, "Add and connect a SQL Server before generating this database.");
       }
@@ -801,6 +915,33 @@ function connectedNode(
   );
 }
 
+function connectedNodeOrFirst(
+  node: SketchNode,
+  sketch: InfraSketch,
+  serviceType: SketchServiceType,
+): SketchNode | undefined {
+  return (
+    connectedNode(node, sketch, serviceType) ??
+    sketch.nodes.find((candidate) => candidate.serviceType === serviceType)
+  );
+}
+
+function appSubnetReference(
+  node: SketchNode,
+  sketch: InfraSketch,
+  labels: Map<string, string>,
+): string | undefined {
+  const configuredSubnetId = parameterString(node, "virtual_network_subnet_id", "");
+  if (configuredSubnetId) {
+    return JSON.stringify(configuredSubnetId);
+  }
+  const subnet = connectedNode(node, sketch, "subnet");
+  if (!subnet) {
+    return undefined;
+  }
+  return `azurerm_subnet.${labels.get(subnet.id)}.id`;
+}
+
 function terraformAddress(
   node: SketchNode,
   label: string,
@@ -813,6 +954,7 @@ function terraformAddress(
     storage_account: "azurerm_storage_account",
     key_vault: "azurerm_key_vault",
     service_plan: "azurerm_service_plan",
+    functions: "azurerm_linux_function_app",
     web_app: "azurerm_linux_web_app",
     kubernetes_service: "azurerm_kubernetes_cluster",
     kubernetes_namespace: "kubernetes_namespace",

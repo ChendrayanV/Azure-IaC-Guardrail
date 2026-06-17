@@ -141,6 +141,51 @@ describe("infrastructure sketch", () => {
     ]);
   });
 
+  it("preserves a movable reference image in the sketch model", () => {
+    const sketch = normalizeInfraSketch({
+      nodes: [],
+      connections: [],
+      referenceImage: {
+        path: ".azure-iac-guardrail/cloud-canvas/reference.png",
+        x: 120,
+        y: 90,
+        width: 840,
+        opacity: 0.45,
+      },
+    });
+
+    expect(sketch.referenceImage).toEqual({
+      path: ".azure-iac-guardrail/cloud-canvas/reference.png",
+      x: 120,
+      y: 90,
+      width: 840,
+      opacity: 0.45,
+    });
+  });
+
+  it("preserves node creation metadata for assisted canvas flows", () => {
+    const sketch = normalizeInfraSketch({
+      nodes: [
+        {
+          id: "func",
+          serviceType: "functions",
+          name: "func-orders",
+          region: "uksouth",
+          x: 120,
+          y: 90,
+          creationSource: "dependency",
+          autoCreatedFor: "web_app",
+        },
+      ],
+      connections: [],
+    });
+
+    expect(sketch.nodes[0]).toMatchObject({
+      creationSource: "dependency",
+      autoCreatedFor: "web_app",
+    });
+  });
+
   it("generates connected Terraform with secure defaults", () => {
     const sketch: InfraSketch = {
       version: 1,
@@ -203,6 +248,9 @@ describe("infrastructure sketch", () => {
     );
     expect(terraform).toContain(
       "virtual_network_name = azurerm_virtual_network.vnet_app.name",
+    );
+    expect(terraform).toContain(
+      "default_outbound_access_enabled = false",
     );
     expect(terraform).toContain(
       "public_network_access_enabled   = false",
@@ -529,6 +577,115 @@ describe("infrastructure sketch", () => {
     expect(terraform).toContain('type = "SystemAssigned"');
     expect(terraform).not.toContain('site_config.minimum_tls_version =');
     expect(terraform).not.toContain('identity.type =');
+  });
+
+  it("generates a Function App with connected hosting, storage, and subnet dependencies", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "plan",
+          serviceType: "service_plan",
+          name: "asp-func",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+        },
+        {
+          id: "storage",
+          serviceType: "storage_account",
+          name: "stfunc001",
+          region: "uksouth",
+          x: 20,
+          y: 180,
+        },
+        {
+          id: "subnet",
+          serviceType: "subnet",
+          name: "snet-func",
+          region: "uksouth",
+          x: 20,
+          y: 340,
+        },
+        {
+          id: "func",
+          serviceType: "functions",
+          name: "func-orders",
+          region: "uksouth",
+          x: 320,
+          y: 20,
+          parameters: {
+            https_only: true,
+            public_network_access_enabled: false,
+            "site_config.minimum_tls_version": "1.3",
+            "site_config.always_on": true,
+            "identity.type": "SystemAssigned",
+          },
+        },
+      ],
+      connections: [
+        { id: "edge-plan", source: "func", target: "plan" },
+        { id: "edge-storage", source: "func", target: "storage" },
+        { id: "edge-subnet", source: "func", target: "subnet" },
+      ],
+    });
+
+    expect(terraform).toContain(
+      'resource "azurerm_linux_function_app" "func_orders"',
+    );
+    expect(terraform).toContain(
+      "service_plan_id            = azurerm_service_plan.asp_func.id",
+    );
+    expect(terraform).toContain(
+      "storage_account_name       = azurerm_storage_account.stfunc001.name",
+    );
+    expect(terraform).toContain(
+      "storage_account_access_key = azurerm_storage_account.stfunc001.primary_access_key",
+    );
+    expect(terraform).toContain(
+      "virtual_network_subnet_id = azurerm_subnet.snet_func.id",
+    );
+    expect(terraform).toContain('minimum_tls_version      = "1.3"');
+  });
+
+  it("infers web app subnet integration from a connected subnet", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "plan",
+          serviceType: "service_plan",
+          name: "asp-web",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+        },
+        {
+          id: "subnet",
+          serviceType: "subnet",
+          name: "snet-web",
+          region: "uksouth",
+          x: 20,
+          y: 180,
+        },
+        {
+          id: "web",
+          serviceType: "web_app",
+          name: "web-orders",
+          region: "uksouth",
+          x: 320,
+          y: 20,
+        },
+      ],
+      connections: [
+        { id: "edge-plan", source: "web", target: "plan" },
+        { id: "edge-subnet", source: "web", target: "subnet" },
+      ],
+    });
+
+    expect(terraform).toContain(
+      "virtual_network_subnet_id = azurerm_subnet.snet_web.id",
+    );
   });
 
   it("keeps governed canvas statuses unique and linked to known services", () => {

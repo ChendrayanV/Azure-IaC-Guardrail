@@ -43,5 +43,21 @@
       }
     ]
   },
-  "controls": []
+  "controls": [],
+  "canvas": {
+    "variants": [
+      {
+        "id": "default",
+        "label": "SQL Database",
+        "description": "Single database workloads need a parent SQL Server before private networking or workload connections are layered on.",
+        "requiredDependencies": [
+          "sql_server"
+        ],
+        "optionalDependencies": [
+          "subnet",
+          "log_analytics"
+        ]
+      }
+    ]
+  }
 }

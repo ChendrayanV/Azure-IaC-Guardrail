@@ -12,7 +12,9 @@
     "resourceType": null,
     "armResourceTypes": [],
     "automaticArguments": [],
-    "parameters": []
+    "parameters": [
+      
+    ]
   },
   "controls": []
 }

@@ -311,5 +311,22 @@
       "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
       "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
     }
-  ]
+  ],
+  "canvas": {
+    "variants": [
+      {
+        "id": "default",
+        "label": "Function App",
+        "description": "Function workloads usually need shared hosting, storage, and recommended private networking plus monitoring.",
+        "requiredDependencies": [
+          "service_plan",
+          "storage_account"
+        ],
+        "optionalDependencies": [
+          "subnet",
+          "log_analytics"
+        ]
+      }
+    ]
+  }
 }

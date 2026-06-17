@@ -11,11 +11,7 @@
   "terraform": {
     "resourceType": "azurerm_container_registry",
     "armResourceTypes": [],
-    "automaticArguments": [
-      "name",
-      "resource_group_name",
-      "location"
-    ],
+    "automaticArguments": ["name", "resource_group_name", "location"],
     "parameters": [
       {
         "key": "sku",
@@ -24,11 +20,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "Premium",
-        "options": [
-          "Basic",
-          "Standard",
-          "Premium"
-        ]
+        "options": ["Basic", "Standard", "Premium"]
       },
       {
         "key": "admin_enabled",
@@ -37,9 +29,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-ACR-001"
-        ],
+        "controlIds": ["AZ-ACR-001"],
         "remediation": "Set admin_enabled = false and grant AcrPull or AcrPush roles to managed identities."
       },
       {
@@ -49,9 +39,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-ACR-002"
-        ],
+        "controlIds": ["AZ-ACR-002"],
         "remediation": "Set anonymous_pull_enabled = false."
       },
       {
@@ -61,9 +49,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-ACR-003"
-        ],
+        "controlIds": ["AZ-ACR-003"],
         "remediation": "Use Premium SKU, configure a private endpoint, and set public_network_access_enabled = false."
       },
       {
@@ -73,9 +59,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-ACR-004"
-        ],
+        "controlIds": ["AZ-ACR-004"],
         "remediation": "Set export_policy_enabled = false."
       },
       {
@@ -85,9 +69,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-ACR-005"
-        ],
+        "controlIds": ["AZ-ACR-005"],
         "remediation": "Add the required organizational tags to the registry."
       },
       {
@@ -97,9 +79,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-ACR-006"
-        ],
+        "controlIds": ["AZ-ACR-006"],
         "remediation": "Configure a SystemAssigned or UserAssigned identity block."
       },
       {
@@ -109,9 +89,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-ACR-007"
-        ],
+        "controlIds": ["AZ-ACR-007"],
         "remediation": "Configure registry encryption with a Key Vault key and user-assigned identity."
       },
       {
@@ -121,9 +99,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-ACR-008"
-        ],
+        "controlIds": ["AZ-ACR-008"],
         "remediation": "Set trust_policy_enabled = true on a Premium registry."
       },
       {
@@ -133,9 +109,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-ACR-009"
-        ],
+        "controlIds": ["AZ-ACR-009"],
         "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the registry."
       },
       {
@@ -162,9 +136,7 @@
       "title": "Container registries must disable the admin account",
       "description": "Azure Container Registry must use Microsoft Entra identities instead of the shared admin account.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "admin_enabled",
       "operator": "equals",
       "expected": false,
@@ -177,9 +149,7 @@
       "title": "Container registries must disable anonymous pulls",
       "description": "Container images must not be downloadable without authentication.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "anonymous_pull_enabled",
       "operator": "equals",
       "expected": false,
@@ -192,9 +162,7 @@
       "title": "Container registries must disable public network access",
       "description": "Container registries must use private connectivity.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "public_network_access_enabled",
       "operator": "equals",
       "expected": false,
@@ -207,9 +175,7 @@
       "title": "Container registries must disable artifact export",
       "description": "Registry artifact export must be disabled to reduce data-exfiltration paths.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "export_policy_enabled",
       "operator": "equals",
       "expected": false,
@@ -222,9 +188,7 @@
       "title": "Container registries must have tags",
       "description": "Container registries must include ownership and governance metadata.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "tags",
       "operator": "exists",
       "remediation": "Add the required organizational tags to the registry.",
@@ -236,9 +200,7 @@
       "title": "Container registries must use managed identity",
       "description": "A managed identity is required for secure access to customer-managed keys and other Azure services.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "identity.type",
       "operator": "exists",
       "planOnly": true,
@@ -251,9 +213,7 @@
       "title": "Premium container registries should use customer-managed encryption",
       "description": "Customer-managed keys provide control over registry encryption key lifecycle and access.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "encryption",
       "operator": "exists",
       "conditions": [
@@ -273,9 +233,7 @@
       "title": "Premium container registries should enable content trust",
       "description": "Content trust helps consumers verify signed container images.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "trust_policy_enabled",
       "operator": "equals",
       "expected": true,
@@ -288,9 +246,7 @@
       "title": "Container registries should send diagnostics to Log Analytics",
       "description": "Centralized registry logs support auditing and incident response.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_container_registry"
-      ],
+      "resourceTypes": ["azurerm_container_registry"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "relatedResourceType": "azurerm_monitor_diagnostic_setting",

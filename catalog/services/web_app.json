@@ -344,5 +344,21 @@
       "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
       "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
     }
-  ]
+  ],
+  "canvas": {
+    "variants": [
+      {
+        "id": "default",
+        "label": "Web App",
+        "description": "Managed web applications need an App Service Plan, with secure networking and observability usually added alongside.",
+        "requiredDependencies": [
+          "service_plan"
+        ],
+        "optionalDependencies": [
+          "subnet",
+          "log_analytics"
+        ]
+      }
+    ]
+  }
 }

@@ -50,5 +50,20 @@
       "remediation": "Set default_outbound_access_enabled = false and provide approved explicit egress.",
       "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
     }
-  ]
+  ],
+  "canvas": {
+    "variants": [
+      {
+        "id": "default",
+        "label": "Subnet",
+        "description": "Network segment that should live inside a Virtual Network before workloads or private endpoints are attached.",
+        "requiredDependencies": [
+          "virtual_network"
+        ],
+        "optionalDependencies": [
+          "network_security_group"
+        ]
+      }
+    ]
+  }
 }

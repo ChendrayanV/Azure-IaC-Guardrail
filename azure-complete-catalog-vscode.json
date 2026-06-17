@@ -4138,7 +4138,24 @@
           "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
           "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
         }
-      ]
+      ],
+      "canvas": {
+        "variants": [
+          {
+            "id": "default",
+            "label": "Function App",
+            "description": "Function workloads usually need shared hosting, storage, and recommended private networking plus monitoring.",
+            "requiredDependencies": [
+              "service_plan",
+              "storage_account"
+            ],
+            "optionalDependencies": [
+              "subnet",
+              "log_analytics"
+            ]
+          }
+        ]
+      }
     },
     "generic_api": {
       "$schema": "../schema/service.schema.json",
@@ -5756,9 +5773,50 @@
         "resourceType": null,
         "armResourceTypes": [],
         "automaticArguments": [],
-        "parameters": []
+        "parameters": [
+          {
+            "key": "hostingModel",
+            "label": "Hosting Model",
+            "type": "select",
+            "required": false,
+            "nestedBlock": false,
+            "defaultValue": "standard",
+            "options": [
+              "standard",
+              "consumption"
+            ],
+            "remediation": "Choose the Logic App runtime model before adding dependent services."
+          }
+        ]
       },
-      "controls": []
+      "controls": [],
+      "canvas": {
+        "variantParameterKey": "hostingModel",
+        "variants": [
+          {
+            "id": "standard",
+            "label": "Logic App Standard",
+            "description": "Single-tenant runtime with shared App Service hosting, storage, and optional private networking.",
+            "requiredDependencies": [
+              "service_plan",
+              "storage_account"
+            ],
+            "optionalDependencies": [
+              "log_analytics",
+              "subnet"
+            ]
+          },
+          {
+            "id": "consumption",
+            "label": "Logic App Consumption",
+            "description": "Serverless workflow runtime with lighter platform requirements and recommended monitoring.",
+            "requiredDependencies": [],
+            "optionalDependencies": [
+              "log_analytics"
+            ]
+          }
+        ]
+      }
     },
     "machine_learning": {
       "$schema": "../schema/service.schema.json",
@@ -7218,7 +7276,23 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "canvas": {
+        "variants": [
+          {
+            "id": "default",
+            "label": "SQL Database",
+            "description": "Single database workloads need a parent SQL Server before private networking or workload connections are layered on.",
+            "requiredDependencies": [
+              "sql_server"
+            ],
+            "optionalDependencies": [
+              "subnet",
+              "log_analytics"
+            ]
+          }
+        ]
+      }
     },
     "sql_server": {
       "$schema": "../schema/service.schema.json",
@@ -8236,7 +8310,22 @@
           "remediation": "Set default_outbound_access_enabled = false and provide approved explicit egress.",
           "reference": "https://learn.microsoft.com/azure/security/fundamentals/network-best-practices"
         }
-      ]
+      ],
+      "canvas": {
+        "variants": [
+          {
+            "id": "default",
+            "label": "Subnet",
+            "description": "Network segment that should live inside a Virtual Network before workloads or private endpoints are attached.",
+            "requiredDependencies": [
+              "virtual_network"
+            ],
+            "optionalDependencies": [
+              "network_security_group"
+            ]
+          }
+        ]
+      }
     },
     "synapse_analytics": {
       "$schema": "../schema/service.schema.json",
@@ -9118,7 +9207,23 @@
           "reference": "https://learn.microsoft.com/azure/app-service/troubleshoot-diagnostic-logs",
           "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/app-service/app-service-diagnostic-logging-enabled/"
         }
-      ]
+      ],
+      "canvas": {
+        "variants": [
+          {
+            "id": "default",
+            "label": "Web App",
+            "description": "Managed web applications need an App Service Plan, with secure networking and observability usually added alongside.",
+            "requiredDependencies": [
+              "service_plan"
+            ],
+            "optionalDependencies": [
+              "subnet",
+              "log_analytics"
+            ]
+          }
+        ]
+      }
     },
     "web_application_firewall": {
       "$schema": "../schema/service.schema.json",
