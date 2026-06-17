@@ -249,13 +249,13 @@ function renderSketchScript(
 ): string {
   return [
     renderSketchScriptBootstrap(sketch, iconBaseUri),
-    renderSketchScriptPalette(sketch, iconBaseUri),
-    renderSketchScriptInspector(sketch, iconBaseUri),
-    renderSketchScriptParameters(sketch, iconBaseUri),
-    renderSketchScriptDependencyFlow(sketch, iconBaseUri),
-    renderSketchScriptEvents(sketch, iconBaseUri),
-    renderSketchScriptState(sketch, iconBaseUri),
-    renderSketchScriptExport(sketch, iconBaseUri),
+    renderSketchScriptPalette(),
+    renderSketchScriptInspector(),
+    renderSketchScriptParameters(),
+    renderSketchScriptDependencyFlow(),
+    renderSketchScriptEvents(),
+    renderSketchScriptState(),
+    renderSketchScriptExport(),
   ].join("\n");
 }
 
@@ -291,10 +291,7 @@ function renderSketchScriptBootstrap(
     let isDarkTheme = false;`;
 }
 
-function renderSketchScriptPalette(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptPalette(): string {
   return `    function renderPalette() {
       const term = search.value.trim().toLowerCase();
       const grouped = new Map();
@@ -491,10 +488,7 @@ function renderSketchScriptPalette(
     }`;
 }
 
-function renderSketchScriptInspector(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptInspector(): string {
   return `    function renderInspector() {
       const node = sketch.nodes.find(item => item.id === selectedId);
       document.getElementById("inspector").hidden = !node;
@@ -688,10 +682,7 @@ function renderSketchScriptInspector(
     }`;
 }
 
-function renderSketchScriptParameters(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptParameters(): string {
   return `    function renderServiceParameters(node) {
       const definitions = parameterDefinitions[node.serviceType] || [];
       serviceParameters.innerHTML = "";
@@ -770,10 +761,7 @@ function renderSketchScriptParameters(
     }`;
 }
 
-function renderSketchScriptDependencyFlow(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptDependencyFlow(): string {
   return `    function beginReferenceDrag(event) {
       if (!sketch.referenceImage) return;
       event.preventDefault();
@@ -957,10 +945,7 @@ function renderSketchScriptDependencyFlow(
     }`;
 }
 
-function renderSketchScriptEvents(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptEvents(): string {
   return `    canvas.addEventListener("dragover", event => event.preventDefault());
     canvas.addEventListener("drop", event => {
       event.preventDefault();
@@ -1090,10 +1075,7 @@ function renderSketchScriptEvents(
     });`;
 }
 
-function renderSketchScriptState(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptState(): string {
   return `    function deleteSelectedNode() {
       if (!selectedId) return;
       if (selectedId === "__reference_image__") {
@@ -1144,10 +1126,7 @@ function renderSketchScriptState(
     applyTheme();`;
 }
 
-function renderSketchScriptExport(
-  sketch: InfraSketch,
-  iconBaseUri: string,
-): string {
+function renderSketchScriptExport(): string {
   return `    function exportPng() {
       if (!sketch.nodes.length && !sketch.referenceImage) return;
       const padding = 70;
