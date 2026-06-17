@@ -29,6 +29,13 @@ describe("Cloud Canvas webview source", () => {
     expect(panelSource).toContain("selectedId = id");
   });
 
+  it("explains preview and validation actions in the toolbar", () => {
+    expect(panelSource).toContain("Preview</strong> opens generated Terraform");
+    expect(panelSource).toContain(
+      "Validate</strong> runs Terraform validation and the built-in static scan",
+    );
+  });
+
   it("clears the complete canvas without a confirmation gate", () => {
     const clearHandler = panelSource.match(
       /document\.getElementById\("clearCanvas"\)[\s\S]*?\n {4}\}\);/,

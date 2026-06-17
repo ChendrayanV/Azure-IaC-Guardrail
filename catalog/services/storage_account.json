@@ -26,10 +26,11 @@
       {
         "key": "account_replication_type",
         "label": "Account Replication Type",
-        "type": "json",
+        "type": "select",
         "required": true,
         "nestedBlock": false,
-        "defaultValue": ["GRS", "RAGRS", "GZRS", "RAGZRS"],
+        "defaultValue": "GRS",
+        "options": ["GRS", "RAGRS", "GZRS", "RAGZRS"],
         "controlIds": ["AZ-STOR-019"],
         "remediation": "Use GRS, RAGRS, GZRS, or RAGZRS where regional resilience is required."
       },

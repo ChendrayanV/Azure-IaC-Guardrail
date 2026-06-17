@@ -11,11 +11,7 @@
   "terraform": {
     "resourceType": "azurerm_service_plan",
     "armResourceTypes": [],
-    "automaticArguments": [
-      "name",
-      "resource_group_name",
-      "location"
-    ],
+    "automaticArguments": ["name", "resource_group_name", "location"],
     "parameters": [
       {
         "key": "os_type",

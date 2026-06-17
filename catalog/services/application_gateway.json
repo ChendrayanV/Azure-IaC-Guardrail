@@ -11,11 +11,7 @@
   "terraform": {
     "resourceType": "azurerm_application_gateway",
     "armResourceTypes": [],
-    "automaticArguments": [
-      "name",
-      "resource_group_name",
-      "location"
-    ],
+    "automaticArguments": ["name", "resource_group_name", "location"],
     "parameters": [
       {
         "key": "sku",
@@ -104,9 +100,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-AGW-001"
-        ],
+        "controlIds": ["AZ-AGW-001"],
         "remediation": "Add the required organizational tags to the Application Gateway."
       },
       {
@@ -116,9 +110,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "Https",
-        "controlIds": [
-          "AZ-AGW-002"
-        ],
+        "controlIds": ["AZ-AGW-002"],
         "remediation": "Remove HTTP listeners or replace them with HTTPS listeners that reference an approved TLS certificate."
       },
       {
@@ -128,9 +120,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-AGW-005"
-        ],
+        "controlIds": ["AZ-AGW-005"],
         "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the Application Gateway and enable ApplicationGatewayAccessLog and ApplicationGatewayFirewallLog, or the allLogs category group."
       },
       {
@@ -140,9 +130,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "AppGwSslPolicy20220101S",
-        "controlIds": [
-          "AZ-AGW-006"
-        ],
+        "controlIds": ["AZ-AGW-006"],
         "remediation": "Set ssl_policy.policy_type = \"Predefined\" and ssl_policy.policy_name = \"AppGwSslPolicy20220101S\"."
       },
       {
@@ -152,9 +140,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "WAF_v2",
-        "controlIds": [
-          "AZ-AGW-007"
-        ],
+        "controlIds": ["AZ-AGW-007"],
         "remediation": "Use sku.tier = \"WAF_v2\" and associate the gateway with an azurerm_web_application_firewall_policy."
       },
       {
@@ -164,9 +150,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-NET-006"
-        ],
+        "controlIds": ["AZ-NET-006"],
         "remediation": "Set http2_enabled = true."
       },
       {
@@ -176,9 +160,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": true,
-        "controlIds": [
-          "AZ-NET-007"
-        ],
+        "controlIds": ["AZ-NET-007"],
         "remediation": "Set fips_enabled = true when required by the workload compliance profile."
       }
     ]
@@ -189,9 +171,7 @@
       "title": "Application Gateways must have tags",
       "description": "Application Gateways must include ownership, environment, and governance metadata.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "tags",
       "operator": "exists",
       "remediation": "Add the required organizational tags to the Application Gateway.",
@@ -202,9 +182,7 @@
       "title": "Application Gateway listeners must use HTTPS",
       "description": "Application Gateway client listeners must encrypt ingress traffic with HTTPS.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "http_listener.*.protocol",
       "operator": "equals",
       "expected": "Https",
@@ -217,9 +195,7 @@
       "title": "Application Gateways should send access and firewall logs to Log Analytics",
       "description": "Centralized Application Gateway access and WAF logs support traffic analysis, security monitoring, and incident response.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "relatedResourceType": "azurerm_monitor_diagnostic_setting",
@@ -233,9 +209,7 @@
       "title": "Application Gateways must use the latest approved SSL policy",
       "description": "The latest approved predefined SSL policy enforces modern protocols and cipher suites.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "ssl_policy.policy_name",
       "operator": "equals",
       "expected": "AppGwSslPolicy20220101S",
@@ -248,9 +222,7 @@
       "title": "Application Gateways must enable WAF",
       "description": "Application Gateways must use the WAF_v2 tier and associate an approved Web Application Firewall policy.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "sku.tier",
       "operator": "equals",
       "expected": "WAF_v2",
@@ -263,9 +235,7 @@
       "title": "Application Gateway must enable HTTP/2",
       "description": "Application Gateway should use HTTP/2 for modern encrypted client connections.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "http2_enabled",
       "operator": "equals",
       "expected": true,
@@ -277,9 +247,7 @@
       "title": "Application Gateway should enable FIPS mode",
       "description": "FIPS mode should be enabled for workloads requiring validated cryptographic implementations.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_application_gateway"
-      ],
+      "resourceTypes": ["azurerm_application_gateway"],
       "attribute": "fips_enabled",
       "operator": "equals",
       "expected": true,

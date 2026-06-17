@@ -367,12 +367,15 @@ function renderSketchHtml(
     .status-dot.under-review { background: #f5c542; }
     .status-dot.not-approved { background: #d92d20; }
     .workspace { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #fff; }
-    .toolbar { position: absolute; z-index: 20; top: 14px; left: 16px; right: 16px; display: flex; justify-content: space-between; gap: 12px; pointer-events: none; }
+    .toolbar { position: absolute; z-index: 20; top: 14px; left: 16px; right: 16px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toolbar-row { display: flex; justify-content: space-between; gap: 12px; }
     .toolbar-group { display: flex; gap: 7px; padding: 6px; border: 1px solid #d9dee5; border-radius: 7px; background: #ffffffed; box-shadow: 0 5px 18px #17203316; pointer-events: auto; backdrop-filter: blur(8px); }
     .toolbar button { min-height: 34px; padding: 0 12px; border: 0; border-radius: 4px; color: #26313f; background: transparent; cursor: pointer; font-size: 12px; font-weight: 600; }
     .toolbar button:hover { background: #edf4fc; color: #0067b8; }
     .toolbar button.primary { color: #fff; background: #0078d4; }
     .toolbar button.active { color: #fff; background: #6657c8; }
+    .toolbar-tip { max-width: 560px; padding: 10px 12px; border: 1px solid #d9dee5; border-radius: 7px; color: #4f5d6c; background: #ffffffed; box-shadow: 0 5px 18px #17203316; font-size: 11px; line-height: 1.45; pointer-events: auto; backdrop-filter: blur(8px); }
+    .toolbar-tip strong { color: #1f2937; }
     .canvas-wrap { width: 100%; height: 100%; overflow: auto; touch-action: none; background-color: #fff; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 16px 16px; cursor: grab; }
     .canvas-wrap.panning { cursor: grabbing; }
     #canvas { position: relative; width: 2400px; height: 1500px; }
@@ -461,20 +464,23 @@ function renderSketchHtml(
     </aside>
     <main class="workspace">
       <div class="toolbar">
-        <div class="toolbar-group optional">
-          <button id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
-          <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo</button>
-          <button id="zoomOut" type="button" title="Zoom out (Ctrl+-)">Zoom -</button>
-          <button id="zoomIn" type="button" title="Zoom in (Ctrl++)">Zoom +</button>
-          <button id="twoWay" type="button">Two-way arrows</button>
-          <button id="clearCanvas" type="button">Clear canvas</button>
+        <div class="toolbar-row">
+          <div class="toolbar-group optional">
+            <button id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
+            <button id="redo" type="button" title="Redo (Ctrl+Y)">Redo</button>
+            <button id="zoomOut" type="button" title="Zoom out (Ctrl+-)">Zoom -</button>
+            <button id="zoomIn" type="button" title="Zoom in (Ctrl++)">Zoom +</button>
+            <button id="twoWay" type="button">Two-way arrows</button>
+            <button id="clearCanvas" type="button">Clear canvas</button>
+          </div>
+          <div class="toolbar-group">
+            <button id="exportPng" type="button">Export PNG</button>
+            <button id="validate" type="button">Validate + Static Scan</button>
+            <button id="preview" type="button">Preview Terraform</button>
+            <button id="generate" class="primary" type="button">Generate Terraform</button>
+          </div>
         </div>
-        <div class="toolbar-group">
-          <button id="exportPng" type="button">Export PNG</button>
-          <button id="validate" type="button">Validate + Static Scan</button>
-          <button id="preview" type="button">Preview Terraform</button>
-          <button id="generate" class="primary" type="button">Generate Terraform</button>
-        </div>
+        <div class="toolbar-tip"><strong>Preview</strong> opens generated Terraform without writing files. <strong>Validate</strong> runs Terraform validation and the built-in static scan so you can catch syntax, nested block, and control issues earlier.</div>
       </div>
       <div class="canvas-wrap">
         <div id="canvas">

@@ -485,6 +485,52 @@ describe("infrastructure sketch", () => {
     expect(terraform).toContain('sku_name = "Developer_1"');
   });
 
+  it("renders dotted mapped parameters as nested Terraform blocks", () => {
+    const terraform = generateTerraformFromSketch({
+      version: 1,
+      nodes: [
+        {
+          id: "plan",
+          serviceType: "service_plan",
+          name: "asp-preview",
+          region: "uksouth",
+          x: 20,
+          y: 20,
+        },
+        {
+          id: "web",
+          serviceType: "web_app",
+          name: "web-preview",
+          region: "uksouth",
+          x: 280,
+          y: 20,
+          parameters: {
+            https_only: true,
+            public_network_access_enabled: false,
+            "site_config.minimum_tls_version": "1.3",
+            "site_config.always_on": true,
+            "identity.type": "SystemAssigned",
+          },
+        },
+      ],
+      connections: [{ id: "edge-plan", source: "web", target: "plan" }],
+    });
+
+    expect(terraform).toContain(
+      'resource "azurerm_linux_web_app" "web_preview"',
+    );
+    expect(terraform).toContain(
+      "service_plan_id     = azurerm_service_plan.asp_preview.id",
+    );
+    expect(terraform).toContain("site_config {");
+    expect(terraform).toContain('minimum_tls_version      = "1.3"');
+    expect(terraform).toContain("always_on                = true");
+    expect(terraform).toContain("identity {");
+    expect(terraform).toContain('type = "SystemAssigned"');
+    expect(terraform).not.toContain('site_config.minimum_tls_version =');
+    expect(terraform).not.toContain('identity.type =');
+  });
+
   it("keeps governed canvas statuses unique and linked to known services", () => {
     const knownServices = new Set(SKETCH_SERVICES.map((service) => service.type));
     expect(

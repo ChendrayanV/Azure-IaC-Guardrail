@@ -347,19 +347,35 @@ function renderNode(
       if (!plan) {
         return commentOnly(node, "Add and connect an App Service Plan before generating this web app.");
       }
+      const virtualNetworkSubnetId = parameterString(
+        node,
+        "virtual_network_subnet_id",
+        "",
+      );
       return block("azurerm_linux_web_app", label, [
         `  name                = ${JSON.stringify(node.name)}`,
         `  location            = ${locationReference}`,
         `  resource_group_name = ${rgReference}`,
         `  service_plan_id     = azurerm_service_plan.${context.labels.get(plan.id)}.id`,
-        `  https_only          = ${parameterBoolean(node, "httpsOnly", true)}`,
-        `  public_network_access_enabled = ${parameterBoolean(node, "publicNetworkAccess", false)}`,
+        `  https_only          = ${parameterBoolean(node, "https_only", parameterBoolean(node, "httpsOnly", true))}`,
+        `  public_network_access_enabled = ${parameterBoolean(node, "public_network_access_enabled", parameterBoolean(node, "publicNetworkAccess", false))}`,
+        `  ftp_publish_basic_authentication_enabled = ${parameterBoolean(node, "ftp_publish_basic_authentication_enabled", false)}`,
+        `  webdeploy_publish_basic_authentication_enabled = ${parameterBoolean(node, "webdeploy_publish_basic_authentication_enabled", false)}`,
+        ...(virtualNetworkSubnetId
+          ? [
+              `  virtual_network_subnet_id = ${JSON.stringify(virtualNetworkSubnetId)}`,
+            ]
+          : []),
         "",
         "  identity {",
-        '    type = "SystemAssigned"',
+        `    type = ${JSON.stringify(parameterString(node, "identity.type", "SystemAssigned"))}`,
         "  }",
         "",
-        "  site_config {}",
+        "  site_config {",
+        `    always_on                = ${parameterBoolean(node, "site_config.always_on", true)}`,
+        `    remote_debugging_enabled = ${parameterBoolean(node, "site_config.remote_debugging_enabled", false)}`,
+        `    minimum_tls_version      = ${JSON.stringify(parameterString(node, "site_config.minimum_tls_version", "1.2"))}`,
+        "  }",
         tags,
         dependsOn,
       ]);
@@ -566,32 +582,120 @@ function genericTerraformBlock(
   if (!mapped.terraform.resourceType) {
     return commentOnly(node, "No Terraform resource type is mapped.");
   }
+  const lines: string[] = [
+    ...automaticArgumentLines(
+      mapped.terraform.automaticArguments,
+      node,
+      resourceGroupReference,
+      locationReference,
+    ),
+    ...mappedParameterLines(mapped.terraform.parameters, node),
+  ];
+  if (dependsOn) {
+    lines.push(dependsOn);
+  }
+  return block(mapped.terraform.resourceType, label, lines);
+}
+
+function automaticArgumentLines(
+  argumentsList: string[],
+  node: SketchNode,
+  resourceGroupReference: string,
+  locationReference: string,
+): string[] {
   const lines: string[] = [];
-  if (mapped.terraform.automaticArguments.includes("name")) {
+  if (argumentsList.includes("name")) {
     lines.push(`  name = ${JSON.stringify(node.name)}`);
   }
-  if (mapped.terraform.automaticArguments.includes("location")) {
+  if (argumentsList.includes("location")) {
     lines.push(`  location = ${locationReference}`);
   }
-  if (mapped.terraform.automaticArguments.includes("resource_group_name")) {
+  if (argumentsList.includes("resource_group_name")) {
     lines.push(`  resource_group_name = ${resourceGroupReference}`);
   }
-  for (const definition of mapped.terraform.parameters) {
+  return lines;
+}
+
+interface TerraformArgumentTree {
+  children: Map<string, TerraformArgumentTree>;
+  value?: unknown;
+  required?: boolean;
+  nestedBlock?: boolean;
+}
+
+function mappedParameterLines(
+  definitions: MappedService["terraform"]["parameters"],
+  node: SketchNode,
+): string[] {
+  const tree: TerraformArgumentTree = { children: new Map() };
+  for (const definition of definitions) {
     const value = node.parameters?.[definition.key] ?? definition.defaultValue;
-    if (definition.nestedBlock) {
-      lines.push(
-        `  # TODO: configure ${definition.required ? "required " : ""}nested block "${definition.key}".`,
-      );
-    } else if (value === "" || value === undefined || value === null) {
-      lines.push(
-        `  # TODO: ${definition.required ? "required " : ""}${definition.key} = <value>`,
-      );
-    } else {
-      lines.push(`  ${definition.key} = ${terraformValue(value)}`);
-    }
+    insertTerraformArgument(tree, definition.key.split("."), {
+      children: new Map(),
+      value,
+      required: definition.required,
+      nestedBlock: definition.nestedBlock,
+    });
   }
-  lines.push(dependsOn);
-  return block(mapped.terraform.resourceType, label, lines);
+  return renderTerraformArgumentChildren(tree, 1);
+}
+
+function insertTerraformArgument(
+  tree: TerraformArgumentTree,
+  path: string[],
+  leaf: TerraformArgumentTree,
+): void {
+  const [head, ...tail] = path;
+  const current: TerraformArgumentTree = tree.children.get(head) ?? {
+    children: new Map(),
+  };
+  tree.children.set(head, current);
+  if (tail.length === 0) {
+    current.value = leaf.value;
+    current.required = leaf.required;
+    current.nestedBlock = leaf.nestedBlock;
+    return;
+  }
+  insertTerraformArgument(current, tail, leaf);
+}
+
+function renderTerraformArgumentChildren(
+  tree: TerraformArgumentTree,
+  depth: number,
+): string[] {
+  const lines: string[] = [];
+  for (const [name, child] of tree.children) {
+    lines.push(...renderTerraformArgumentNode(name, child, depth));
+  }
+  return lines;
+}
+
+function renderTerraformArgumentNode(
+  name: string,
+  node: TerraformArgumentTree,
+  depth: number,
+): string[] {
+  const indent = "  ".repeat(depth);
+  if (node.children.size > 0) {
+    const childLines = renderTerraformArgumentChildren(node, depth + 1);
+    if (childLines.length === 0) {
+      return node.required
+        ? [`${indent}# TODO: configure required nested block "${name}".`]
+        : [];
+    }
+    return [`${indent}${name} {`, ...childLines, `${indent}}`];
+  }
+  if (node.nestedBlock) {
+    return [
+      `${indent}# TODO: configure ${node.required ? "required " : ""}nested block "${name}".`,
+    ];
+  }
+  if (node.value === "" || node.value === undefined || node.value === null) {
+    return node.required
+      ? [`${indent}# TODO: required ${name} = <value>`]
+      : [];
+  }
+  return [`${indent}${name} = ${terraformValue(node.value)}`];
 }
 
 function terraformValue(value: unknown): string {

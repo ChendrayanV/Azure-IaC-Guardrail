@@ -11,11 +11,7 @@
   "terraform": {
     "resourceType": "azurerm_app_configuration",
     "armResourceTypes": [],
-    "automaticArguments": [
-      "name",
-      "resource_group_name",
-      "location"
-    ],
+    "automaticArguments": ["name", "resource_group_name", "location"],
     "parameters": [
       {
         "key": "local_auth_enabled",
@@ -24,9 +20,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": false,
-        "controlIds": [
-          "AZ-APPCFG-001"
-        ],
+        "controlIds": ["AZ-APPCFG-001"],
         "remediation": "Set local_auth_enabled = false and grant App Configuration data-plane roles to managed identities."
       },
       {
@@ -36,9 +30,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-APPCFG-002"
-        ],
+        "controlIds": ["AZ-APPCFG-002"],
         "remediation": "Create an azurerm_monitor_diagnostic_setting targeting the App Configuration store and send logs and metrics to Log Analytics."
       },
       {
@@ -48,9 +40,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-APPCFG-003"
-        ],
+        "controlIds": ["AZ-APPCFG-003"],
         "remediation": "Use the Standard SKU, configure a UserAssigned identity, and add an encryption block with key_vault_key_identifier and identity_client_id."
       },
       {
@@ -60,9 +50,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-APPCFG-004"
-        ],
+        "controlIds": ["AZ-APPCFG-004"],
         "remediation": "Add the required organizational tags to the App Configuration store."
       },
       {
@@ -72,9 +60,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "",
-        "controlIds": [
-          "AZ-APPCFG-005"
-        ],
+        "controlIds": ["AZ-APPCFG-005"],
         "remediation": "Configure a UserAssigned identity block. Customer-managed encryption requires a user-assigned identity."
       },
       {
@@ -84,9 +70,7 @@
         "required": false,
         "nestedBlock": false,
         "defaultValue": "Disabled",
-        "controlIds": [
-          "AZ-APPCFG-006"
-        ],
+        "controlIds": ["AZ-APPCFG-006"],
         "remediation": "Configure a private endpoint and set public_network_access = \"Disabled\"."
       }
     ]
@@ -97,9 +81,7 @@
       "title": "App Configuration stores must disable access key authentication",
       "description": "App Configuration clients must use Microsoft Entra identities instead of access keys.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "local_auth_enabled",
       "operator": "equals",
       "expected": false,
@@ -111,9 +93,7 @@
       "title": "App Configuration stores should send diagnostic logs to Log Analytics",
       "description": "Centralized App Configuration logs support security monitoring, auditing, and incident response.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "id",
       "operator": "relatedResourceExists",
       "relatedResourceType": "azurerm_monitor_diagnostic_setting",
@@ -127,9 +107,7 @@
       "title": "App Configuration stores should use customer-managed encryption",
       "description": "Customer-managed keys provide control over App Configuration encryption key lifecycle and access.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "encryption",
       "operator": "exists",
       "planOnly": true,
@@ -141,9 +119,7 @@
       "title": "App Configuration stores must have tags",
       "description": "App Configuration stores must include ownership, environment, and governance metadata.",
       "severity": "warning",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "tags",
       "operator": "exists",
       "remediation": "Add the required organizational tags to the App Configuration store.",
@@ -154,9 +130,7 @@
       "title": "App Configuration stores must use managed identity",
       "description": "Managed identity is required for secure customer-managed key access and credential-free integrations.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "identity.type",
       "operator": "exists",
       "planOnly": true,
@@ -168,9 +142,7 @@
       "title": "App Configuration stores must disable public network access",
       "description": "App Configuration stores must use private connectivity instead of public endpoints.",
       "severity": "error",
-      "resourceTypes": [
-        "azurerm_app_configuration"
-      ],
+      "resourceTypes": ["azurerm_app_configuration"],
       "attribute": "public_network_access",
       "operator": "equals",
       "expected": "Disabled",

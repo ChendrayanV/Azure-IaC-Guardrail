@@ -112,13 +112,11 @@
       {
         "key": "site_config.minimum_tls_version",
         "label": "Site Config.minimum Tls Version",
-        "type": "json",
+        "type": "select",
         "required": false,
         "nestedBlock": false,
-        "defaultValue": [
-          "1.2",
-          "1.3"
-        ],
+        "defaultValue": "1.2",
+        "options": ["1.2", "1.3"],
         "controlIds": [
           "AZ-WEB-007"
         ],
