@@ -7,6 +7,20 @@ their general-availability milestone.
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-06-17
+
+### Changed
+
+- Cloud Canvas now always opens as a blank workspace instead of restoring the
+  previous sketch.
+- Removed the Cloud Canvas starter-pattern entry point and the separate
+  `Start blank canvas` action to simplify first use.
+- Added a Cloud Canvas dark-view toggle for demos and longer design sessions.
+- Tightened the release dependency graph by pinning the patched
+  `form-data` transitive dependency used during packaging.
+- Cleaned up Cloud Canvas webview script helpers so lint and release pipeline
+  validation pass cleanly.
+
 ## [0.1.2] - 2026-06-14
 
 ### Changed
