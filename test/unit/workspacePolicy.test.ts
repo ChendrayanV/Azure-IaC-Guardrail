@@ -154,7 +154,7 @@ describe("workspace policy", () => {
     );
 
     await expect(loadWorkspacePolicy(workspace)).rejects.toThrow(
-      ".azure-iac-guardrail\\profile.json contains invalid JSON",
+      /\.azure-iac-guardrail[\\/]profile\.json contains invalid JSON/,
     );
   });
 
