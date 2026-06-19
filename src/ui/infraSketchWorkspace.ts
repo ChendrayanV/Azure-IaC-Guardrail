@@ -14,9 +14,14 @@ export async function loadSketch(
     const content = await vscode.workspace.fs.readFile(
       vscode.Uri.joinPath(workspace, SKETCH_PATH),
     );
-    return normalizeInfraSketch(
-      JSON.parse(new TextDecoder().decode(content)) as unknown,
-    );
+    const raw = new TextDecoder().decode(content);
+    try {
+      return normalizeInfraSketch(JSON.parse(raw) as unknown);
+    } catch (parseError) {
+      throw new Error(
+        `Cloud Canvas saved sketch is invalid JSON in ${SKETCH_PATH}. The file may be incomplete or corrupted. Fix or remove that file, then reopen Cloud Canvas. Details: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+      );
+    }
   } catch (error) {
     if (
       !(error instanceof vscode.FileSystemError) ||

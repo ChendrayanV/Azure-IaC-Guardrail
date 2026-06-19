@@ -166,11 +166,14 @@ function renderSketchStyles(montserratUri: string): string {
     .field { margin-top: 10px; }
     .field label { display: block; margin-bottom: 4px; color: #65707c; font-size: 10px; font-weight: 700; text-transform: uppercase; }
     .field input, .field select, .field textarea { width: 100%; min-height: 32px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 3px; color: var(--text-strong); background: var(--surface); }
+    .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: #d92d20; box-shadow: 0 0 0 2px #d92d2020; }
     .field textarea { min-height: 76px; resize: vertical; font-family: var(--vscode-editor-font-family), monospace; font-size: 11px; }
     .field.checkbox { display: grid; grid-template-columns: minmax(0, 1fr) 22px; gap: 10px 12px; align-items: center; }
     .field.checkbox label { margin: 0; text-transform: none; line-height: 1.35; }
     .field.checkbox input { width: 18px; height: 18px; margin: 0; }
     .field.checkbox .parameter-help { grid-column: 1 / -1; margin-top: 0; }
+    .parameter-error { display: none; margin: 5px 0 0; color: #b42318; font-size: 10px; line-height: 1.4; }
+    .field.invalid .parameter-error { display: block; }
     .danger { width: 100%; margin-top: 12px; padding: 7px; border: 1px solid #d92d20; border-radius: 3px; color: #b42318; background: #fff; cursor: pointer; }
     @media (max-width: 900px) { .shell { grid-template-columns: 285px minmax(0, 1fr); } .palette { padding-left: 10px; padding-right: 10px; } .toolbar-group.optional { display: none; } }`;
 }
@@ -729,6 +732,9 @@ function renderSketchScriptParameters(): string {
         if (definition.step !== undefined) control.step = String(definition.step);
       }
       control.id = "parameter-" + definition.key;
+      control.dataset.parameterKey = definition.key;
+      control.dataset.parameterLabel = definition.label;
+      control.dataset.parameterType = definition.type;
       const current = node.parameters && Object.prototype.hasOwnProperty.call(node.parameters, definition.key)
         ? node.parameters[definition.key]
         : definition.defaultValue;
@@ -736,28 +742,111 @@ function renderSketchScriptParameters(): string {
       else if (definition.type === "json") control.value = JSON.stringify(current, null, 2);
       else control.value = String(current);
       control.addEventListener("change", () => {
+        const result = readParameterValue(control, definition);
+        if (!result.ok) return;
         node.parameters = node.parameters || {};
-        try {
-          node.parameters[definition.key] = definition.type === "boolean"
-            ? control.checked
-            : definition.type === "number"
-              ? Number(control.value)
-              : definition.type === "json"
-                ? JSON.parse(control.value || "{}")
-                : control.value;
-          control.setCustomValidity("");
-        } catch {
-          control.setCustomValidity("Enter valid JSON.");
-          control.reportValidity();
-          return;
-        }
+        node.parameters[definition.key] = result.value;
         remember();
       });
+      if (definition.type === "json") {
+        const error = document.createElement("p");
+        error.className = "parameter-error";
+        error.id = "parameter-error-" + definition.key;
+        control.setAttribute("aria-describedby", error.id);
+        control.__cloudCanvasError = error;
+        control.addEventListener("input", () => readParameterValue(control, definition, { report: false }));
+        control.addEventListener("blur", () => readParameterValue(control, definition));
+        setTimeout(() => {
+          const field = control.closest(".field");
+          if (field && !error.parentElement) field.appendChild(error);
+        }, 0);
+      }
       return control;
     }
 
+    function readParameterValue(control, definition, options) {
+      const report = !options || options.report !== false;
+      try {
+        const value = definition.type === "boolean"
+          ? control.checked
+          : definition.type === "number"
+            ? Number(control.value)
+            : definition.type === "json"
+              ? parseJsonParameter(control.value, definition.label)
+              : control.value;
+        clearParameterError(control);
+        return { ok: true, value };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Enter a valid value.";
+        setParameterError(control, message, report);
+        return { ok: false };
+      }
+    }
+
+    function parseJsonParameter(value, label) {
+      const trimmed = value.trim();
+      if (!trimmed) return {};
+      try {
+        return JSON.parse(trimmed);
+      } catch (error) {
+        const detail = error instanceof Error && error.message ? error.message : "Invalid JSON";
+        throw new Error(label + " must be valid JSON. Check for missing closing braces, brackets, commas, or quotes. Details: " + detail);
+      }
+    }
+
+    function setParameterError(control, message, report) {
+      control.setCustomValidity(message);
+      const field = control.closest(".field");
+      if (field) field.classList.add("invalid");
+      if (control.__cloudCanvasError) control.__cloudCanvasError.textContent = message;
+      if (report) {
+        control.focus();
+        control.reportValidity();
+      }
+    }
+
+    function clearParameterError(control) {
+      control.setCustomValidity("");
+      const field = control.closest(".field");
+      if (field) field.classList.remove("invalid");
+      if (control.__cloudCanvasError) control.__cloudCanvasError.textContent = "";
+    }
+
+    function syncVisibleParameterInputs() {
+      const node = sketch.nodes.find(item => item.id === selectedId);
+      if (!node) return true;
+      const controls = Array.from(serviceParameters.querySelectorAll("[data-parameter-key]"));
+      for (const control of controls) {
+        const definition = {
+          key: control.dataset.parameterKey,
+          label: control.dataset.parameterLabel || control.dataset.parameterKey,
+          type: control.dataset.parameterType,
+        };
+        const result = readParameterValue(control, definition);
+        if (!result.ok) return false;
+        node.parameters = node.parameters || {};
+        node.parameters[definition.key] = result.value;
+      }
+      return true;
+    }
+
+    function actionLabel(type) {
+      if (type === "previewTerraform") return "preview Terraform";
+      if (type === "validateTerraform") return "validate Terraform";
+      if (type === "generateTerraform") return "generate Terraform";
+      return "continue";
+    }
+
     function post(type) {
-      vscode.postMessage({ type, sketch });
+      if ((type === "previewTerraform" || type === "validateTerraform" || type === "generateTerraform") && !syncVisibleParameterInputs()) {
+        return;
+      }
+      try {
+        vscode.postMessage({ type, sketch });
+      } catch (error) {
+        window.alert("Cloud Canvas could not " + actionLabel(type) + ". Check the selected service parameters and try again.");
+        throw error;
+      }
     }`;
 }
 
