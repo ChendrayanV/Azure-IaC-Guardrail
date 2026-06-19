@@ -7,6 +7,13 @@ their general-availability milestone.
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-06-19
+
+### Fixed
+
+- Made the workspace profile JSON error test path-separator neutral so release
+  validation passes consistently across Windows and POSIX-style paths.
+
 ## [0.1.6] - 2026-06-19
 
 ### Changed
