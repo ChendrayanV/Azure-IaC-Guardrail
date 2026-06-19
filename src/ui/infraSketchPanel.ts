@@ -253,7 +253,7 @@ export class InfraSketchPanel implements vscode.Disposable {
       );
     } catch (error) {
       void vscode.window.showErrorMessage(
-        `Cloud Canvas: ${error instanceof Error ? error.message : String(error)}`,
+        cloudCanvasErrorMessage(message.type, error),
       );
     }
   }
@@ -384,6 +384,41 @@ function isSketchMessage(message: unknown): message is SketchMessage {
     (value.type !== "exportPng" ||
       typeof (value as Partial<{ data: string }>).data === "string")
   );
+}
+
+function cloudCanvasErrorMessage(
+  type: SketchMessage["type"],
+  error: unknown,
+): string {
+  const action = cloudCanvasActionLabel(type);
+  const detail = error instanceof Error ? error.message : String(error);
+  const normalized = detail.toLowerCase();
+  if (
+    normalized.includes("unexpected end of json input") ||
+    normalized.includes("json")
+  ) {
+    return `Cloud Canvas could not ${action}: one of the selected service parameters contains invalid or incomplete JSON. Open the service inspector, check for missing closing braces, brackets, commas, or quotes, then try again.`;
+  }
+  return `Cloud Canvas could not ${action}: ${detail}`;
+}
+
+function cloudCanvasActionLabel(type: SketchMessage["type"]): string {
+  switch (type) {
+    case "previewTerraform":
+      return "preview Terraform";
+    case "validateTerraform":
+      return "validate Terraform";
+    case "generateTerraform":
+      return "generate Terraform";
+    case "exportPng":
+      return "export the PNG";
+    case "importReferenceImage":
+      return "import the reference image";
+    case "removeReferenceImage":
+      return "remove the reference image";
+    case "generateDraftFromImage":
+      return "generate a draft from the reference image";
+  }
 }
 
 
