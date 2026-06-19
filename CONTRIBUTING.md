@@ -14,14 +14,26 @@ reviewable, tested, and free of sensitive Azure or Terraform data.
 ## Contribute a Service or Standard Control
 
 `catalog/services/` is the source of truth for built-in service definitions and
-controls. One JSON file owns one service:
+controls. One JSON file owns one service, and its folder controls release
+readiness:
 
 ```text
-catalog/services/<service-id>.json
+catalog/services/production/<service-id>.json
+catalog/services/draft/<service-id>.json
 ```
 
-Use `catalog/service-template.json.example` for a new service. Keep the
-filename and `serviceId` identical and in lowercase snake_case.
+Use `catalog/service-template.json.example` for a new service and start it in
+`catalog/services/draft/`. Keep the filename and `serviceId` identical and in
+lowercase snake_case. Draft service metadata is included for Cloud Canvas, but
+draft controls and assurances are stripped from the generated runtime catalog.
+Move the file to `catalog/services/production/` only when at least one
+executable control is reviewed and ready to ship.
+
+A production scanning service is a service file in
+`catalog/services/production/` with reviewed controls that the scanner can
+evaluate from Terraform source, resolved plans, or supported related-resource
+relationships. Draft services may appear in Cloud Canvas, but they must not be
+described as available scanning coverage.
 
 For each control, provide:
 
@@ -66,7 +78,7 @@ npm test
 npm run compile
 ```
 
-Commit the edited `catalog/services/<service-id>.json` and regenerated
+Commit the edited service file, any folder move, and regenerated
 `azure-complete-catalog-vscode.json`. Never edit the generated catalog
 directly.
 

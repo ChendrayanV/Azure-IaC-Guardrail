@@ -17,8 +17,8 @@
   <img alt="Release status: Public Preview" src="https://img.shields.io/badge/release-Public_Preview-f59e0b">
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml"><img alt="Extension CI" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml"><img alt="Release" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml/badge.svg"></a>
-  <img alt="Unit tests: 106 passing" src="https://img.shields.io/badge/unit_tests-106_passing-16a34a">
-  <img alt="Control coverage: 25 services and 139 controls" src="https://img.shields.io/badge/controls-25_services_%7C_139_controls-0078d4">
+  <img alt="Unit tests: 123 passing" src="https://img.shields.io/badge/unit_tests-123_passing-16a34a">
+  <img alt="Control coverage: 26 services and 143 controls" src="https://img.shields.io/badge/controls-26_services_%7C_143_controls-0078d4">
   <img alt="VS Code 1.100 or later" src="https://img.shields.io/badge/VS_Code-%5E1.100.0-007ACC?logo=visualstudiocode">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2563eb"></a>
 </p>
@@ -37,7 +37,7 @@
 
 > **Public Preview:** Guardrail is suitable for evaluation and guarded
 > engineering review, not as the sole deployment approval control. The Cloud
-> Canvas catalog contains 237 visual entries; 25 currently have executable
+> Canvas catalog contains 237 visual entries; 26 currently have production
 > controls, 48 have Terraform mappings, and only governance-approved services
 > should be treated as supported generation targets.
 
@@ -145,18 +145,35 @@ must not be committed.
 Built-in service and control definitions live in:
 
 ```text
-catalog/services/<service-id>.json
+catalog/services/production/<service-id>.json
+catalog/services/draft/<service-id>.json
 ```
 
-Each service file owns its Cloud Canvas metadata, Terraform mapping,
-parameters, controls, assurances, remediation, and references. The generated
-`azure-complete-catalog-vscode.json` is consumed by scanning and Cloud Canvas;
-do not edit it directly.
+Production controls live under `catalog/services/production/`. Draft service
+metadata lives under `catalog/services/draft/` and remains available for Cloud
+Canvas, but draft controls and assurances are not shipped until the service is
+promoted. The generated `azure-complete-catalog-vscode.json` is consumed by
+scanning and Cloud Canvas; do not edit it directly.
+
+Built-in production scanning currently covers these Azure service families:
+
+```text
+AI Foundry, App Configuration, Application Gateway, Azure SQL,
+Container Registry, Cosmos DB, Azure Database for MySQL,
+Azure Database for PostgreSQL, Event Grid, Event Hubs, Azure Firewall,
+Functions, Key Vault, Azure Kubernetes Service, Log Analytics,
+Machine Learning, Network Security Group, Public IP, Resource Group,
+Service Bus, SQL Server, Storage Account, Subnet, Virtual Machine,
+Web App, and Web Application Firewall.
+```
+
+Draft services still appear in Cloud Canvas for architecture sketching, but
+they do not add built-in scan findings until promoted to production coverage.
 
 To add or change a standard control:
 
 1. Copy `catalog/service-template.json.example` when adding a service, or open
-   the existing service file.
+   the existing service file under `catalog/services/draft/`.
 2. Define a unique control ID, exact Terraform resource type and attribute,
    supported operator, expected value, severity, remediation, and authoritative
    reference.
@@ -173,7 +190,10 @@ To add or change a standard control:
    npm run compile
    ```
 
-5. Commit the service file and regenerated
+5. Keep new services in `catalog/services/draft/` until controls are reviewed.
+   Promote to `catalog/services/production/` when at least one executable
+   control is ready to ship.
+6. Commit the service file and regenerated
    `azure-complete-catalog-vscode.json`.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and the

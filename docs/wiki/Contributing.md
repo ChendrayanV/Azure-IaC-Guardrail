@@ -8,7 +8,8 @@ assurances, and Cloud Canvas parameters.
 Each service is defined in one file:
 
 ```text
-catalog/services/<service-id>.json
+catalog/services/production/<service-id>.json
+catalog/services/draft/<service-id>.json
 ```
 
 The file may contain:
@@ -20,12 +21,15 @@ The file may contain:
 - Platform assurances.
 
 `azure-complete-catalog-vscode.json` is generated from these files and is used
-at runtime. Never edit it directly.
+at runtime. Production files contribute controls and assurances. Draft files
+contribute service metadata for Cloud Canvas, but draft controls and
+assurances are stripped until promotion. Never edit the generated catalog
+directly.
 
 ## Add a Service
 
 1. Copy `catalog/service-template.json.example`.
-2. Save it as `catalog/services/<service-id>.json`.
+2. Save it as `catalog/services/draft/<service-id>.json`.
 3. Set `serviceId` to the same lowercase snake_case value as the filename.
 4. Use the original icon path beneath
    `media/cloud-canvas/Azure_Public_Service_Icons/Icons`.
@@ -37,9 +41,14 @@ at runtime. Never edit it directly.
 Diagram-only services may use `null` for `terraform.resourceType`, empty
 mapping arrays, and no controls.
 
+Promote a service by moving it to `catalog/services/production/` after at
+least one executable control has been reviewed, tested, and documented.
+
 ## Add a Standard Control
 
-Add the control to the owning service's `controls` array:
+Add the control to the owning service's `controls` array. Controls in draft
+files are useful during review, but they do not ship until the file is moved
+to `catalog/services/production/`:
 
 ```json
 {

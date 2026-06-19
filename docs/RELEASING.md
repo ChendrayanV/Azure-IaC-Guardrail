@@ -29,7 +29,7 @@ repository documentation.
 1. Update `package.json` and `package-lock.json` to the same version:
 
    ```powershell
-   npm version 0.1.3 --no-git-tag-version
+   npm version 0.1.6 --no-git-tag-version
    ```
 
 2. Update `CHANGELOG.md`.
@@ -37,18 +37,18 @@ repository documentation.
 4. Create and push the matching tag:
 
    ```powershell
-   git tag v0.1.3
+   git tag v0.1.6
    git push origin main
-   git push origin v0.1.3
+   git push origin v0.1.6
    ```
 
 The workflow rejects tags that do not exactly match `package.json`. A manual
 workflow run validates and packages the current version but does not publish.
 
-For the next public preview, the expected release pair is:
+For every release, the expected pair is:
 
-- `package.json` version: `0.1.3`
-- Git tag: `v0.1.3`
+- `package.json` version: `X.Y.Z`
+- Git tag: `vX.Y.Z`
 
 ## Recovery
 

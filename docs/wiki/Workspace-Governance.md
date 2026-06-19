@@ -26,4 +26,5 @@ effective.
 
 Workspace-specific control overlays may be placed under
 `.azure-iac-guardrail/controls/`. Built-in standards should be contributed to
-`catalog/services/` instead.
+`catalog/services/draft/` first, then promoted to
+`catalog/services/production/` when reviewed controls are ready to ship.

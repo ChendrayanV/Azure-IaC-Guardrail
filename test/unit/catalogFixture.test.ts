@@ -51,7 +51,7 @@ describe("bundled standards", () => {
       "relatedResourceExists",
     ]);
 
-    expect(controls.length).toBeGreaterThanOrEqual(110);
+    expect(controls.length).toBeGreaterThanOrEqual(140);
     for (const control of controls) {
       expect(control.id).toMatch(/^[A-Z0-9-]+$/);
       expect(control.title.length).toBeGreaterThan(0);

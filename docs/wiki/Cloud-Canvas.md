@@ -23,4 +23,6 @@ networking, identity, data protection, provider constraints, and organization
 modules before use.
 
 Contributors extend Cloud Canvas and scanning together through
-`catalog/services/<service-id>.json`.
+`catalog/services/draft/<service-id>.json` first. Move the file to
+`catalog/services/production/<service-id>.json` when its executable controls
+are reviewed and ready to ship.

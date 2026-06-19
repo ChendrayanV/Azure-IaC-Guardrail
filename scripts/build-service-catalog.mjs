@@ -4,19 +4,44 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const servicesDirectory = path.join(root, "catalog", "services");
+const productionServicesDirectory = path.join(servicesDirectory, "production");
+const draftServicesDirectory = path.join(servicesDirectory, "draft");
 const outputPath = path.join(root, "azure-complete-catalog-vscode.json");
 
-const files = fs
-  .readdirSync(servicesDirectory)
-  .filter((file) => file.endsWith(".json"))
-  .sort();
-const services = files.map((file) => {
-  const value = JSON.parse(
-    fs.readFileSync(path.join(servicesDirectory, file), "utf8"),
-  );
+const productionFiles = serviceFiles(productionServicesDirectory);
+const draftFiles = serviceFiles(draftServicesDirectory);
+const productionServices = productionFiles.map(({ file, fullPath }) => {
+  const value = JSON.parse(fs.readFileSync(fullPath, "utf8"));
   validateService(value, file);
+  if (!Array.isArray(value.controls) || value.controls.length === 0) {
+    fail(`${file}: production services must define at least one control.`);
+  }
   return value;
 });
+const draftServices = [];
+for (const { file, fullPath } of draftFiles) {
+  const value = JSON.parse(fs.readFileSync(fullPath, "utf8"));
+  validateService(value, file);
+  draftServices.push({
+    ...value,
+    controls: [],
+    assurances: [],
+  });
+}
+const services = [...productionServices, ...draftServices].sort((left, right) =>
+  left.serviceId.localeCompare(right.serviceId),
+);
+
+function serviceFiles(directory) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+  return fs
+    .readdirSync(directory)
+    .filter((file) => file.endsWith(".json"))
+    .sort()
+    .map((file) => ({ file, fullPath: path.join(directory, file) }));
+}
 
 const serviceIds = new Set();
 const controlIds = new Set();
@@ -36,12 +61,12 @@ for (const service of services) {
 const runtime = {
   version: 1,
   catalogVersion: readCatalogVersion(),
-  generatedFrom: "catalog/services/*.json",
+  generatedFrom: "catalog/services/{production,draft}/*.json",
   services: Object.fromEntries(
     services.map((service) => [service.serviceId, service]),
   ),
-  controls: services.flatMap((service) => service.controls),
-  assurances: services.flatMap((service) => service.assurances ?? []),
+  controls: productionServices.flatMap((service) => service.controls),
+  assurances: productionServices.flatMap((service) => service.assurances ?? []),
 };
 
 fs.writeFileSync(outputPath, `${JSON.stringify(runtime, null, 2)}\n`);

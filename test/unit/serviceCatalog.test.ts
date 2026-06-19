@@ -5,13 +5,20 @@ import completeCatalog from "../../azure-complete-catalog-vscode.json";
 
 const root = path.resolve(".");
 const servicesDirectory = path.join(root, "catalog", "services");
+const productionServicesDirectory = path.join(servicesDirectory, "production");
+const draftServicesDirectory = path.join(servicesDirectory, "draft");
 
 describe("contributor service catalog", () => {
   it("has one source file for every generated service", () => {
-    const files = fs
-      .readdirSync(servicesDirectory)
+    const productionFiles = fs
+      .readdirSync(productionServicesDirectory)
       .filter((file) => file.endsWith(".json"))
       .sort();
+    const draftFiles = fs
+      .readdirSync(draftServicesDirectory)
+      .filter((file) => file.endsWith(".json"))
+      .sort();
+    const files = [...productionFiles, ...draftFiles].sort();
 
     expect(files).toHaveLength(Object.keys(completeCatalog.services).length);
     expect(files).toEqual(
@@ -19,16 +26,35 @@ describe("contributor service catalog", () => {
         .map((serviceId) => `${serviceId}.json`)
         .sort(),
     );
+    expect(draftFiles.length).toBeGreaterThan(0);
+    expect(productionFiles.length).toBeGreaterThan(0);
+    expect(completeCatalog.generatedFrom).toBe(
+      "catalog/services/{production,draft}/*.json",
+    );
   });
 
   it("keeps service and control identifiers unique", () => {
     const services = Object.values(completeCatalog.services);
+    const servicesById = completeCatalog.services as Record<
+      string,
+      { controls: unknown[] }
+    >;
     const controlIds = completeCatalog.controls.map((control) => control.id);
 
     expect(new Set(services.map((service) => service.serviceId)).size).toBe(
       services.length,
     );
     expect(new Set(controlIds).size).toBe(controlIds.length);
+    for (const file of fs.readdirSync(productionServicesDirectory)) {
+      if (!file.endsWith(".json")) continue;
+      const serviceId = path.basename(file, ".json");
+      expect(servicesById[serviceId].controls.length).toBeGreaterThan(0);
+    }
+    for (const file of fs.readdirSync(draftServicesDirectory)) {
+      if (!file.endsWith(".json")) continue;
+      const serviceId = path.basename(file, ".json");
+      expect(servicesById[serviceId].controls).toEqual([]);
+    }
   });
 
   it("contains complete scanning and Canvas metadata", () => {
@@ -38,6 +64,7 @@ describe("contributor service catalog", () => {
     const functions = completeCatalog.services.functions;
     const webApp = completeCatalog.services.web_app;
     const sqlDatabase = completeCatalog.services.sql_database;
+    const azureSql = completeCatalog.services.azure_sql;
 
     expect(storage.icon).toMatch(/\.svg$/);
     expect(storage.terraform.resourceType).toBe("azurerm_storage_account");
@@ -89,5 +116,11 @@ describe("contributor service catalog", () => {
         optionalDependencies: ["subnet", "log_analytics"],
       }),
     );
+    expect(azureSql.controls.map((control) => control.id)).toEqual([
+      "AZ-AZSQL-001",
+      "AZ-AZSQL-002",
+      "AZ-AZSQL-003",
+      "AZ-AZSQL-004",
+    ]);
   });
 });

@@ -1,0 +1,123 @@
+{
+  "$schema": "../schema/service.schema.json",
+  "serviceId": "azure_sql",
+  "displayName": "Azure SQL",
+  "shortName": "AZSQL",
+  "category": "Databases",
+  "description": "AZURE SQL PRODUCT FAMILY",
+  "color": "#0891b2",
+  "governanceStatus": "not-approved",
+  "icon": "databases/02390-icon-service-Azure-SQL.svg",
+  "terraform": {
+    "resourceType": null,
+    "armResourceTypes": [
+      "Microsoft.Sql/servers",
+      "Microsoft.Sql/servers/databases"
+    ],
+    "automaticArguments": [],
+    "parameters": [
+      {
+        "key": "azuread_administrator",
+        "label": "Entra administrator",
+        "type": "text",
+        "required": false,
+        "nestedBlock": true,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-AZSQL-001",
+          "AZ-AZSQL-002"
+        ],
+        "remediation": "Configure an azuread_administrator block on azurerm_mssql_server and set azuread_authentication_only = true."
+      },
+      {
+        "key": "id",
+        "label": "Server Id",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-AZSQL-003"
+        ],
+        "remediation": "Create an azurerm_mssql_server_extended_auditing_policy resource linked through server_id."
+      },
+      {
+        "key": "name",
+        "label": "Server Name",
+        "type": "text",
+        "required": false,
+        "nestedBlock": false,
+        "defaultValue": "",
+        "controlIds": [
+          "AZ-AZSQL-004"
+        ],
+        "remediation": "Create an azurerm_mssql_server_security_alert_policy with state = \"Enabled\" for the SQL logical server."
+      }
+    ]
+  },
+  "controls": [
+    {
+      "id": "AZ-AZSQL-001",
+      "title": "Azure SQL servers must use Microsoft Entra authentication",
+      "description": "Azure SQL logical servers must configure a Microsoft Entra administrator so database access can be governed through centralized identity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "azuread_administrator",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure an azuread_administrator block on azurerm_mssql_server.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-aad-overview"
+    },
+    {
+      "id": "AZ-AZSQL-002",
+      "title": "Azure SQL servers must enable Microsoft Entra-only authentication",
+      "description": "Azure SQL logical servers must disable local SQL authentication and allow only Microsoft Entra users and administrators to sign in.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "azuread_administrator.azuread_authentication_only",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set azuread_administrator.azuread_authentication_only = true.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-azure-ad-only-authentication"
+    },
+    {
+      "id": "AZ-AZSQL-003",
+      "title": "Azure SQL servers must enable auditing",
+      "description": "Azure SQL logical servers must have an extended auditing policy so database activity is captured for investigation and compliance review.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_mssql_server_extended_auditing_policy",
+      "relatedMatchAttribute": "server_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_mssql_server_extended_auditing_policy resource linked through server_id.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/auditing-overview"
+    },
+    {
+      "id": "AZ-AZSQL-004",
+      "title": "Azure SQL servers must enable Microsoft Defender",
+      "description": "Azure SQL logical servers must enable Microsoft Defender threat detection through a server security alert policy.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "name",
+      "operator": "relatedResourceExists",
+      "expected": "Enabled",
+      "relatedResourceType": "azurerm_mssql_server_security_alert_policy",
+      "relatedMatchAttribute": "server_name",
+      "relatedConditionAttribute": "state",
+      "planOnly": true,
+      "remediation": "Create an azurerm_mssql_server_security_alert_policy with state = \"Enabled\" for the SQL logical server.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/azure-defender-for-sql"
+    }
+  ]
+}

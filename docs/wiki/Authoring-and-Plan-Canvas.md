@@ -80,7 +80,8 @@ The Microsoft icon FAQ and terms of use are packaged with the extension in
 
 ## Custom service catalog
 
-Each file under `catalog/services` owns one service's:
+Each file under `catalog/services/production` or `catalog/services/draft` owns
+one service's:
 
 - Category cards and original Microsoft SVG folder paths.
 - Terraform resource-type selection.
@@ -89,8 +90,9 @@ Each file under `catalog/services` owns one service's:
   provenance.
 
 Use `npm run catalog:validate` to validate sources and rebuild
-`azure-complete-catalog-vscode.json`. Both scanning and Cloud Canvas consume
-that generated artifact.
+`azure-complete-catalog-vscode.json`. Production files contribute controls and
+assurances. Draft files keep service metadata available for Cloud Canvas, but
+their controls and assurances are stripped until the file is promoted.
 
 The AKS pattern models multiple namespaces on one private cluster. Messaging
 patterns include producer and worker applications, storage where appropriate,

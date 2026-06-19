@@ -262,7 +262,7 @@ used according to the supplied terms.
 ### Customize a service
 
 Each built-in service is managed in one contributor-friendly file under
-`catalog/services`.
+`catalog/services/production` or `catalog/services/draft`.
 
 Each service can customize:
 
@@ -274,8 +274,10 @@ Each service can customize:
   control file.
 
 Run `npm run catalog:validate` to validate source files and regenerate
-`azure-complete-catalog-vscode.json`. Both scanning and Cloud Canvas consume
-that generated file. Do not edit it manually.
+`azure-complete-catalog-vscode.json`. Production controls are sourced from
+`catalog/services/production`; draft service metadata is retained for Cloud
+Canvas, but draft controls and assurances are stripped from the generated
+runtime catalog. Do not edit the generated catalog manually.
 
 ### Interactive plan architecture
 
@@ -467,12 +469,29 @@ Bundled standards are stored by domain under:
 
 ```text
 catalog/services/
+  production/
+  draft/
 ```
 
 The bundled catalogs cover security-relevant settings for storage, Key Vault,
 networking, virtual machines, SQL and open-source databases, Cosmos DB,
 Container Registry, AKS, App Service, Functions, Service Bus, Event Hubs,
 Azure AI services, Machine Learning, and Log Analytics.
+
+Production scanning currently includes 26 Azure service families:
+
+| Area | Services with built-in production controls |
+|---|---|
+| AI and analytics | AI Foundry, Machine Learning, Log Analytics |
+| App and integration | App Configuration, Functions, Web App, Service Bus, Event Grid, Event Hubs |
+| Compute and containers | Virtual Machine, Azure Kubernetes Service, Container Registry |
+| Data | Azure SQL, SQL Server, Cosmos DB, Azure Database for MySQL, Azure Database for PostgreSQL |
+| Network and edge | Application Gateway, Azure Firewall, Network Security Group, Public IP, Subnet, Web Application Firewall |
+| Platform and security | Key Vault, Resource Group, Storage Account |
+
+Cloud Canvas can show additional draft services for architecture design. Draft
+services do not add built-in scan findings until their controls are reviewed
+and promoted into production coverage.
 
 The baseline evaluates controls that the current engine can determine from
 top-level Terraform resource attributes and resolved plan values. Requirements

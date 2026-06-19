@@ -7,6 +7,20 @@ their general-availability milestone.
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-06-19
+
+### Changed
+
+- Split built-in service catalog sources into production and draft folders so
+  users can clearly distinguish available scanning controls from future
+  service metadata.
+- Clarified that production scanning currently covers 26 Azure service
+  families with 143 controls.
+- Preserved the full 237-entry Cloud Canvas catalog while stripping draft
+  controls and assurances from the generated runtime catalog until promotion.
+- Updated contributor guidance for promoting draft services into production
+  scanning coverage.
+
 ## [0.1.3] - 2026-06-17
 
 ### Changed

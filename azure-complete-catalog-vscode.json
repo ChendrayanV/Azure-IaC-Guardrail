@@ -1,7 +1,7 @@
 {
   "version": 1,
   "catalogVersion": "2026.06.4",
-  "generatedFrom": "catalog/services/*.json",
+  "generatedFrom": "catalog/services/{production,draft}/*.json",
   "services": {
     "ai_foundry": {
       "$schema": "../schema/service.schema.json",
@@ -80,7 +80,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "analysis_services": {
       "$schema": "../schema/service.schema.json",
@@ -98,7 +99,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "anomaly_detector": {
       "$schema": "../schema/service.schema.json",
@@ -116,7 +118,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "api_management": {
       "$schema": "../schema/service.schema.json",
@@ -169,7 +172,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "app_configuration": {
       "$schema": "../schema/service.schema.json",
@@ -393,7 +397,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "app_testing": {
       "$schema": "../schema/service.schema.json",
@@ -411,7 +416,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "application_gateway": {
       "$schema": "../schema/service.schema.json",
@@ -734,7 +740,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "archive_storage": {
       "$schema": "../schema/service.schema.json",
@@ -752,7 +759,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "arm_templates": {
       "$schema": "../schema/service.schema.json",
@@ -770,7 +778,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "artifact_signing": {
       "$schema": "../schema/service.schema.json",
@@ -788,7 +797,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "automanage": {
       "$schema": "../schema/service.schema.json",
@@ -806,7 +816,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "automation_account": {
       "$schema": "../schema/service.schema.json",
@@ -824,7 +835,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_advisor": {
       "$schema": "../schema/service.schema.json",
@@ -842,7 +854,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_arc": {
       "$schema": "../schema/service.schema.json",
@@ -860,7 +873,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_artifacts": {
       "$schema": "../schema/service.schema.json",
@@ -878,7 +892,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_attestation": {
       "$schema": "../schema/service.schema.json",
@@ -896,7 +911,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_backup": {
       "$schema": "../schema/service.schema.json",
@@ -914,7 +930,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_boards": {
       "$schema": "../schema/service.schema.json",
@@ -932,7 +949,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_copilot": {
       "$schema": "../schema/service.schema.json",
@@ -950,7 +968,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_devops": {
       "$schema": "../schema/service.schema.json",
@@ -968,7 +987,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_linux": {
       "$schema": "../schema/service.schema.json",
@@ -986,7 +1006,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_local": {
       "$schema": "../schema/service.schema.json",
@@ -1004,7 +1025,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_migrate": {
       "$schema": "../schema/service.schema.json",
@@ -1022,7 +1044,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_pipelines": {
       "$schema": "../schema/service.schema.json",
@@ -1040,7 +1063,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_policy": {
       "$schema": "../schema/service.schema.json",
@@ -1058,7 +1082,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_repos": {
       "$schema": "../schema/service.schema.json",
@@ -1076,7 +1101,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_sdks": {
       "$schema": "../schema/service.schema.json",
@@ -1094,7 +1120,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_sphere": {
       "$schema": "../schema/service.schema.json",
@@ -1112,7 +1139,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "azure_sql": {
       "$schema": "../schema/service.schema.json",
@@ -1126,11 +1154,116 @@
       "icon": "databases/02390-icon-service-Azure-SQL.svg",
       "terraform": {
         "resourceType": null,
-        "armResourceTypes": [],
+        "armResourceTypes": [
+          "Microsoft.Sql/servers",
+          "Microsoft.Sql/servers/databases"
+        ],
         "automaticArguments": [],
-        "parameters": []
+        "parameters": [
+          {
+            "key": "azuread_administrator",
+            "label": "Entra administrator",
+            "type": "text",
+            "required": false,
+            "nestedBlock": true,
+            "defaultValue": "",
+            "controlIds": [
+              "AZ-AZSQL-001",
+              "AZ-AZSQL-002"
+            ],
+            "remediation": "Configure an azuread_administrator block on azurerm_mssql_server and set azuread_authentication_only = true."
+          },
+          {
+            "key": "id",
+            "label": "Server Id",
+            "type": "text",
+            "required": false,
+            "nestedBlock": false,
+            "defaultValue": "",
+            "controlIds": [
+              "AZ-AZSQL-003"
+            ],
+            "remediation": "Create an azurerm_mssql_server_extended_auditing_policy resource linked through server_id."
+          },
+          {
+            "key": "name",
+            "label": "Server Name",
+            "type": "text",
+            "required": false,
+            "nestedBlock": false,
+            "defaultValue": "",
+            "controlIds": [
+              "AZ-AZSQL-004"
+            ],
+            "remediation": "Create an azurerm_mssql_server_security_alert_policy with state = \"Enabled\" for the SQL logical server."
+          }
+        ]
       },
-      "controls": []
+      "controls": [
+        {
+          "id": "AZ-AZSQL-001",
+          "title": "Azure SQL servers must use Microsoft Entra authentication",
+          "description": "Azure SQL logical servers must configure a Microsoft Entra administrator so database access can be governed through centralized identity.",
+          "severity": "error",
+          "resourceTypes": [
+            "azurerm_mssql_server"
+          ],
+          "attribute": "azuread_administrator",
+          "operator": "exists",
+          "planOnly": true,
+          "remediation": "Configure an azuread_administrator block on azurerm_mssql_server.",
+          "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-aad-overview"
+        },
+        {
+          "id": "AZ-AZSQL-002",
+          "title": "Azure SQL servers must enable Microsoft Entra-only authentication",
+          "description": "Azure SQL logical servers must disable local SQL authentication and allow only Microsoft Entra users and administrators to sign in.",
+          "severity": "error",
+          "resourceTypes": [
+            "azurerm_mssql_server"
+          ],
+          "attribute": "azuread_administrator.azuread_authentication_only",
+          "operator": "equals",
+          "expected": true,
+          "planOnly": true,
+          "remediation": "Set azuread_administrator.azuread_authentication_only = true.",
+          "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-azure-ad-only-authentication"
+        },
+        {
+          "id": "AZ-AZSQL-003",
+          "title": "Azure SQL servers must enable auditing",
+          "description": "Azure SQL logical servers must have an extended auditing policy so database activity is captured for investigation and compliance review.",
+          "severity": "error",
+          "resourceTypes": [
+            "azurerm_mssql_server"
+          ],
+          "attribute": "id",
+          "operator": "relatedResourceExists",
+          "relatedResourceType": "azurerm_mssql_server_extended_auditing_policy",
+          "relatedMatchAttribute": "server_id",
+          "planOnly": true,
+          "remediation": "Create an azurerm_mssql_server_extended_auditing_policy resource linked through server_id.",
+          "reference": "https://learn.microsoft.com/azure/azure-sql/database/auditing-overview"
+        },
+        {
+          "id": "AZ-AZSQL-004",
+          "title": "Azure SQL servers must enable Microsoft Defender",
+          "description": "Azure SQL logical servers must enable Microsoft Defender threat detection through a server security alert policy.",
+          "severity": "error",
+          "resourceTypes": [
+            "azurerm_mssql_server"
+          ],
+          "attribute": "name",
+          "operator": "relatedResourceExists",
+          "expected": "Enabled",
+          "relatedResourceType": "azurerm_mssql_server_security_alert_policy",
+          "relatedMatchAttribute": "server_name",
+          "relatedConditionAttribute": "state",
+          "planOnly": true,
+          "remediation": "Create an azurerm_mssql_server_security_alert_policy with state = \"Enabled\" for the SQL logical server.",
+          "reference": "https://learn.microsoft.com/azure/azure-sql/database/azure-defender-for-sql"
+        }
+      ]
     },
     "azure_test_plans": {
       "$schema": "../schema/service.schema.json",
@@ -1148,7 +1281,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "backup_vault": {
       "$schema": "../schema/service.schema.json",
@@ -1166,7 +1300,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "bastion": {
       "$schema": "../schema/service.schema.json",
@@ -1184,7 +1319,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "batch": {
       "$schema": "../schema/service.schema.json",
@@ -1202,7 +1338,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "blob_storage": {
       "$schema": "../schema/service.schema.json",
@@ -1220,7 +1357,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "blueprints": {
       "$schema": "../schema/service.schema.json",
@@ -1238,7 +1376,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "bot_service": {
       "$schema": "../schema/service.schema.json",
@@ -1256,7 +1395,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "cdn": {
       "$schema": "../schema/service.schema.json",
@@ -1274,7 +1414,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "chaos_studio": {
       "$schema": "../schema/service.schema.json",
@@ -1292,7 +1433,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "cloud_hsm": {
       "$schema": "../schema/service.schema.json",
@@ -1310,7 +1452,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "cloud_services": {
       "$schema": "../schema/service.schema.json",
@@ -1328,7 +1471,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "cloud_shell": {
       "$schema": "../schema/service.schema.json",
@@ -1346,7 +1490,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "communication_services": {
       "$schema": "../schema/service.schema.json",
@@ -1378,7 +1523,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "compute_fleet": {
       "$schema": "../schema/service.schema.json",
@@ -1396,7 +1542,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "computer_vision": {
       "$schema": "../schema/service.schema.json",
@@ -1414,7 +1561,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "confidential_ledger": {
       "$schema": "../schema/service.schema.json",
@@ -1457,7 +1605,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "container_apps": {
       "$schema": "../schema/service.schema.json",
@@ -1475,7 +1624,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "container_instances": {
       "$schema": "../schema/service.schema.json",
@@ -1493,7 +1643,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "container_registry": {
       "$schema": "../schema/service.schema.json",
@@ -1815,7 +1966,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "content_safety": {
       "$schema": "../schema/service.schema.json",
@@ -1833,7 +1985,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "content_understanding": {
       "$schema": "../schema/service.schema.json",
@@ -1851,7 +2004,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "cosmos_db": {
       "$schema": "../schema/service.schema.json",
@@ -2037,7 +2191,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "custom_vision": {
       "$schema": "../schema/service.schema.json",
@@ -2055,7 +2210,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_box": {
       "$schema": "../schema/service.schema.json",
@@ -2073,7 +2229,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_catalog": {
       "$schema": "../schema/service.schema.json",
@@ -2091,7 +2248,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_explorer": {
       "$schema": "../schema/service.schema.json",
@@ -2109,7 +2267,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_factory": {
       "$schema": "../schema/service.schema.json",
@@ -2131,7 +2290,8 @@
         ],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_lake_analytics": {
       "$schema": "../schema/service.schema.json",
@@ -2149,7 +2309,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_lake_storage": {
       "$schema": "../schema/service.schema.json",
@@ -2167,7 +2328,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_science_vm": {
       "$schema": "../schema/service.schema.json",
@@ -2185,7 +2347,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "data_share": {
       "$schema": "../schema/service.schema.json",
@@ -2203,7 +2366,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "database_migration_service": {
       "$schema": "../schema/service.schema.json",
@@ -2246,7 +2410,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "database_mysql": {
       "$schema": "../schema/service.schema.json",
@@ -2637,7 +2802,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "ddos_protection": {
       "$schema": "../schema/service.schema.json",
@@ -2655,7 +2821,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "dedicated_host": {
       "$schema": "../schema/service.schema.json",
@@ -2673,7 +2840,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "defender_cloud": {
       "$schema": "../schema/service.schema.json",
@@ -2691,7 +2859,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "deployment_environments": {
       "$schema": "../schema/service.schema.json",
@@ -2709,7 +2878,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "dev_box": {
       "$schema": "../schema/service.schema.json",
@@ -2727,7 +2897,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "devops_integrations": {
       "$schema": "../schema/service.schema.json",
@@ -2745,7 +2916,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "devtest_labs": {
       "$schema": "../schema/service.schema.json",
@@ -2763,7 +2935,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "digital_twins": {
       "$schema": "../schema/service.schema.json",
@@ -2781,7 +2954,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "disk_storage": {
       "$schema": "../schema/service.schema.json",
@@ -2799,7 +2973,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "dns": {
       "$schema": "../schema/service.schema.json",
@@ -2817,7 +2992,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "document_intelligence": {
       "$schema": "../schema/service.schema.json",
@@ -2835,7 +3011,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "documentdb": {
       "$schema": "../schema/service.schema.json",
@@ -2853,7 +3030,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "elastic_san": {
       "$schema": "../schema/service.schema.json",
@@ -2906,7 +3084,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "energy_data_services": {
       "$schema": "../schema/service.schema.json",
@@ -2924,7 +3103,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "entra_domain_services": {
       "$schema": "../schema/service.schema.json",
@@ -2942,7 +3122,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "entra_external_id": {
       "$schema": "../schema/service.schema.json",
@@ -2960,7 +3141,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "entra_id": {
       "$schema": "../schema/service.schema.json",
@@ -2978,7 +3160,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "entra_verified_id": {
       "$schema": "../schema/service.schema.json",
@@ -2996,7 +3179,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "event_grid": {
       "$schema": "../schema/service.schema.json",
@@ -3508,7 +3692,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "external_attack_surface_management": {
       "$schema": "../schema/service.schema.json",
@@ -3526,7 +3711,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "fabric": {
       "$schema": "../schema/service.schema.json",
@@ -3544,7 +3730,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "files": {
       "$schema": "../schema/service.schema.json",
@@ -3562,7 +3749,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "firewall": {
       "$schema": "../schema/service.schema.json",
@@ -3676,7 +3864,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "fluid_relay": {
       "$schema": "../schema/service.schema.json",
@@ -3694,7 +3883,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_agent_service": {
       "$schema": "../schema/service.schema.json",
@@ -3712,7 +3902,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_control_plane": {
       "$schema": "../schema/service.schema.json",
@@ -3730,7 +3921,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_iq": {
       "$schema": "../schema/service.schema.json",
@@ -3748,7 +3940,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_models": {
       "$schema": "../schema/service.schema.json",
@@ -3766,7 +3959,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_observability": {
       "$schema": "../schema/service.schema.json",
@@ -3784,7 +3978,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "foundry_tools": {
       "$schema": "../schema/service.schema.json",
@@ -3802,7 +3997,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "front_door": {
       "$schema": "../schema/service.schema.json",
@@ -3820,7 +4016,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "functions": {
       "$schema": "../schema/service.schema.json",
@@ -4173,7 +4370,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_application": {
       "$schema": "../schema/service.schema.json",
@@ -4191,7 +4389,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_architect": {
       "$schema": "../schema/service.schema.json",
@@ -4209,7 +4408,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_browser": {
       "$schema": "../schema/service.schema.json",
@@ -4227,7 +4427,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_database": {
       "$schema": "../schema/service.schema.json",
@@ -4245,7 +4446,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_developer": {
       "$schema": "../schema/service.schema.json",
@@ -4263,7 +4465,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_device": {
       "$schema": "../schema/service.schema.json",
@@ -4281,7 +4484,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_external_system": {
       "$schema": "../schema/service.schema.json",
@@ -4299,7 +4503,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_firewall": {
       "$schema": "../schema/service.schema.json",
@@ -4366,7 +4571,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_internet": {
       "$schema": "../schema/service.schema.json",
@@ -4384,7 +4590,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_load_balancer": {
       "$schema": "../schema/service.schema.json",
@@ -4402,7 +4609,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_mobile": {
       "$schema": "../schema/service.schema.json",
@@ -4420,7 +4628,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_network": {
       "$schema": "../schema/service.schema.json",
@@ -4438,7 +4647,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_queue": {
       "$schema": "../schema/service.schema.json",
@@ -4456,7 +4666,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_repository": {
       "$schema": "../schema/service.schema.json",
@@ -4474,7 +4685,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_server": {
       "$schema": "../schema/service.schema.json",
@@ -4492,7 +4704,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_storage": {
       "$schema": "../schema/service.schema.json",
@@ -4510,7 +4723,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_user": {
       "$schema": "../schema/service.schema.json",
@@ -4528,7 +4742,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "generic_users": {
       "$schema": "../schema/service.schema.json",
@@ -4546,7 +4761,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "github_advanced_security": {
       "$schema": "../schema/service.schema.json",
@@ -4564,7 +4780,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "github_advanced_security_ado": {
       "$schema": "../schema/service.schema.json",
@@ -4582,7 +4799,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "github_copilot": {
       "$schema": "../schema/service.schema.json",
@@ -4600,7 +4818,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "github_enterprise": {
       "$schema": "../schema/service.schema.json",
@@ -4618,7 +4837,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "graph_data_connect": {
       "$schema": "../schema/service.schema.json",
@@ -4636,7 +4856,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "hdinsight": {
       "$schema": "../schema/service.schema.json",
@@ -4654,7 +4875,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "health_bot": {
       "$schema": "../schema/service.schema.json",
@@ -4672,7 +4894,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "health_data_services": {
       "$schema": "../schema/service.schema.json",
@@ -4690,7 +4913,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "horizondb": {
       "$schema": "../schema/service.schema.json",
@@ -4708,7 +4932,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "immersive_reader": {
       "$schema": "../schema/service.schema.json",
@@ -4726,7 +4951,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "information_protection": {
       "$schema": "../schema/service.schema.json",
@@ -4744,7 +4970,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "iot_central": {
       "$schema": "../schema/service.schema.json",
@@ -4762,7 +4989,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "iot_edge": {
       "$schema": "../schema/service.schema.json",
@@ -4780,7 +5008,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "iot_hub": {
       "$schema": "../schema/service.schema.json",
@@ -4798,7 +5027,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "iot_operations": {
       "$schema": "../schema/service.schema.json",
@@ -4816,7 +5046,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "key_vault": {
       "$schema": "../schema/service.schema.json",
@@ -5158,7 +5389,8 @@
         ],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "kubernetes_namespace": {
       "$schema": "../schema/service.schema.json",
@@ -5193,7 +5425,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "kubernetes_service": {
       "$schema": "../schema/service.schema.json",
@@ -5540,7 +5773,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "language_service": {
       "$schema": "../schema/service.schema.json",
@@ -5558,7 +5792,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "lighthouse": {
       "$schema": "../schema/service.schema.json",
@@ -5576,7 +5811,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "linux_virtual_machine": {
       "$schema": "../schema/service.schema.json",
@@ -5594,7 +5830,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "load_balancer": {
       "$schema": "../schema/service.schema.json",
@@ -5612,7 +5849,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "load_testing": {
       "$schema": "../schema/service.schema.json",
@@ -5630,7 +5868,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "log_analytics": {
       "$schema": "../schema/service.schema.json",
@@ -5816,7 +6055,8 @@
             ]
           }
         ]
-      }
+      },
+      "assurances": []
     },
     "machine_learning": {
       "$schema": "../schema/service.schema.json",
@@ -5950,7 +6190,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "managed_cassandra": {
       "$schema": "../schema/service.schema.json",
@@ -5968,7 +6209,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "managed_grafana": {
       "$schema": "../schema/service.schema.json",
@@ -5986,7 +6228,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "managed_identity": {
       "$schema": "../schema/service.schema.json",
@@ -6004,7 +6247,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "managed_instance": {
       "$schema": "../schema/service.schema.json",
@@ -6022,7 +6266,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "managed_lustre": {
       "$schema": "../schema/service.schema.json",
@@ -6040,7 +6285,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "maps": {
       "$schema": "../schema/service.schema.json",
@@ -6058,7 +6304,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "metrics_advisor": {
       "$schema": "../schema/service.schema.json",
@@ -6076,7 +6323,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "monitor": {
       "$schema": "../schema/service.schema.json",
@@ -6094,7 +6342,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "nat_gateway": {
       "$schema": "../schema/service.schema.json",
@@ -6116,7 +6365,8 @@
         ],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "netapp_files": {
       "$schema": "../schema/service.schema.json",
@@ -6134,7 +6384,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "network_function_manager": {
       "$schema": "../schema/service.schema.json",
@@ -6152,7 +6403,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "network_security_group": {
       "$schema": "../schema/service.schema.json",
@@ -6245,7 +6497,8 @@
         ],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "notification_hubs": {
       "$schema": "../schema/service.schema.json",
@@ -6263,7 +6516,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "nutanix_cloud_clusters": {
       "$schema": "../schema/service.schema.json",
@@ -6281,7 +6535,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "open_datasets": {
       "$schema": "../schema/service.schema.json",
@@ -6299,7 +6554,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "openai_service": {
       "$schema": "../schema/service.schema.json",
@@ -6317,7 +6573,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "operator_nexus": {
       "$schema": "../schema/service.schema.json",
@@ -6335,7 +6592,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "operator_service_manager": {
       "$schema": "../schema/service.schema.json",
@@ -6353,7 +6611,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "personalizer": {
       "$schema": "../schema/service.schema.json",
@@ -6371,7 +6630,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "phi_models": {
       "$schema": "../schema/service.schema.json",
@@ -6389,7 +6649,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "planetary_computer": {
       "$schema": "../schema/service.schema.json",
@@ -6407,7 +6668,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "playwright_testing": {
       "$schema": "../schema/service.schema.json",
@@ -6425,7 +6687,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "power_bi": {
       "$schema": "../schema/service.schema.json",
@@ -6443,7 +6706,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "power_bi_embedded": {
       "$schema": "../schema/service.schema.json",
@@ -6461,7 +6725,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "private_endpoint": {
       "$schema": "../schema/service.schema.json",
@@ -6504,7 +6769,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "private_link": {
       "$schema": "../schema/service.schema.json",
@@ -6537,7 +6803,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "public_ip": {
       "$schema": "../schema/service.schema.json",
@@ -6627,7 +6894,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "quantum": {
       "$schema": "../schema/service.schema.json",
@@ -6645,7 +6913,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "queue_storage": {
       "$schema": "../schema/service.schema.json",
@@ -6663,7 +6932,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "red_hat_openshift": {
       "$schema": "../schema/service.schema.json",
@@ -6681,7 +6951,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "redis_cache": {
       "$schema": "../schema/service.schema.json",
@@ -6699,7 +6970,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "resource_group": {
       "$schema": "../schema/service.schema.json",
@@ -6766,7 +7038,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "resource_mover": {
       "$schema": "../schema/service.schema.json",
@@ -6784,7 +7057,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "route_server": {
       "$schema": "../schema/service.schema.json",
@@ -6802,7 +7076,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "route_table": {
       "$schema": "../schema/service.schema.json",
@@ -6820,7 +7095,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "security_copilot": {
       "$schema": "../schema/service.schema.json",
@@ -6838,7 +7114,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "sentinel": {
       "$schema": "../schema/service.schema.json",
@@ -6856,7 +7133,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "service_bus": {
       "$schema": "../schema/service.schema.json",
@@ -7043,7 +7321,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "service_health": {
       "$schema": "../schema/service.schema.json",
@@ -7061,7 +7340,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "service_plan": {
       "$schema": "../schema/service.schema.json",
@@ -7124,7 +7404,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "signalr_service": {
       "$schema": "../schema/service.schema.json",
@@ -7157,7 +7438,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "site_recovery": {
       "$schema": "../schema/service.schema.json",
@@ -7175,7 +7457,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "speech_service": {
       "$schema": "../schema/service.schema.json",
@@ -7193,7 +7476,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "spot_virtual_machine": {
       "$schema": "../schema/service.schema.json",
@@ -7211,7 +7495,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "spring_apps": {
       "$schema": "../schema/service.schema.json",
@@ -7229,7 +7514,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "sql_database": {
       "$schema": "../schema/service.schema.json",
@@ -7292,7 +7578,8 @@
             ]
           }
         ]
-      }
+      },
+      "assurances": []
     },
     "sql_server": {
       "$schema": "../schema/service.schema.json",
@@ -7470,7 +7757,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "sre_agent": {
       "$schema": "../schema/service.schema.json",
@@ -7488,7 +7776,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "stack_edge": {
       "$schema": "../schema/service.schema.json",
@@ -7506,7 +7795,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "stack_hub": {
       "$schema": "../schema/service.schema.json",
@@ -7524,7 +7814,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "static_web_apps": {
       "$schema": "../schema/service.schema.json",
@@ -7542,7 +7833,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "storage_account": {
       "$schema": "../schema/service.schema.json",
@@ -8184,7 +8476,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "storage_discovery": {
       "$schema": "../schema/service.schema.json",
@@ -8202,7 +8495,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "storage_explorer": {
       "$schema": "../schema/service.schema.json",
@@ -8220,7 +8514,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "storage_mover": {
       "$schema": "../schema/service.schema.json",
@@ -8238,7 +8533,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "stream_analytics": {
       "$schema": "../schema/service.schema.json",
@@ -8256,7 +8552,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "subnet": {
       "$schema": "../schema/service.schema.json",
@@ -8343,7 +8640,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "table_storage": {
       "$schema": "../schema/service.schema.json",
@@ -8361,7 +8659,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "traffic_manager": {
       "$schema": "../schema/service.schema.json",
@@ -8379,7 +8678,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "translator": {
       "$schema": "../schema/service.schema.json",
@@ -8397,7 +8697,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "update_manager": {
       "$schema": "../schema/service.schema.json",
@@ -8415,7 +8716,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "video_indexer": {
       "$schema": "../schema/service.schema.json",
@@ -8433,7 +8735,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "virtual_desktop": {
       "$schema": "../schema/service.schema.json",
@@ -8451,7 +8754,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "virtual_machine": {
       "$schema": "../schema/service.schema.json",
@@ -8673,7 +8977,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "virtual_network_manager": {
       "$schema": "../schema/service.schema.json",
@@ -8691,7 +8996,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "virtual_wan": {
       "$schema": "../schema/service.schema.json",
@@ -8713,7 +9019,8 @@
         ],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "visual_studio": {
       "$schema": "../schema/service.schema.json",
@@ -8731,7 +9038,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "visual_studio_code": {
       "$schema": "../schema/service.schema.json",
@@ -8749,7 +9057,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "vm_image_builder": {
       "$schema": "../schema/service.schema.json",
@@ -8767,7 +9076,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "vm_scale_sets": {
       "$schema": "../schema/service.schema.json",
@@ -8820,7 +9130,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "vmware_solution": {
       "$schema": "../schema/service.schema.json",
@@ -8838,7 +9149,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "vpn_gateway": {
       "$schema": "../schema/service.schema.json",
@@ -8856,7 +9168,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "web_app": {
       "$schema": "../schema/service.schema.json",
@@ -9333,7 +9646,8 @@
           }
         ]
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "windows_iot": {
       "$schema": "../schema/service.schema.json",
@@ -9351,7 +9665,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     },
     "windows_server": {
       "$schema": "../schema/service.schema.json",
@@ -9369,7 +9684,8 @@
         "automaticArguments": [],
         "parameters": []
       },
-      "controls": []
+      "controls": [],
+      "assurances": []
     }
   },
   "controls": [
@@ -9601,6 +9917,69 @@
       "expected": true,
       "remediation": "Set fips_enabled = true when required by the workload compliance profile.",
       "reference": "https://learn.microsoft.com/azure/application-gateway/application-gateway-fips"
+    },
+    {
+      "id": "AZ-AZSQL-001",
+      "title": "Azure SQL servers must use Microsoft Entra authentication",
+      "description": "Azure SQL logical servers must configure a Microsoft Entra administrator so database access can be governed through centralized identity.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "azuread_administrator",
+      "operator": "exists",
+      "planOnly": true,
+      "remediation": "Configure an azuread_administrator block on azurerm_mssql_server.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-aad-overview"
+    },
+    {
+      "id": "AZ-AZSQL-002",
+      "title": "Azure SQL servers must enable Microsoft Entra-only authentication",
+      "description": "Azure SQL logical servers must disable local SQL authentication and allow only Microsoft Entra users and administrators to sign in.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "azuread_administrator.azuread_authentication_only",
+      "operator": "equals",
+      "expected": true,
+      "planOnly": true,
+      "remediation": "Set azuread_administrator.azuread_authentication_only = true.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/authentication-azure-ad-only-authentication"
+    },
+    {
+      "id": "AZ-AZSQL-003",
+      "title": "Azure SQL servers must enable auditing",
+      "description": "Azure SQL logical servers must have an extended auditing policy so database activity is captured for investigation and compliance review.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "id",
+      "operator": "relatedResourceExists",
+      "relatedResourceType": "azurerm_mssql_server_extended_auditing_policy",
+      "relatedMatchAttribute": "server_id",
+      "planOnly": true,
+      "remediation": "Create an azurerm_mssql_server_extended_auditing_policy resource linked through server_id.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/auditing-overview"
+    },
+    {
+      "id": "AZ-AZSQL-004",
+      "title": "Azure SQL servers must enable Microsoft Defender",
+      "description": "Azure SQL logical servers must enable Microsoft Defender threat detection through a server security alert policy.",
+      "severity": "error",
+      "resourceTypes": [
+        "azurerm_mssql_server"
+      ],
+      "attribute": "name",
+      "operator": "relatedResourceExists",
+      "expected": "Enabled",
+      "relatedResourceType": "azurerm_mssql_server_security_alert_policy",
+      "relatedMatchAttribute": "server_name",
+      "relatedConditionAttribute": "state",
+      "planOnly": true,
+      "remediation": "Create an azurerm_mssql_server_security_alert_policy with state = \"Enabled\" for the SQL logical server.",
+      "reference": "https://learn.microsoft.com/azure/azure-sql/database/azure-defender-for-sql"
     },
     {
       "id": "AZ-ACR-001",
