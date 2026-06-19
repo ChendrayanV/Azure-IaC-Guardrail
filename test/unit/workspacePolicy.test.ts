@@ -1,7 +1,11 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   createWorkspacePolicyControls,
   defaultWorkspacePolicy,
+  loadWorkspacePolicy,
   normalizeWorkspacePolicy,
 } from "../../src/controls/workspacePolicy";
 import { scanTerraformPlan } from "../../src/core/planScanner";
@@ -122,6 +126,36 @@ describe("workspace policy", () => {
       planOnly: true,
       skipStatic: true,
     });
+  });
+
+  it("treats a blank optional workspace profile as missing", async () => {
+    const workspace = await fs.mkdtemp(
+      path.join(os.tmpdir(), "guardrail-profile-"),
+    );
+    await fs.mkdir(path.join(workspace, ".azure-iac-guardrail"));
+    await fs.writeFile(
+      path.join(workspace, ".azure-iac-guardrail", "profile.json"),
+      "",
+      "utf8",
+    );
+
+    await expect(loadWorkspacePolicy(workspace)).resolves.toBeUndefined();
+  });
+
+  it("reports malformed workspace profile JSON as a profile problem", async () => {
+    const workspace = await fs.mkdtemp(
+      path.join(os.tmpdir(), "guardrail-profile-"),
+    );
+    await fs.mkdir(path.join(workspace, ".azure-iac-guardrail"));
+    await fs.writeFile(
+      path.join(workspace, ".azure-iac-guardrail", "profile.json"),
+      "{",
+      "utf8",
+    );
+
+    await expect(loadWorkspacePolicy(workspace)).rejects.toThrow(
+      ".azure-iac-guardrail\\profile.json contains invalid JSON",
+    );
   });
 
   it("defers approved regions to plan data and rejects an invalid location", () => {

@@ -81,6 +81,12 @@ describe("Cloud Canvas webview source", () => {
     );
   });
 
+  it("does not report workspace profile JSON failures as service parameter JSON", () => {
+    expect(panelSource).toContain('normalized.includes("profile.json")');
+    expect(panelSource).toContain("Cloud Canvas could not ${action}: ${detail}");
+    expect(panelSource).toContain("one of the selected service parameters contains invalid or incomplete JSON");
+  });
+
   it("offers selectable arrow styles for connections", () => {
     expect(webviewSource).toContain('id="arrowStyle"');
     expect(webviewSource).toContain('<option value="animated-dotted">Running dotted</option>');

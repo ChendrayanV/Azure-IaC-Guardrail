@@ -393,6 +393,9 @@ function cloudCanvasErrorMessage(
   const action = cloudCanvasActionLabel(type);
   const detail = error instanceof Error ? error.message : String(error);
   const normalized = detail.toLowerCase();
+  if (normalized.includes("profile.json")) {
+    return `Cloud Canvas could not ${action}: ${detail}`;
+  }
   if (
     normalized.includes("unexpected end of json input") ||
     normalized.includes("json")

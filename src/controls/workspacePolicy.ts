@@ -111,7 +111,19 @@ export async function loadWorkspacePolicy(
       path.join(workspacePath, WORKSPACE_POLICY_PATH),
       "utf8",
     );
-    return normalizeWorkspacePolicy(JSON.parse(content) as unknown);
+    if (!content.trim()) {
+      return undefined;
+    }
+    try {
+      return normalizeWorkspacePolicy(JSON.parse(content) as unknown);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new Error(
+          `${WORKSPACE_POLICY_PATH} contains invalid JSON. Open Azure Pre-configuration to recreate it, or fix the missing closing braces, brackets, commas, or quotes.`,
+        );
+      }
+      throw error;
+    }
   } catch (error) {
     if (
       error instanceof Error &&
