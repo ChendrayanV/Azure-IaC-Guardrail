@@ -63,7 +63,7 @@ const COMMANDS = {
 export function activate(context: vscode.ExtensionContext): void {
   const resultsPanel = new ResultsPanel(context.extensionUri);
   const workspacePolicyPanel = new WorkspacePolicyPanel();
-  const infraSketchPanel = new InfraSketchPanel(context, resultsPanel);
+  const infraSketchPanel = new InfraSketchPanel(context);
   const planArchitecturePanel = new PlanArchitecturePanel();
   const languageFeatures = new TerraformLanguageFeatures(context);
   context.subscriptions.push(
@@ -124,9 +124,14 @@ export function activate(context: vscode.ExtensionContext): void {
       handleSavedDocument(document, context, resultsPanel, languageFeatures),
     ),
   );
-  void loadControls(context).then((controls) =>
-    languageFeatures.setControls(controls),
-  );
+  void loadControls()
+    .then((controls) => languageFeatures.setControls(controls))
+    .catch((error: unknown) => {
+      const detail = error instanceof Error ? error.message : String(error);
+      void vscode.window.showWarningMessage(
+        `Azure IaC Guardrail remote catalog is not ready: ${detail}`,
+      );
+    });
   void showInitialTagSetup(context, workspacePolicyPanel);
 }
 
@@ -193,7 +198,7 @@ async function scanWorkspace(
   resultsPanel.setRescanHandler();
   resultsPanel.showLoading();
   try {
-    const controls = await loadControls(context);
+    const controls = await loadControls();
     languageFeatures.setControls(controls);
     const workspaces = await Promise.all(
       (vscode.workspace.workspaceFolders ?? []).map(loadStaticWorkspace),
@@ -308,7 +313,7 @@ async function scanExistingPlan(
               planUri.fsPath,
               workspaceFolder.uri.fsPath,
             );
-        const controls = await loadControls(context);
+        const controls = await loadControls();
         const scan = scanTerraformPlanDetailed(planJson, controls);
         latestPlanView = {
           analysis: scan.analysis,
@@ -434,9 +439,9 @@ async function runLocalPlanScan(
         });
         resultsPanel.showPlanProgress(
           "evaluate",
-          "Applying bundled controls, tag requirements, and workspace exclusions...",
+          "Applying remote controls, tag requirements, and workspace exclusions...",
         );
-        const controls = await loadControls(context);
+        const controls = await loadControls();
         const scan = scanTerraformPlanDetailed(planJson, controls);
         latestPlanView = {
           analysis: scan.analysis,
@@ -746,7 +751,7 @@ async function visualizeExistingPlan(
             );
         const scan = scanTerraformPlanDetailed(
           planJson,
-          await loadControls(context),
+          await loadControls(),
         );
         latestPlanView = {
           analysis: scan.analysis,

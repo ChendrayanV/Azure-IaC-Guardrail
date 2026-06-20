@@ -54,29 +54,16 @@ The canvas renders only structural metadata:
 - Dependency-aware layout, curved labeled links, zoom, fit, pan, and
   selected-node connectivity highlighting.
 
-## Cloud Canvas starting patterns
+## Cloud Canvas generated diagrams
 
-Run **Azure IaC Guardrail: Cloud Canvas (Preview)** and choose a starting tab:
+Run **Azure IaC Guardrail: Cloud Canvas** to generate a professional Azure
+architecture diagram from the configured Terraform root or from a local plan
+file.
 
-- **Common Patterns** loads an editable AKS shared cluster, Web App with
-  database, Event Hubs, Event Grid, or Service Bus architecture.
-- **Blank Canvas** clears the current sketch and exposes the searchable Azure
-  service catalog for free-form design.
-
-The catalog tracks the Microsoft Azure products directory and contains more
-than 200 unique products and architecture primitives. Newly added products
-default to diagram-only/not-approved until governance review and Terraform
-generation support are explicitly implemented.
-
-Azure services use the Microsoft Azure Public Service Icons V23 SVG set when
-the archive contains a direct or high-confidence match. Products newer than
-the icon release use a neutral Azure resource icon. The **Generic
-Architecture** category adds actors and technology-neutral components for
-users, developers, architects, clients, applications, data, networking,
-security, messaging, repositories, and external systems.
-
-The Microsoft icon FAQ and terms of use are packaged with the extension in
-`media/cloud-canvas`.
+The generated view infers Azure resources, relationships, public exposure
+signals, change actions, and risk context from local Terraform inputs. It is a
+read-only architecture review surface and does not provide manual drag-and-drop
+editing.
 
 ## Custom service catalog
 
@@ -94,27 +81,9 @@ Use `npm run catalog:validate` to validate sources and rebuild
 assurances. Draft files keep service metadata available for Cloud Canvas, but
 their controls and assurances are stripped until the file is promoted.
 
-The AKS pattern models multiple namespaces on one private cluster. Messaging
-patterns include producer and worker applications, storage where appropriate,
-and observability. Every loaded pattern remains fully editable and can be
-validated, statically scanned, previewed, or generated as Terraform.
-
-Left-drag a service to reposition it. Left-drag blank canvas space to pan in
-both axes. Use `Ctrl+Z` and `Ctrl+Y` for undo and redo, and `Ctrl++` or
-`Ctrl+-` for zoom. **Clear canvas** removes all services and connections.
-
-Selecting a service opens its parameter inspector. The inspector includes all
-settings currently supported by that service's Terraform template, such as
-address ranges, SKUs, network exposure, TLS, AKS node configuration, database
-settings, messaging capacity, queue or Event Hub settings, and log retention.
-Changes flow into Terraform preview, validation, static scan, and generation.
-
-## Terraform version policy
-
-Azure Pre-configuration stores a Terraform `required_version` constraint in
-the workspace profile. Cloud Canvas uses it when generating Terraform. The
-setting does not install Terraform and does not rewrite existing repository
-constraints.
+Selecting a resource opens its inspector with dependencies, dependants,
+exposure signals, risk, and action metadata. The generated diagram can be
+exported as SVG.
 
 Run **Azure IaC Guardrail: Compare Two Terraform Plans** for a baseline versus
 candidate Markdown summary. Changed attribute names are included, but their

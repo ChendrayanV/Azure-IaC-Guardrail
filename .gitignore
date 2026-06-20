@@ -41,4 +41,4 @@ override.tf.json
 !test/fixtures/remote-module-static-scan/.terraform/modules/**
 
 .azure-iac-guardrail/plans/
-prompt
+.azure-iac-guardrail

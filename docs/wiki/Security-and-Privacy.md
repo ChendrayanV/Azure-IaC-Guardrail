@@ -21,7 +21,7 @@ Potentially sensitive artifacts include:
 - Generated plans are temporary by default.
 - Exports include only evidence required for review.
 - Errors and logs must not disclose secrets.
-- Generated Terraform is previewed before write.
+- Cloud Canvas is diagram-only and does not write generated Terraform.
 - Telemetry, if implemented, must not collect Terraform content or Azure
   identifiers and must complete privacy review first.
 

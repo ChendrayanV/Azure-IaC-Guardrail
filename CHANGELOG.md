@@ -7,14 +7,26 @@ their general-availability milestone.
 
 ## [Unreleased]
 
-## [0.1.8] - 2026-06-20
+## [0.1.9] - 2026-06-20
 
 ### Added
 
-- Decoupled the guardrail catalog from the extension runtime with selectable
-  bundled, workspace, or remote complete catalog sources.
+- Decoupled the guardrail catalog from the extension runtime with an enforced
+  remote complete catalog source.
+- Added the editable **Remote catalog URL** field to Azure Pre-configuration,
+  defaulting to the raw `azure-complete-catalog-vscode.json` endpoint in this
+  repository.
 - Added optional catalog version pinning so teams can hold the extension to an
   approved catalog release while still managing catalog content in this repo.
+- Redesigned Cloud Canvas as a generated Azure architecture diagram experience
+  from local Terraform configuration or plan files, removing manual
+  drag-and-drop authoring, palette controls, Terraform generation, Terraform
+  preview, Draft From Image, and Validate + Static Scan actions.
+
+### Changed
+
+- Updated end-user, release, and wiki documentation for the remote-catalog
+  runtime model and the diagram-only Cloud Canvas workflow.
 
 ## [0.1.7] - 2026-06-19
 

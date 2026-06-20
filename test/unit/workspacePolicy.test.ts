@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   createWorkspacePolicyControls,
+  DEFAULT_REMOTE_CATALOG_URL,
   defaultWorkspacePolicy,
   loadWorkspacePolicy,
   normalizeWorkspacePolicy,
@@ -17,6 +18,7 @@ describe("workspace policy", () => {
       version: 1,
       terraformRoot: ".",
       terraformVersion: ">= 1.5.0, < 2.0.0",
+      catalogUrl: DEFAULT_REMOTE_CATALOG_URL,
       allowedRegions: ["uksouth", "ukwest"],
       costAssumptions: {
         currency: "USD",
@@ -59,6 +61,7 @@ describe("workspace policy", () => {
       version: 1,
       terraformRoot: ".",
       terraformVersion: ">= 1.5.0, < 2.0.0",
+      catalogUrl: DEFAULT_REMOTE_CATALOG_URL,
       allowedRegions: [],
       costAssumptions: {
         currency: "USD",
@@ -261,6 +264,27 @@ describe("workspace policy", () => {
         terraformVersion: " >= 1.8.0,   < 2.0.0 ",
       }).terraformVersion,
     ).toBe(">= 1.8.0, < 2.0.0");
+  });
+
+  it("normalizes the remote catalog URL", () => {
+    expect(
+      normalizeWorkspacePolicy({
+        catalogUrl:
+          " https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json ",
+      }).catalogUrl,
+    ).toBe(DEFAULT_REMOTE_CATALOG_URL);
+  });
+
+  it("rejects non-HTTPS remote catalog URLs", () => {
+    expect(() =>
+      normalizeWorkspacePolicy({
+        catalogUrl:
+          "https://github.com/ChendrayanV/Azure-IaC-Guardrail/blob/main/azure-complete-catalog-vscode.json",
+      }),
+    ).toThrow("raw.githubusercontent.com");
+    expect(() =>
+      normalizeWorkspacePolicy({ catalogUrl: "http://example.com/catalog.json" }),
+    ).toThrow("Remote catalog URL");
   });
 
   it("rejects invalid Terraform version constraints", () => {

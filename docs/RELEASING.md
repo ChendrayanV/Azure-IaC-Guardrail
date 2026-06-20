@@ -29,17 +29,19 @@ repository documentation.
 1. Update `package.json` and `package-lock.json` to the same version:
 
    ```powershell
-   npm version 0.1.6 --no-git-tag-version
+   npm version X.Y.Z --no-git-tag-version
    ```
 
 2. Update `CHANGELOG.md`.
-3. Merge the release changes into `main`.
-4. Create and push the matching tag:
+3. Confirm `README.md`, `USER_GUIDE.md`, and the wiki describe the current
+   user experience, including Cloud Canvas behavior and catalog configuration.
+4. Merge the release changes into `main`.
+5. Create and push the matching tag:
 
    ```powershell
-   git tag v0.1.6
+   git tag vX.Y.Z
    git push origin main
-   git push origin v0.1.6
+   git push origin vX.Y.Z
    ```
 
 The workflow rejects tags that do not exactly match `package.json`. A manual
@@ -50,13 +52,16 @@ For every release, the expected pair is:
 - `package.json` version: `X.Y.Z`
 - Git tag: `vX.Y.Z`
 
-Catalog-only releases do not have to change the VS Code extension version when
-teams consume the catalog through `azureIacGuardrail.catalogSource =
-"workspace"` or `"remote"`. Keep catalog authoring in this repository, bump
-`catalog/VERSION`, regenerate `azure-complete-catalog-vscode.json`, and publish
-the approved catalog artifact through the chosen workspace or remote channel.
-Marketplace releases are still required when the bundled fallback catalog or
-extension runtime changes.
+Catalog-only releases do not have to change the VS Code extension version.
+Keep catalog authoring in this repository, bump `catalog/VERSION`, regenerate
+`azure-complete-catalog-vscode.json`, and publish the approved catalog artifact
+to the HTTPS endpoint configured by `azureIacGuardrail.catalogUrl`. Marketplace
+releases are still required when the extension runtime changes.
+
+For release `0.1.9`, Cloud Canvas is a diagram-only workflow that generates
+professional Azure architecture diagrams from Terraform configuration or local
+plan files. It no longer exposes manual canvas authoring, Terraform generation,
+Terraform preview, Draft From Image, or Validate + Static Scan actions.
 
 ## Recovery
 

@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import {
   defaultWorkspacePolicy,
+  DEFAULT_REMOTE_CATALOG_URL,
   loadWorkspacePolicy,
   normalizeWorkspacePolicy,
   type WorkspacePolicyProfile,
@@ -323,11 +324,17 @@ function renderPolicyHtml(
     <div class="path-preview"><strong>Guardrail will use</strong><code id="terraformRootPreview">${escapeHtml(profile.terraformRoot)}</code></div>
   </div>
   <div class="card">
-    <div class="card-heading"><span class="card-icon">TF</span><div><h2>Terraform compatibility</h2><p class="hint">Choose the version constraint used by generated Cloud Canvas Terraform.</p></div></div>
+    <div class="card-heading"><span class="card-icon">TF</span><div><h2>Terraform compatibility</h2><p class="hint">Choose the version constraint recorded for workspace governance.</p></div></div>
     <label for="terraformVersion"><strong>Required Terraform version</strong></label>
     <input id="terraformVersion" class="wide" type="text" list="terraformVersions" value="${escapeHtml(profile.terraformVersion)}" placeholder=">= 1.8.0, < 2.0.0" aria-describedby="terraformVersionHelp">
     <datalist id="terraformVersions">${terraformVersionOptions}</datalist>
     <p id="terraformVersionHelp" class="hint">Select a supported preset or enter a Terraform constraint. Existing repository <code>required_version</code> declarations remain unchanged.</p>
+  </div>
+  <div class="card">
+    <div class="card-heading"><span class="card-icon">CT</span><div><h2>Remote catalog URL</h2><p class="hint">Choose the approved complete catalog JSON used for controls and metadata.</p></div></div>
+    <label for="catalogUrl"><strong>Complete catalog HTTPS URL</strong></label>
+    <input id="catalogUrl" class="wide" type="url" value="${escapeHtml(profile.catalogUrl)}" placeholder="${escapeHtml(DEFAULT_REMOTE_CATALOG_URL)}" aria-describedby="catalogUrlHelp">
+    <p id="catalogUrlHelp" class="hint">Use the raw JSON endpoint, not the GitHub <code>/blob/</code> page. Default: <code>${escapeHtml(DEFAULT_REMOTE_CATALOG_URL)}</code></p>
   </div>
   <div class="card">
     <div class="card-heading"><span class="card-icon">RG</span><div><h2>Approved Azure regions</h2><p class="hint">Restrict resolved resources to approved Azure locations.</p></div></div>
@@ -434,6 +441,15 @@ function renderPolicyHtml(
         window.alert('Choose a folder inside the workspace, for example ".", "infra", or "test/fixtures/three-tier-webapp".');
         return;
       }
+      const catalogUrl = document.getElementById("catalogUrl").value.trim() || ${JSON.stringify(DEFAULT_REMOTE_CATALOG_URL)};
+      if (!/^https:\\/\\/\\S+$/i.test(catalogUrl)) {
+        window.alert("Enter an HTTPS URL for the remote complete catalog JSON.");
+        return;
+      }
+      if (/^https:\\/\\/github\\.com\\/.+\\/blob\\/.+/i.test(catalogUrl)) {
+        window.alert("Use the raw JSON catalog URL from raw.githubusercontent.com, not a GitHub /blob/ page.");
+        return;
+      }
       const requiredTags = [];
       const tagValues = {};
       for (const row of rows.querySelectorAll(".tag-row")) {
@@ -512,6 +528,7 @@ function renderPolicyHtml(
           version: 1,
           terraformRoot: terraformRootValue,
           terraformVersion,
+          catalogUrl,
           allowedRegions: [...new Set(allowedRegions)],
           costAssumptions,
           requiredTags,

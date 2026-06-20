@@ -38,30 +38,32 @@ Marketplace publisher, token, version, tag, and rollback procedures.
 3. Enter comma-separated approved ARM region names, for example
    `uksouth, ukwest`. The form accepts canonical Azure public-cloud
    programmatic names.
-4. Choose the Terraform version constraint used by Cloud Canvas generated
-   Terraform, for example `>= 1.8.0, < 2.0.0`.
-5. Review **Monthly cost assumptions**. The defaults model a small static SPA:
+4. Choose the Terraform version constraint used by generated examples and
+   governed workspace metadata, for example `>= 1.8.0, < 2.0.0`.
+5. Review **Remote catalog URL**. The default points to the raw
+   `azure-complete-catalog-vscode.json` in this repository. Replace it with an
+   organization-approved raw JSON endpoint when required.
+6. Review **Monthly cost assumptions**. The defaults model a small static SPA:
    1 GB stored, 100,000 reads, 10,000 writes, and no paid egress per month.
    Change the currency and usage to match the expected workload.
-6. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
+7. Review the default `environment`, `cost-center`, `owner`, and `deployed-via`
    tags, then enter exact required values where appropriate.
-7. Select **Add Tag** to create more rows.
-8. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
+8. Select **Add Tag** to create more rows.
+9. Optionally enter comma-separated IDs under **SKIP Scan for Control ID(s)**,
    for example `AZ-AI-003, AZ-AI-004`.
-9. Select **Save Azure Pre-configuration**.
-10. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
+10. Select **Save Azure Pre-configuration**.
+11. Commit `.azure-iac-guardrail/profile.json` when the policy should be shared
    by the team.
-11. Run **Create and Scan Local Terraform Plan** to evaluate regions and tags
+12. Run **Create and Scan Local Terraform Plan** to evaluate regions and tags
    against resolved values.
 
 Reopen the form with **Azure IaC Guardrail: Azure Pre-configuration** from the
 Command Palette. The setup is local and never authenticates to Azure. Skipped
 IDs are excluded from both static and local plan scans.
 
-The Terraform version policy controls generated Cloud Canvas Terraform. It
-does not install Terraform or rewrite an existing repository
-`required_version` declaration. Configure the executable path separately with
-`azureIacGuardrail.terraformPath`.
+The Terraform version policy does not install Terraform or rewrite an existing
+repository `required_version` declaration. Configure the executable path
+separately with `azureIacGuardrail.terraformPath`.
 
 Static scans skip generated tag controls because Terraform source commonly
 assigns tags through locals or variables. Plan findings use control IDs
@@ -73,7 +75,7 @@ beginning with `ORG-TAG-`. Region violations use
 Install a supplied VSIX from a terminal:
 
 ```powershell
-code --install-extension .\azure-iac-guardrail-0.1.0.vsix
+code --install-extension .\azure-iac-guardrail-0.1.9.vsix
 ```
 
 Alternatively, in VS Code:
@@ -210,45 +212,23 @@ represented in Terraform.
 Run **Azure IaC Guardrail: Analyze PR Change and Blast Radius** to create a
 resolved local plan and open these views.
 
-### Cloud Canvas preview
+### Cloud Canvas
 
-Run **Azure IaC Guardrail: Cloud Canvas (Preview)** from the Command
+Run **Azure IaC Guardrail: Cloud Canvas** from the Command
 Palette. The command ID is `sketchyourinfra`.
 
-1. Open **Common Patterns** and choose an AKS shared cluster, Web App with
-   database, Event Hubs, Event Grid, or Service Bus starting architecture.
-2. Open **Blank Canvas** to start empty or search and drag individual Azure
-   services onto the canvas. The catalog includes more than 200 current Azure
-   products and architecture primitives across AI, analytics, compute,
-   containers, databases, developer tools, DevOps, hybrid, identity,
-   integration, IoT, management, migration, networking, security, storage,
-   virtual desktop, and web categories.
-   Azure items use the Microsoft Azure Public Service Icons V23 set where a
-   direct match exists. Newer products use a neutral Azure resource icon.
-   **Generic Architecture** provides users, user groups, developers, IT
-   architects, client devices, browsers, internet, applications, APIs,
-   servers, databases, storage, networks, firewalls, load balancers, queues,
-   repositories, and external systems.
-3. Rename, move, add, or remove services. Left-click and drag a service to move
-   it, or left-click and drag the blank canvas to pan horizontally and
-   vertically.
-4. Drag from a service port to create a dependency connection.
-5. Select a service card to edit its resource name, region, and the parameters
-   supported by its generated Terraform template.
-6. Use **Clear canvas** to remove every service and connection.
-7. Use `Ctrl+Z` to undo, `Ctrl+Y` to redo, `Ctrl++` to zoom in, and `Ctrl+-`
-   to zoom out.
-8. Select **Validate + Static Scan** before generation.
-9. Select **Preview Terraform** to open generated code beside the canvas.
-10. Select **Generate Terraform** and choose the target `.tf` file in the
-   selected workspace.
+1. Select **Generate From Terraform** to analyze the configured Terraform root.
+2. Select **Generate From Plan File** to choose a local `.tfplan` or
+   `terraform show -json` file.
+3. Use search and filters to focus the generated diagram.
+4. Select a resource to inspect dependencies, dependants, exposure signals,
+   risk, and action metadata.
+5. Select **Export SVG** to save the generated architecture diagram.
 
-Choosing a pattern replaces the current sketch after confirmation. Messaging
-patterns generate private-by-default Event Hubs, Event Grid, or Service Bus
-resources with producer and worker application cards. The AKS pattern
-generates a private cluster, a connected node subnet, and Kubernetes namespace
-resources. The current sketch is persisted automatically when Terraform is
-generated; there is no separate Save Sketch action.
+Cloud Canvas does not provide manual drag-and-drop authoring. It does not
+generate Terraform, preview Terraform, create image drafts, or run Validate +
+Static Scan. It generates a professional Azure architecture diagram from local
+Terraform inputs.
 
 Newly cataloged services default to the red **Not approved or not yet
 reviewed** state. They can be used in diagrams immediately. Services without a
@@ -445,6 +425,8 @@ Disable it in workspace settings:
 | `azureIacGuardrail.scanOnSave` | `true` | Runs a static scan when a `.tf` file is saved. |
 | `azureIacGuardrail.staticVarFiles` | `[]` | Workspace-relative variable files loaded by offline static scans. |
 | `azureIacGuardrail.workspaceControlsPath` | `.azure-iac-guardrail/controls` | Workspace-relative directory containing additional control catalogs. |
+| `azureIacGuardrail.catalogUrl` | `https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json` | HTTPS URL to the approved remote complete catalog. |
+| `azureIacGuardrail.catalogVersion` | `""` | Optional approved catalog version pin. |
 | `azureIacGuardrail.terraformPath` | `terraform` | Terraform executable name or absolute path. |
 | `azureIacGuardrail.initializeBeforePlan` | `true` | Runs `terraform init` before creating a local plan. |
 | `azureIacGuardrail.retainGeneratedPlan` | `false` | Keeps the latest generated plan in `.azure-iac-guardrail/plans/`. |
@@ -454,6 +436,8 @@ Example configuration:
 ```json
 {
   "azureIacGuardrail.scanOnSave": true,
+  "azureIacGuardrail.catalogUrl": "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json",
+  "azureIacGuardrail.catalogVersion": "2026.06.4",
   "azureIacGuardrail.terraformPath": "C:\\Tools\\Terraform\\terraform.exe",
   "azureIacGuardrail.initializeBeforePlan": false,
   "azureIacGuardrail.retainGeneratedPlan": true
@@ -463,9 +447,9 @@ Example configuration:
 Disable initialization only when the workspace is initialized by another
 trusted process.
 
-## 10. Built-in standards
+## 10. Remote standards catalog
 
-Bundled standards are stored by domain under:
+Service and control source files are stored by domain under:
 
 ```text
 catalog/services/
@@ -473,7 +457,9 @@ catalog/services/
   draft/
 ```
 
-The bundled catalogs cover security-relevant settings for storage, Key Vault,
+The remote complete catalog should be generated from these sources and hosted
+at the HTTPS URL configured in `azureIacGuardrail.catalogUrl`. The catalog
+covers security-relevant settings for storage, Key Vault,
 networking, virtual machines, SQL and open-source databases, Cosmos DB,
 Container Registry, AKS, App Service, Functions, Service Bus, Event Hubs,
 Azure AI services, Machine Learning, and Log Analytics.
@@ -489,9 +475,8 @@ Production scanning currently includes 26 Azure service families:
 | Network and edge | Application Gateway, Azure Firewall, Network Security Group, Public IP, Subnet, Web Application Firewall |
 | Platform and security | Key Vault, Resource Group, Storage Account |
 
-Cloud Canvas can show additional draft services for architecture design. Draft
-services do not add built-in scan findings until their controls are reviewed
-and promoted into production coverage.
+Draft services do not add built-in scan findings until their controls are
+reviewed and promoted into production coverage.
 
 The baseline evaluates controls that the current engine can determine from
 top-level Terraform resource attributes and resolved plan values. Requirements
@@ -522,7 +507,8 @@ Place JSON catalogs in:
 .azure-iac-guardrail/controls/
 ```
 
-The extension loads these catalogs in addition to bundled standards. Start from
+The extension loads these catalogs in addition to the remote organizational
+standards. Start from
 `.azure-iac-guardrail/controls/example.json` and validate the structure against:
 
 ```text
@@ -646,7 +632,7 @@ the configured controls directory.
 ### A custom catalog is rejected
 
 Check that the file is valid JSON and contains both `catalogVersion` and a
-`controls` array. Compare it with the bundled schema and example catalog.
+`controls` array. Compare it with the catalog schema and example catalog.
 
 ## 12. Recommended workflow
 

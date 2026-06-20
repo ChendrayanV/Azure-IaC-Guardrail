@@ -1,0 +1,26 @@
+subscription_id = "REPLACE_WITH_SUBSCRIPTION_ID"
+tenant_id       = "REPLACE_WITH_TENANT_ID"
+
+location      = "uksouth"
+environment   = "development"
+workload_name = "secure-web"
+name_suffix   = "001"
+
+app_service_sku_name   = "B1"
+postgresql_sku_name    = "B_Standard_B1ms"
+postgresql_storage_mb  = 32768
+postgresql_version     = "16"
+database_name          = "appdb"
+database_admin_username = "pgadminuser"
+
+# Supply a real value through a secure local tfvars file, environment variable,
+# or your CI secret store. Do not commit real passwords.
+database_admin_password = "REPLACE_WITH_STRONG_PASSWORD"
+
+# Restrict this to corporate egress ranges or a test runner IP in real usage.
+allowed_web_cidrs = ["0.0.0.0/0"]
+
+tags = {
+  cost-center = "platform-engineering"
+  owner       = "iac-team"
+}

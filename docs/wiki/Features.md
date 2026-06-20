@@ -10,7 +10,7 @@
 | Editor experience | Diagnostics, hovers, completions, provenance, and quick fixes | [Editor Experience](Editor-Experience) |
 | Workspace governance | Roots, regions, tags, exclusions, exceptions, and assumptions | [Workspace Governance](Workspace-Governance) |
 | Resource Cost | Supported retail estimates and explicit assumptions | [Resource Cost](Resource-Cost) |
-| Cloud Canvas | Visual architecture and reviewable Terraform generation | [Cloud Canvas](Cloud-Canvas) |
+| Cloud Canvas | Generated Azure architecture diagrams from Terraform or plan files | [Cloud Canvas](Cloud-Canvas) |
 | Reporting | PDF, JSON, and Markdown evidence | [Evidence and Reporting](Evidence-and-Reporting) |
 
 Resource Cost and Cloud Canvas are Preview features. Review their output before

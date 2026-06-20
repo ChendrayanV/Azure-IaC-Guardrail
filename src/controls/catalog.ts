@@ -5,13 +5,13 @@ import { getConfigurationValue } from "../configuration";
 import type { Control, ControlCatalog } from "../types";
 import {
   createWorkspacePolicyControls,
+  DEFAULT_REMOTE_CATALOG_URL,
   loadWorkspacePolicy,
+  normalizeRemoteCatalogUrl,
 } from "./workspacePolicy";
 
-export async function loadControls(
-  context: vscode.ExtensionContext,
-): Promise<Control[]> {
-  const catalog = await loadCompleteCatalog(context);
+export async function loadControls(): Promise<Control[]> {
+  const catalog = await loadCompleteCatalog();
   const controls = [...catalog.controls];
   const skippedControlIds = new Set<string>();
 
@@ -58,41 +58,8 @@ export async function loadControls(
   );
 }
 
-export async function loadCompleteCatalog(
-  context: vscode.ExtensionContext,
-): Promise<ControlCatalog> {
-  const builtInCatalog = vscode.Uri.joinPath(
-    context.extensionUri,
-    "azure-complete-catalog-vscode.json",
-  ).fsPath;
-  const source = configuredCatalogSource();
-
-  if (source === "workspace") {
-    const workspaceCatalog = await readWorkspaceCompleteCatalog();
-    if (workspaceCatalog) {
-      return workspaceCatalog;
-    }
-    return readCompleteCatalog(builtInCatalog);
-  }
-
-  if (source === "remote") {
-    const remoteCatalog = await readRemoteCompleteCatalog();
-    if (remoteCatalog) {
-      return remoteCatalog;
-    }
-    return readCompleteCatalog(builtInCatalog);
-  }
-
-  return readCompleteCatalog(builtInCatalog);
-}
-
-async function readCompleteCatalog(filePath: string): Promise<ControlCatalog> {
-  const catalog = parseCompleteCatalog(
-    await fs.readFile(filePath, "utf8"),
-    filePath,
-  );
-  assertPinnedCatalogVersion(catalog, filePath);
-  return catalog;
+export async function loadCompleteCatalog(): Promise<ControlCatalog> {
+  return readRemoteCompleteCatalog();
 }
 
 function parseCompleteCatalog(
@@ -106,28 +73,12 @@ function parseCompleteCatalog(
   return catalog as ControlCatalog;
 }
 
-async function readWorkspaceCompleteCatalog(): Promise<
-  ControlCatalog | undefined
-> {
-  for (const folder of vscode.workspace.workspaceFolders ?? []) {
-    const configuredPath = configuredCatalogPath(folder.uri);
-    const catalogPath = path.isAbsolute(configuredPath)
-      ? configuredPath
-      : path.join(folder.uri.fsPath, configuredPath);
-    const catalog = await tryReadCompleteCatalog(catalogPath);
-    if (catalog) {
-      return catalog;
-    }
-  }
-  return undefined;
-}
-
-async function readRemoteCompleteCatalog(): Promise<
-  ControlCatalog | undefined
-> {
-  const url = configuredCatalogUrl();
-  if (!url) {
-    return undefined;
+async function readRemoteCompleteCatalog(): Promise<ControlCatalog> {
+  const url = await configuredCatalogUrl();
+  if (!/^https:\/\//i.test(url)) {
+    throw new Error(
+      "Remote catalog URL must use HTTPS. Update azureIacGuardrail.catalogUrl.",
+    );
   }
   const response = await fetch(url);
   if (!response.ok) {
@@ -138,19 +89,6 @@ async function readRemoteCompleteCatalog(): Promise<
   const catalog = parseCompleteCatalog(await response.text(), url);
   assertPinnedCatalogVersion(catalog, url);
   return catalog;
-}
-
-async function tryReadCompleteCatalog(
-  filePath: string,
-): Promise<ControlCatalog | undefined> {
-  try {
-    return await readCompleteCatalog(filePath);
-  } catch (error) {
-    if (isMissingFile(error)) {
-      return undefined;
-    }
-    throw error;
-  }
 }
 
 function assertPinnedCatalogVersion(
@@ -178,27 +116,21 @@ function configuredControlsPath(uri: vscode.Uri): string {
   ) as string;
 }
 
-function configuredCatalogSource(): "bundled" | "workspace" | "remote" {
-  const value = vscode.workspace
-    .getConfiguration("azureIacGuardrail")
-    .get<string>("catalogSource", "bundled");
-  return value === "workspace" || value === "remote" ? value : "bundled";
-}
-
-function configuredCatalogPath(uri: vscode.Uri): string {
-  return getConfigurationValue(
-    uri,
-    "catalogPath",
-    ".azure-iac-guardrail/catalog/azure-complete-catalog-vscode.json",
-  ) as string;
-}
-
-function configuredCatalogUrl(): string | undefined {
+async function configuredCatalogUrl(): Promise<string> {
   const value = vscode.workspace
     .getConfiguration("azureIacGuardrail")
     .get<string>("catalogUrl", "")
     .trim();
-  return value || undefined;
+  if (value) {
+    return normalizeRemoteCatalogUrl(value);
+  }
+  for (const folder of vscode.workspace.workspaceFolders ?? []) {
+    const policy = await loadWorkspacePolicy(folder.uri.fsPath);
+    if (policy?.catalogUrl) {
+      return policy.catalogUrl;
+    }
+  }
+  return DEFAULT_REMOTE_CATALOG_URL;
 }
 
 function configuredCatalogVersion(): string | undefined {

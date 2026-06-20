@@ -17,8 +17,8 @@
   <img alt="Release status: Public Preview" src="https://img.shields.io/badge/release-Public_Preview-f59e0b">
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml"><img alt="Extension CI" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml"><img alt="Release" src="https://github.com/ChendrayanV/Azure-IaC-Guardrail/actions/workflows/release.yml/badge.svg"></a>
-  <img alt="Unit tests: 123 passing" src="https://img.shields.io/badge/unit_tests-123_passing-16a34a">
-  <img alt="Control coverage: 26 services and 143 controls" src="https://img.shields.io/badge/controls-26_services_%7C_143_controls-0078d4">
+  <img alt="Unit tests: 119 passing" src="https://img.shields.io/badge/unit_tests-119_passing-16a34a">
+  <img alt="Control coverage: 26 services and 144 controls" src="https://img.shields.io/badge/controls-26_services_%7C_144_controls-0078d4">
   <img alt="VS Code 1.100 or later" src="https://img.shields.io/badge/VS_Code-%5E1.100.0-007ACC?logo=visualstudiocode">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2563eb"></a>
 </p>
@@ -38,8 +38,8 @@
 > **Public Preview:** Guardrail is suitable for evaluation and guarded
 > engineering review, not as the sole deployment approval control. The Cloud
 > Canvas catalog contains 237 visual entries; 26 currently have production
-> controls, 48 have Terraform mappings, and only governance-approved services
-> should be treated as supported generation targets.
+> controls, and 48 have Terraform mappings for diagram metadata. Architecture
+> diagrams require human review and are not deployment approval.
 
 ## From Terraform to Evidence
 
@@ -121,11 +121,11 @@ names and findings shown here are representative sample data.</sub>
 | Plan architecture | Search and filter plan topology, risk, actions, and exposure; export SVG | [Plan Scanning and Review](docs/wiki/Plan-Scanning-and-Review.md) |
 | Plan comparison and blast radius | Compare plans and summarize connected change impact | [Plan Scanning and Review](docs/wiki/Plan-Scanning-and-Review.md) |
 | Resource Cost | Estimate supported retail costs from declared configuration and assumptions | [Resource Cost](docs/wiki/Resource-Cost.md) |
-| Cloud Canvas | Design Azure architectures and generate reviewable Terraform | [Cloud Canvas](docs/wiki/Cloud-Canvas.md) |
+| Cloud Canvas | Generate Azure architecture diagrams from Terraform or plan files | [Cloud Canvas](docs/wiki/Cloud-Canvas.md) |
 | Evidence export | Produce a PDF report plus machine-readable JSON and Markdown | [Evidence and Reporting](docs/wiki/Evidence-and-Reporting.md) |
 
-Resource Cost and Cloud Canvas are **Preview** features. Their output requires
-human review and is not an Azure bill or deployment approval.
+Resource Cost is a **Preview** feature. Architecture diagrams require human
+review and are not deployment approval.
 
 ## Scan Modes
 
@@ -156,14 +156,13 @@ promoted. The generated `azure-complete-catalog-vscode.json` is consumed by
 scanning and Cloud Canvas; do not edit it directly.
 
 The extension runtime and catalog content are versioned separately. The
-Marketplace extension ships a bundled catalog for offline use, while managed
-teams can point the same extension version at a workspace or remote complete
-catalog and optionally pin the approved `catalogVersion`:
+extension requires a remote complete catalog URL so organizations can publish
+control updates without reinstalling the VS Code extension. Teams can also pin
+the approved `catalogVersion`:
 
 ```json
 {
-  "azureIacGuardrail.catalogSource": "workspace",
-  "azureIacGuardrail.catalogPath": ".azure-iac-guardrail/catalog/azure-complete-catalog-vscode.json",
+  "azureIacGuardrail.catalogUrl": "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json",
   "azureIacGuardrail.catalogVersion": "2026.06.4"
 }
 ```
@@ -184,8 +183,8 @@ Service Bus, SQL Server, Storage Account, Subnet, Virtual Machine,
 Web App, and Web Application Firewall.
 ```
 
-Draft services still appear in Cloud Canvas for architecture sketching, but
-they do not add built-in scan findings until promoted to production coverage.
+Draft services remain available in catalog metadata, but they do not add
+built-in scan findings until promoted to production coverage.
 
 To add or change a standard control:
 

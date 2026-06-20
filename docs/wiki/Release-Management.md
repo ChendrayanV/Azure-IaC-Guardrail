@@ -40,11 +40,9 @@ The repository remains the source of truth for both. Catalog authors update the
 service JSON files, bump `catalog/VERSION` when publishing a governed catalog
 drop, and regenerate `azure-complete-catalog-vscode.json`.
 
-The extension supports three catalog sources:
-
-- `bundled`: use the catalog packaged in the VSIX.
-- `workspace`: load a complete catalog from the open repository or workspace.
-- `remote`: load a complete catalog from the configured catalog URL.
+The extension loads the complete catalog only from the configured remote HTTPS
+URL. The default points to the raw catalog JSON in this repository; managed
+rollouts can replace it with an organization-approved endpoint.
 
 Set `azureIacGuardrail.catalogVersion` to require a specific approved catalog
 version. If the selected catalog does not match, scanning fails closed instead

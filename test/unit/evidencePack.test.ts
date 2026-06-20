@@ -32,6 +32,8 @@ describe("generateEvidencePack", () => {
         version: 1,
         terraformRoot: ".",
         terraformVersion: ">= 1.8.0, < 2.0.0",
+        catalogUrl:
+          "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json",
         allowedRegions: ["uksouth", "ukwest"],
         costAssumptions: {
           currency: "GBP",

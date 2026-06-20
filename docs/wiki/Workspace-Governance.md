@@ -9,7 +9,7 @@ Run **Azure IaC Guardrail: Azure Pre-configuration** to create or update:
 The profile can define:
 
 - Terraform root within the VS Code workspace.
-- Terraform version constraint for Cloud Canvas output.
+- Terraform version constraint for workspace governance metadata.
 - Approved Azure regions.
 - Monthly usage assumptions for cost estimates.
 - Required tags and exact tag values.
@@ -28,3 +28,5 @@ Workspace-specific control overlays may be placed under
 `.azure-iac-guardrail/controls/`. Built-in standards should be contributed to
 `catalog/services/draft/` first, then promoted to
 `catalog/services/production/` when reviewed controls are ready to ship.
+The baseline standards catalog is loaded from the HTTPS endpoint configured in
+`azureIacGuardrail.catalogUrl`.

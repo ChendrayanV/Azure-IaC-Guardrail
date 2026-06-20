@@ -1,42 +1,25 @@
 import * as fs from "node:fs/promises";
-import * as os from "node:os";
 import * as path from "node:path";
 import * as vscode from "vscode";
-import { loadControls } from "../controls/catalog";
-import { loadWorkspacePolicy } from "../controls/workspacePolicy";
+import { analyzeTerraformConfiguration } from "../core/configArchitecture";
+import { analyzeTerraformPlan } from "../core/planAnalysis";
+import { parseTerraform } from "../core/terraformParser";
 import {
-  generateTerraformFromSketch,
-  normalizeInfraSketch,
-  type InfraSketch,
-  type SketchReferenceImage,
-} from "../core/infraSketch";
-import { extractImageDraft } from "../core/imageDraft";
-import { scanTerraform } from "../core/scanner";
-import {
+  showTerraformPlan,
   terraformPathFor,
-  validateTerraformConfiguration,
 } from "../terraform/terraformCli";
-import {
-  attachReferenceImageUri,
-  saveSketch,
-  selectWorkspaceFolder,
-} from "./infraSketchWorkspace";
+import { loadStaticWorkspace } from "../terraform/staticWorkspace";
 import {
   createNonce,
   renderSketchHtml,
+  type CloudCanvasDiagramPayload,
 } from "./infraSketchWebview";
-import type { ResultsPanel } from "./resultsPanel";
-
-const REFERENCE_IMAGE_DIRECTORY = ".azure-iac-guardrail/cloud-canvas";
 
 export class InfraSketchPanel implements vscode.Disposable {
   private panel: vscode.WebviewPanel | undefined;
   private workspaceFolder: vscode.WorkspaceFolder | undefined;
 
-  constructor(
-    private readonly context: vscode.ExtensionContext,
-    private readonly resultsPanel: ResultsPanel,
-  ) {}
+  constructor(private readonly context: vscode.ExtensionContext) {}
 
   async show(selectedFolder?: vscode.WorkspaceFolder): Promise<void> {
     const folder = selectedFolder ?? (await selectWorkspaceFolder());
@@ -44,35 +27,10 @@ export class InfraSketchPanel implements vscode.Disposable {
       return;
     }
     this.workspaceFolder = folder;
-    const sketch: InfraSketch = {
-      version: 1,
-      nodes: [],
-      connections: [],
-    };
     const panel = this.getOrCreatePanel();
     panel.title = `Cloud Canvas: ${folder.name}`;
-    const montserratUri = panel.webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "media",
-        "fonts",
-        "Montserrat-VariableFont_wght.ttf",
-      ),
-    );
-    const iconBaseUri = panel.webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "media",
-        "cloud-canvas",
-        "Azure_Public_Service_Icons",
-        "Icons",
-      ),
-    );
     panel.webview.html = renderSketchHtml(
-      attachReferenceImageUri(panel.webview, folder.uri, sketch),
       createNonce(),
-      montserratUri.toString(),
-      iconBaseUri.toString(),
       panel.webview.cspSource,
     );
     panel.reveal(vscode.ViewColumn.Active, false);
@@ -91,10 +49,7 @@ export class InfraSketchPanel implements vscode.Disposable {
         {
           enableScripts: true,
           retainContextWhenHidden: true,
-          localResourceRoots: [
-            vscode.Uri.joinPath(this.context.extensionUri, "media"),
-            ...(this.workspaceFolder ? [this.workspaceFolder.uri] : []),
-          ],
+          localResourceRoots: [this.context.extensionUri],
         },
       );
       panel.onDidDispose(() => {
@@ -109,320 +64,133 @@ export class InfraSketchPanel implements vscode.Disposable {
   }
 
   private async handleMessage(message: unknown): Promise<void> {
-    if (!isSketchMessage(message) || !this.workspaceFolder) {
+    if (!isCloudCanvasMessage(message) || !this.workspaceFolder) {
       return;
     }
     try {
-      const sketch = normalizeInfraSketch(message.sketch);
-      if (message.type === "exportPng") {
-        const destination = await vscode.window.showSaveDialog({
-          defaultUri: vscode.Uri.joinPath(
-            this.workspaceFolder.uri,
-            "azure-architecture.png",
-          ),
-          filters: { PNG: ["png"] },
-          saveLabel: "Export PNG",
-          title: "Export Azure architecture diagram",
-        });
-        if (!destination) {
-          return;
-        }
-        await vscode.workspace.fs.writeFile(
-          destination,
-          Uint8Array.from(Buffer.from(message.data, "base64")),
-        );
-        void vscode.window.showInformationMessage(
-          `Architecture diagram exported to ${vscode.workspace.asRelativePath(destination, false)}.`,
-        );
+      if (message.type === "generateFromConfiguration") {
+        await this.generateFromConfiguration();
         return;
       }
-      if (message.type === "importReferenceImage") {
-        const imported = await this.importReferenceImage(message.sketch);
-        if (!imported) {
-          return;
-        }
-        this.panel?.webview.postMessage({
-          type: "referenceImageImported",
-          referenceImage: imported,
-        });
-        return;
-      }
-      if (message.type === "removeReferenceImage") {
-        const normalized = normalizeInfraSketch(message.sketch);
-        await saveSketch(this.workspaceFolder.uri, normalized);
-        return;
-      }
-      if (message.type === "generateDraftFromImage") {
-        const draft = await this.generateDraftFromImage(message.sketch);
-        if (!draft) {
-          return;
-        }
-        this.panel?.webview.postMessage({
-          type: "imageDraftGenerated",
-          draft,
-        });
-        return;
-      }
-      const policy = await loadWorkspacePolicy(
-        this.workspaceFolder.uri.fsPath,
-      );
-      const terraform = generateTerraformFromSketch(
-        sketch,
-        policy?.terraformVersion,
-      );
-      if (message.type === "validateTerraform") {
-        const controls = await loadControls(this.context);
-        const findings = scanTerraform(terraform, controls);
-        this.resultsPanel.setRescanHandler();
-        this.resultsPanel.show([
-          {
-            scanKind: "static",
-            filePath: "Cloud Canvas/cloud-canvas.generated.tf",
-            findings,
-          },
-        ]);
-        await vscode.window.withProgress(
-          {
-            location: vscode.ProgressLocation.Notification,
-            title: "Validating Cloud Canvas Terraform",
-            cancellable: false,
-          },
-          async () => {
-            const directory = await fs.mkdtemp(
-              path.join(os.tmpdir(), "cloud-canvas-"),
-            );
-            try {
-              await fs.writeFile(
-                path.join(directory, "main.tf"),
-                terraform,
-                "utf8",
-              );
-              const result = await validateTerraformConfiguration(
-                terraformPathFor(this.workspaceFolder!.uri),
-                directory,
-              );
-              const noncompliant = findings.filter(
-                (finding) => finding.outcome === "noncompliant",
-              ).length;
-              const unresolved = findings.filter(
-                (finding) => finding.outcome === "unresolved",
-              ).length;
-              void vscode.window.showInformationMessage(
-                `${result.trim() || "Cloud Canvas Terraform is valid."} Static scan: ${noncompliant} noncompliant, ${unresolved} unresolved.`,
-              );
-            } finally {
-              await fs.rm(directory, { recursive: true, force: true });
-            }
-          },
-        );
-        return;
-      }
-      if (message.type === "previewTerraform") {
-        const document = await vscode.workspace.openTextDocument({
-          language: "terraform",
-          content: terraform,
-        });
-        await vscode.window.showTextDocument(
-          document,
-          vscode.ViewColumn.Beside,
-          true,
-        );
-        return;
-      }
-      const destination = await vscode.window.showSaveDialog({
-        defaultUri: vscode.Uri.joinPath(
-          this.workspaceFolder.uri,
-          "sketchyourinfra.generated.tf",
-        ),
-        filters: { Terraform: ["tf"] },
-        saveLabel: "Generate Terraform",
-        title: "Generate Terraform from infrastructure sketch",
-      });
-      if (!destination) {
-        return;
-      }
-      await vscode.workspace.fs.writeFile(
-        destination,
-        new TextEncoder().encode(terraform),
-      );
-      await saveSketch(this.workspaceFolder.uri, sketch);
-      const document = await vscode.workspace.openTextDocument(destination);
-      await vscode.window.showTextDocument(document, vscode.ViewColumn.One);
-      void vscode.window.showInformationMessage(
-        `Terraform generated at ${vscode.workspace.asRelativePath(destination, false)}. Review it before planning.`,
-      );
+      await this.generateFromPlanFile();
     } catch (error) {
       void vscode.window.showErrorMessage(
-        cloudCanvasErrorMessage(message.type, error),
+        `Cloud Canvas could not generate the diagram: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
 
-  private async importReferenceImage(
-    sketch: unknown,
-  ): Promise<(SketchReferenceImage & { uri: string }) | undefined> {
-    if (!this.workspaceFolder || !this.panel) {
-      return undefined;
+  private async generateFromConfiguration(): Promise<void> {
+    if (!this.workspaceFolder) {
+      return;
+    }
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Generating Azure architecture from Terraform configuration",
+      },
+      async () => {
+        const workspace = await loadStaticWorkspace(this.workspaceFolder!);
+        const resources = workspace.terraformSources.flatMap((entry) =>
+          parseTerraform(entry.source.content, entry.context, {
+            sourcePath: entry.source.path,
+            sourceUri: entry.uri,
+            moduleAddress: entry.moduleAddress,
+          }),
+        );
+        if (resources.length === 0) {
+          throw new Error("No Terraform resource blocks were found in the configured Terraform root.");
+        }
+        this.postDiagram({
+          label: `${this.workspaceFolder!.name} Terraform configuration`,
+          sourceKind: "configuration",
+          analysis: analyzeTerraformConfiguration(resources),
+          findings: [],
+        });
+      },
+    );
+  }
+
+  private async generateFromPlanFile(): Promise<void> {
+    if (!this.workspaceFolder) {
+      return;
     }
     const selected = await vscode.window.showOpenDialog({
       canSelectFiles: true,
       canSelectFolders: false,
       canSelectMany: false,
+      defaultUri: this.workspaceFolder.uri,
       filters: {
-        Images: ["png", "jpg", "jpeg", "svg", "webp"],
+        "Terraform plans": ["tfplan", "json"],
+        "All files": ["*"],
       },
-      openLabel: "Import reference image",
-      title: "Select a reference image for Cloud Canvas",
+      openLabel: "Generate Diagram",
+      title: "Select a Terraform plan or terraform show JSON file",
     });
-    const source = selected?.[0];
-    if (!source) {
-      return undefined;
+    const planUri = selected?.[0];
+    if (!planUri) {
+      return;
     }
-    const normalized = normalizeInfraSketch(sketch);
-    const destinationDirectory = vscode.Uri.joinPath(
-      this.workspaceFolder.uri,
-      REFERENCE_IMAGE_DIRECTORY,
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: "Generating Azure architecture from Terraform plan",
+      },
+      async () => {
+        const planJson = planUri.fsPath.endsWith(".json")
+          ? await fs.readFile(planUri.fsPath, "utf8")
+          : await showTerraformPlan(
+              terraformPathFor(this.workspaceFolder!.uri),
+              planUri.fsPath,
+              this.workspaceFolder!.uri.fsPath,
+            );
+        this.postDiagram({
+          label: path.basename(planUri.fsPath),
+          sourceKind: "plan",
+          analysis: analyzeTerraformPlan(planJson, []),
+          findings: [],
+        });
+      },
     );
-    await vscode.workspace.fs.createDirectory(destinationDirectory);
-    const destination = vscode.Uri.joinPath(
-      destinationDirectory,
-      `${Date.now()}-${path.basename(source.fsPath).replace(/[^a-zA-Z0-9._-]/g, "-")}`,
-    );
-    await vscode.workspace.fs.copy(source, destination, { overwrite: true });
-    const relativePath = vscode.workspace.asRelativePath(
-      destination,
-      false,
-    );
-    normalized.referenceImage = {
-      path: relativePath,
-      x: normalized.referenceImage?.x ?? 120,
-      y: normalized.referenceImage?.y ?? 120,
-      width: normalized.referenceImage?.width ?? 880,
-      opacity: normalized.referenceImage?.opacity ?? 0.42,
-    };
-    await saveSketch(this.workspaceFolder.uri, normalized);
-    return {
-      ...normalized.referenceImage,
-      uri: this.panel.webview
-        .asWebviewUri(destination)
-        .toString(),
-    };
   }
 
-  private async generateDraftFromImage(
-    sketch: unknown,
-  ): Promise<
-    | {
-        source: "svg-text" | "filename" | "unrecognized";
-        suggestions: Array<{
-          serviceType: string;
-          title: string;
-          confidence: "high" | "medium" | "low";
-          score: number;
-          matchedOn: string[];
-        }>;
-        notes: string[];
-      }
-    | undefined
-  > {
-    if (!this.workspaceFolder) {
-      return undefined;
-    }
-    const normalized = normalizeInfraSketch(sketch);
-    const referenceImage = normalized.referenceImage;
-    if (!referenceImage) {
-      void vscode.window.showWarningMessage(
-        "Import a reference image before generating a draft from image.",
-      );
-      return undefined;
-    }
-    const imageUri = vscode.Uri.joinPath(
-      this.workspaceFolder.uri,
-      referenceImage.path,
-    );
-    let content: string | undefined;
-    if (path.extname(imageUri.fsPath).toLowerCase() === ".svg") {
-      content = await fs.readFile(imageUri.fsPath, "utf8");
-    }
-    const draft = extractImageDraft(referenceImage.path, content);
-    if (!draft.suggestions.length) {
-      void vscode.window.showInformationMessage(
-        "Cloud Canvas could not confidently detect Azure services from that image yet.",
-      );
-    }
-    return draft;
+  private postDiagram(payload: CloudCanvasDiagramPayload): void {
+    this.panel?.webview.postMessage({
+      type: "diagramGenerated",
+      payload,
+    });
   }
 }
 
-type SketchMessage =
-  | { type: "exportPng"; sketch: unknown; data: string }
-  | { type: "importReferenceImage"; sketch: unknown }
-  | { type: "removeReferenceImage"; sketch: unknown }
-  | { type: "generateDraftFromImage"; sketch: unknown }
-  | { type: "validateTerraform"; sketch: unknown }
-  | { type: "previewTerraform"; sketch: unknown }
-  | { type: "generateTerraform"; sketch: unknown };
+type CloudCanvasMessage =
+  | { type: "generateFromConfiguration" }
+  | { type: "generateFromPlan" };
 
-function isSketchMessage(message: unknown): message is SketchMessage {
-  if (!message || typeof message !== "object") {
-    return false;
-  }
-  const value = message as Partial<SketchMessage>;
+function isCloudCanvasMessage(
+  message: unknown,
+): message is CloudCanvasMessage {
   return (
-    [
-      "exportPng",
-      "importReferenceImage",
-      "removeReferenceImage",
-      "generateDraftFromImage",
-      "validateTerraform",
-      "previewTerraform",
-      "generateTerraform",
-    ].includes(
-      value.type ?? "",
-    ) &&
-    "sketch" in value &&
-    (value.type !== "exportPng" ||
-      typeof (value as Partial<{ data: string }>).data === "string")
+    !!message &&
+    typeof message === "object" &&
+    ["generateFromConfiguration", "generateFromPlan"].includes(
+      String((message as Partial<CloudCanvasMessage>).type ?? ""),
+    )
   );
 }
 
-function cloudCanvasErrorMessage(
-  type: SketchMessage["type"],
-  error: unknown,
-): string {
-  const action = cloudCanvasActionLabel(type);
-  const detail = error instanceof Error ? error.message : String(error);
-  const normalized = detail.toLowerCase();
-  if (normalized.includes("profile.json")) {
-    return `Cloud Canvas could not ${action}: ${detail}`;
+async function selectWorkspaceFolder(): Promise<
+  vscode.WorkspaceFolder | undefined
+> {
+  const folders = vscode.workspace.workspaceFolders ?? [];
+  if (folders.length === 0) {
+    void vscode.window.showWarningMessage(
+      "Open a Terraform workspace before generating an Azure architecture diagram.",
+    );
+    return undefined;
   }
-  if (
-    normalized.includes("unexpected end of json input") ||
-    normalized.includes("json")
-  ) {
-    return `Cloud Canvas could not ${action}: one of the selected service parameters contains invalid or incomplete JSON. Open the service inspector, check for missing closing braces, brackets, commas, or quotes, then try again.`;
-  }
-  return `Cloud Canvas could not ${action}: ${detail}`;
+  return folders.length === 1
+    ? folders[0]
+    : vscode.window.showWorkspaceFolderPick({
+        placeHolder: "Select the Terraform workspace to diagram",
+      });
 }
-
-function cloudCanvasActionLabel(type: SketchMessage["type"]): string {
-  switch (type) {
-    case "previewTerraform":
-      return "preview Terraform";
-    case "validateTerraform":
-      return "validate Terraform";
-    case "generateTerraform":
-      return "generate Terraform";
-    case "exportPng":
-      return "export the PNG";
-    case "importReferenceImage":
-      return "import the reference image";
-    case "removeReferenceImage":
-      return "remove the reference image";
-    case "generateDraftFromImage":
-      return "generate a draft from the reference image";
-  }
-}
-
-
-

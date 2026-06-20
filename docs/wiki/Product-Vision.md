@@ -31,7 +31,7 @@ inside the editor, before infrastructure reaches a deployment pipeline.
 - **Evidence over assertion:** explain observed, expected, source, and limits.
 - **Secure by default:** generated scaffolding starts with conservative values.
 - **Honest previews:** incomplete cost or generation coverage is labeled.
-- **Human approval:** file writes and generated Terraform remain explicit.
+- **Human approval:** generated artifacts and deployment changes remain explicit.
 
 ## Success measures
 

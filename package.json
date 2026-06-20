@@ -2,7 +2,7 @@
   "name": "azure-iac-guardrail",
   "displayName": "Azure IaC Guardrail",
   "description": "Review Azure Terraform security, compliance, architecture risk, and plan changes directly inside VS Code.",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "publisher": "ChendrayanVenkatesan",
   "license": "MIT",
   "icon": "media/azure-iac-guardrail.png",
@@ -70,7 +70,7 @@
           {
             "id": "configureWorkspacePolicy",
             "title": "Configure local Azure standards",
-            "description": "Run [Azure IaC Guardrail: Azure Pre-configuration](command:infraCompliance.configureWorkspace) to choose the generated Terraform version constraint and define regions, tags, cost assumptions, exceptions, and exclusions."
+            "description": "Run [Azure IaC Guardrail: Azure Pre-configuration](command:infraCompliance.configureWorkspace) to choose Terraform compatibility metadata and define regions, tags, cost assumptions, exceptions, and exclusions."
           },
           {
             "id": "scanResolvedPlan",
@@ -85,7 +85,7 @@
           {
             "id": "sketchYourInfra",
             "title": "Sketch Azure infrastructure",
-            "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to drag Azure service cards onto a canvas, connect them, and preview generated Terraform."
+            "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to generate an Azure architecture diagram from Terraform configuration or a local plan file."
           },
           {
             "id": "openPlanArchitecture",
@@ -142,7 +142,7 @@
       },
       {
         "command": "sketchyourinfra",
-        "title": "Azure IaC Guardrail: Cloud Canvas (Preview)"
+        "title": "Azure IaC Guardrail: Cloud Canvas"
       }
     ],
     "configuration": {
@@ -158,25 +158,10 @@
           "default": ".azure-iac-guardrail/controls",
           "description": "Workspace-relative folder containing additional JSON control files."
         },
-        "azureIacGuardrail.catalogSource": {
-          "type": "string",
-          "enum": [
-            "bundled",
-            "workspace",
-            "remote"
-          ],
-          "default": "bundled",
-          "description": "Complete guardrail catalog source. Bundled uses the catalog packaged with the extension, workspace loads a repo-local catalog, and remote loads the configured catalog URL."
-        },
-        "azureIacGuardrail.catalogPath": {
-          "type": "string",
-          "default": ".azure-iac-guardrail/catalog/azure-complete-catalog-vscode.json",
-          "description": "Workspace-relative path to a complete guardrail catalog used when catalogSource is workspace."
-        },
         "azureIacGuardrail.catalogUrl": {
           "type": "string",
-          "default": "",
-          "description": "HTTPS URL to a complete guardrail catalog used when catalogSource is remote."
+          "default": "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json",
+          "description": "HTTPS URL to the approved complete guardrail catalog."
         },
         "azureIacGuardrail.catalogVersion": {
           "type": "string",

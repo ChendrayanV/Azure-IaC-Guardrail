@@ -16,16 +16,16 @@ repeatable release process.
 - [Storage private-endpoint test matrix](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/5)
 - [Contributor workflow](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/6)
 
-## v0.3 - Design to Terraform Preview
+## v0.3 - Architecture Diagram Preview
 
 **Target:** September 30, 2026
 
-Outcome: mature visual design and plan-architecture experiences with safer
-Terraform generation.
+Outcome: mature generated architecture and plan-review experiences with safer
+catalog-driven interpretation of Terraform configuration and plan files.
 
 - [Resource Cost Preview v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/7)
 - [Cloud Canvas v2](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/8)
-- [Validated Terraform generation and modules](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/9)
+- [Organization module and resource mapping contracts](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/9)
 - [Interactive plan architecture diagram](https://github.com/ChendrayanV/Azure-IaC-Guardrail/issues/10)
 - Variable-aware static scan and editor diagnostics
 
@@ -36,13 +36,13 @@ Terraform generation.
 - VS Code diagnostics, hover details, completions, and quick actions are active.
 - The plan architecture diagram supports deterministic layout, dependencies,
   action/risk/exposure overlays, search, filtering, details, and SVG export.
-- Cloud Canvas includes a secure web sample, zoom, undo/redo, PNG export, and
-  combined Terraform validation plus static scanning.
+- Cloud Canvas generates Azure architecture diagrams from Terraform
+  configuration or local plan files.
 
 Issues #8, #9, and #10 remain open where acceptance criteria still require
 official icon licensing, 100-node performance evidence, organization module
-mappings, full Terraform generation contracts, layout override persistence, or
-background layout for very large plans.
+mappings, layout override persistence, or background layout for very large
+plans.
 
 ## v0.4 - Enterprise Governance
 

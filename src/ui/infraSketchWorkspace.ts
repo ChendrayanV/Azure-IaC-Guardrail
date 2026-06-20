@@ -83,7 +83,7 @@ export async function selectWorkspaceFolder(): Promise<
   return folders.length === 1
     ? folders[0]
     : vscode.window.showWorkspaceFolderPick({
-        placeHolder: "Select the workspace for generated Terraform",
+        placeHolder: "Select the workspace for Cloud Canvas",
       });
 }
 

@@ -19,9 +19,22 @@ only for module initialization and plan workflows.
 
 1. Open the Terraform root module in VS Code.
 2. Run **Azure IaC Guardrail: Azure Pre-configuration**.
-3. Confirm the Terraform root and workspace policy.
-4. Run **Azure IaC Guardrail: Scan Terraform Files**.
-5. Open the Problems panel or Guardrail Results to review findings.
+3. Review **Remote catalog URL**. The default is the raw complete catalog in
+   this repository:
+
+   ```json
+   {
+     "catalogUrl": "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json"
+   }
+   ```
+
+4. Replace it with an organization-approved raw HTTPS catalog endpoint when
+   required. Managed rollouts can also enforce
+   `azureIacGuardrail.catalogUrl` and `azureIacGuardrail.catalogVersion` in VS
+   Code settings.
+5. Confirm the Terraform root and workspace policy.
+6. Run **Azure IaC Guardrail: Scan Terraform Files**.
+7. Open the Problems panel or Guardrail Results to review findings.
 
 Use **Create and Scan Local Terraform Plan** when static analysis reports
 **Plan required** or when exact module instances and relationships matter.
@@ -38,6 +51,7 @@ Review it before deleting because teams may commit the profile intentionally.
 ## Troubleshooting
 
 - Confirm the correct Terraform root in Azure Pre-configuration.
+- Confirm `azureIacGuardrail.catalogUrl` points to the approved HTTPS catalog.
 - Configure `azureIacGuardrail.terraformPath` when Terraform is not on `PATH`.
 - Initialize remote modules with **Initialize Modules and Scan Terraform
   Files**.

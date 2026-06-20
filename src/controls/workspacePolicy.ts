@@ -8,6 +8,9 @@ export const WORKSPACE_POLICY_PATH = path.join(
   "profile.json",
 );
 
+export const DEFAULT_REMOTE_CATALOG_URL =
+  "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json";
+
 export const DEFAULT_TAGGABLE_RESOURCE_TYPES = [
   "azurerm_resource_group",
   "azurerm_container_registry",
@@ -60,6 +63,7 @@ export interface WorkspacePolicyProfile {
   version: 1;
   terraformRoot: string;
   terraformVersion: string;
+  catalogUrl: string;
   allowedRegions: string[];
   costAssumptions: CostAssumptions;
   requiredTags: string[];
@@ -89,6 +93,7 @@ export function defaultWorkspacePolicy(): WorkspacePolicyProfile {
     version: 1,
     terraformRoot: ".",
     terraformVersion: ">= 1.5.0, < 2.0.0",
+    catalogUrl: DEFAULT_REMOTE_CATALOG_URL,
     allowedRegions: ["uksouth", "ukwest"],
     costAssumptions: defaultCostAssumptions(),
     requiredTags: [
@@ -148,6 +153,7 @@ export function normalizeWorkspacePolicy(
     version: 1,
     terraformRoot: normalizeTerraformRoot(value.terraformRoot),
     terraformVersion: normalizeTerraformVersion(value.terraformVersion),
+    catalogUrl: normalizeRemoteCatalogUrl(value.catalogUrl),
     allowedRegions: normalizeRegions(value.allowedRegions),
     costAssumptions: normalizeCostAssumptions(value.costAssumptions),
     requiredTags: uniqueStrings(value.requiredTags, "requiredTags"),
@@ -155,6 +161,21 @@ export function normalizeWorkspacePolicy(
     skippedControlIds: normalizeControlIds(value.skippedControlIds),
     exceptions: normalizeExceptions(value.exceptions),
   };
+}
+
+export function normalizeRemoteCatalogUrl(value: unknown): string {
+  const url = String(value ?? DEFAULT_REMOTE_CATALOG_URL).trim();
+  if (!/^https:\/\/\S+$/i.test(url)) {
+    throw new Error(
+      "Remote catalog URL must be an HTTPS URL to a complete catalog JSON file.",
+    );
+  }
+  if (/^https:\/\/github\.com\/.+\/blob\/.+/i.test(url)) {
+    throw new Error(
+      "Remote catalog URL must point to raw JSON. Use raw.githubusercontent.com instead of a GitHub /blob/ page.",
+    );
+  }
+  return url;
 }
 
 function normalizeTerraformRoot(value: unknown): string {
