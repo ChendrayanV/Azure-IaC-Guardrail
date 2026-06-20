@@ -151,10 +151,25 @@
           ]
         },
         "expected": {
-          "type": [
-            "string",
-            "number",
-            "boolean"
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "number",
+                "boolean"
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean"
+                ]
+              }
+            }
           ]
         }
       },

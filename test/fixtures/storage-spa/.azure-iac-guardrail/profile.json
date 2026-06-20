@@ -1,12 +1,11 @@
 {
   "version": 1,
   "terraformRoot": ".",
-  "terraformVersion": ">= 1.15.0, < 2.0.0",
+  "terraformVersion": ">= 1.5.0, < 2.0.0",
+  "catalogUrl": "https://raw.githubusercontent.com/ChendrayanV/Azure-IaC-Guardrail/main/azure-complete-catalog-vscode.json",
   "allowedRegions": [
-    "eastus2",
     "uksouth",
-    "ukwest",
-    "swedencentral"
+    "ukwest"
   ],
   "costAssumptions": {
     "currency": "USD",
@@ -16,10 +15,13 @@
     "monthlyEgressGb": 0
   },
   "requiredTags": [
-    "environment"
+    "environment",
+    "cost-center",
+    "owner",
+    "deployed-via"
   ],
   "tagValues": {
-    "environment": "development"
+    "deployed-via": "terraform"
   },
   "skippedControlIds": [],
   "exceptions": []

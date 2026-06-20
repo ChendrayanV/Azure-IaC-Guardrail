@@ -47,13 +47,16 @@ export function parseTerraform(
       continue;
     }
 
+    let depthDeltaSource = line;
     const attributeMatch = line.match(attributePattern);
     if (attributeMatch) {
       const [, whitespace, name, rawValue] = attributeMatch;
+      const collected = collectExpression(lines, lineNumber, rawValue);
+      depthDeltaSource = collected.expression;
       const attributeName = [...blocks.map((block) => block.name), name].join(
         ".",
       );
-      const normalised = normaliseValue(rawValue, context);
+      const normalised = normaliseValue(collected.expression, context);
       current.attributes.set(attributeName, {
         name: attributeName,
         value: normalised.value,
@@ -61,8 +64,12 @@ export function parseTerraform(
         source: normalised.source,
         line: lineNumber,
         startCharacter: whitespace.length,
-        endCharacter: line.length,
+        endCharacter:
+          collected.endLine === lineNumber
+            ? line.length
+            : lines[collected.endLine].length,
       });
+      lineNumber = collected.endLine;
     } else {
       const blockMatch = line.match(nestedBlockPattern);
       if (blockMatch) {
@@ -70,7 +77,7 @@ export function parseTerraform(
       }
     }
 
-    depth += braceDelta(line);
+    depth += braceDelta(depthDeltaSource);
     blocks = blocks.filter((block) => block.depth < depth);
     if (depth <= 0) {
       current = undefined;
@@ -85,6 +92,31 @@ export function parseTerraform(
 function braceDelta(line: string): number {
   const code = line.replace(/#.*$/, "").replace(/\/\/.*$/, "");
   return (code.match(/\{/g) ?? []).length - (code.match(/\}/g) ?? []).length;
+}
+
+function collectExpression(
+  lines: string[],
+  startLine: number,
+  first: string,
+): { expression: string; endLine: number } {
+  const parts = [first];
+  let balance = bracketDelta(first);
+  let endLine = startLine;
+  while (balance > 0 && endLine + 1 < lines.length) {
+    endLine += 1;
+    parts.push(lines[endLine]);
+    balance += bracketDelta(lines[endLine]);
+  }
+  return { expression: parts.join("\n"), endLine };
+}
+
+function bracketDelta(value: string): number {
+  return [...value].reduce(
+    (balance, character) =>
+      balance +
+      ("{[(".includes(character) ? 1 : "}])".includes(character) ? -1 : 0),
+    0,
+  );
 }
 
 function normaliseValue(
@@ -110,6 +142,18 @@ function normaliseValue(
       value: withoutComment.slice(1, -1),
       resolved: true,
     };
+  }
+  if (
+    (withoutComment.startsWith("[") && withoutComment.endsWith("]")) ||
+    (withoutComment.startsWith("{") && withoutComment.endsWith("}"))
+  ) {
+    const evaluated = evaluateStaticExpression(
+      withoutComment,
+      context ?? { variables: new Map(), locals: new Map() },
+    );
+    if (evaluated.resolved) {
+      return evaluated;
+    }
   }
   return {
     value: withoutComment,

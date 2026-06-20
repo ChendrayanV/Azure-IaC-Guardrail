@@ -10,7 +10,7 @@ export type Operator =
 export interface ControlCondition {
   attribute: string;
   operator: "equals" | "notEquals" | "exists";
-  expected?: string | number | boolean;
+  expected?: string | number | boolean | Array<string | number | boolean>;
 }
 
 export interface Control {

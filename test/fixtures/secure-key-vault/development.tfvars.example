@@ -1,0 +1,20 @@
+subscription_id        = "REPLACE_WITH_SUBSCRIPTION_ID"
+tenant_id              = "REPLACE_WITH_TENANT_ID"
+current_user_object_id = "REPLACE_WITH_CURRENT_USER_OBJECT_ID"
+
+location      = "uksouth"
+environment   = "development"
+workload_name = "secure-kv"
+name_suffix   = "001"
+
+key_vault_sku_name           = "standard"
+private_endpoint_subnet_cidr = "10.80.1.0/24"
+
+# Supply a real value through a secure local tfvars file, environment variable,
+# or your CI secret store. Do not commit real secrets.
+sample_secret_value = "REPLACE_WITH_STRONG_SECRET"
+
+tags = {
+  cost-center = "platform-engineering"
+  owner       = "iac-team"
+}

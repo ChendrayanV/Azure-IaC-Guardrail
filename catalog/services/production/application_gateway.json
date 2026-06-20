@@ -256,7 +256,7 @@
       "reference": "https://learn.microsoft.com/azure/application-gateway/application-gateway-fips"
     },
     {
-      "id": "AZ-AGW-010",
+      "id": "AZ-NET-010",
       "title": "Development application gateway should use a lower SKU",
       "description": "Development Application Gateways should use a lower-cost SKU unless a higher tier is explicitly justified.",
       "severity": "warning",

@@ -167,6 +167,28 @@ describe("bundled standards", () => {
     }
   });
 
+  it("flags premium Key Vault SKU in development environments", () => {
+    const controls = completeCatalog.services.key_vault.controls as Control[];
+    const findings = scanTerraform(
+      `resource "azurerm_key_vault" "dev" {
+  sku_name = "premium"
+
+  tags = {
+    environment = "dev"
+  }
+}`,
+      controls,
+    );
+
+    expect(
+      findings.find((finding) => finding.control.id === "AZ-KV-009"),
+    ).toMatchObject({
+      outcome: "noncompliant",
+      actual: "premium",
+      expected: ["standard"],
+    });
+  });
+
   it("defines the requested storage standards and platform assurance", () => {
     const service = completeCatalog.services.storage_account;
 

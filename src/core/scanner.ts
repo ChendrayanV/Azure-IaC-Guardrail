@@ -335,8 +335,11 @@ function evaluateValues(
   if (condition.operator === "exists") {
     return values.some(hasValue);
   }
-  const hasExpected = values.some(
-    (value) => valuesEqual(value, condition.expected),
+  const expectedValues = Array.isArray(condition.expected)
+    ? condition.expected
+    : [condition.expected];
+  const hasExpected = values.some((value) =>
+    expectedValues.some((expected) => valuesEqual(value, expected)),
   );
   return condition.operator === "equals" ? hasExpected : !hasExpected;
 }

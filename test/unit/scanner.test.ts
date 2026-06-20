@@ -270,4 +270,39 @@ resource "azurerm_mssql_server" "example" {
     const findings = scanResources([resource], [containsControl]);
     expect(findings[0].outcome).toBe("compliant");
   });
+
+  it("evaluates development Key Vault SKU by Terraform sku_name", () => {
+    const keyVaultSkuControl: Control = {
+      ...control,
+      id: "AZ-KV-009",
+      resourceTypes: ["azurerm_key_vault"],
+      attribute: "sku_name",
+      operator: "oneOf",
+      expected: ["standard"],
+      conditions: [
+        {
+          attribute: "tags.environment",
+          operator: "equals",
+          expected: ["development", "dev"],
+        },
+      ],
+    };
+    const source = `
+resource "azurerm_key_vault" "dev" {
+  sku_name = "premium"
+
+  tags = {
+    environment = "dev"
+  }
+}
+`;
+
+    const findings = scanTerraform(source, [keyVaultSkuControl]);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      outcome: "noncompliant",
+      actual: "premium",
+      expected: ["standard"],
+    });
+  });
 });

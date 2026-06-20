@@ -1,6 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as vscode from "vscode";
+import bundledCatalog from "../../azure-complete-catalog-vscode.json";
 import { getConfigurationValue } from "../configuration";
 import type { Control, ControlCatalog } from "../types";
 import {
@@ -59,7 +60,10 @@ export async function loadControls(): Promise<Control[]> {
 }
 
 export async function loadCompleteCatalog(): Promise<ControlCatalog> {
-  return readRemoteCompleteCatalog();
+  const remoteUrl = await configuredRemoteCatalogUrl();
+  return remoteUrl
+    ? readRemoteCompleteCatalog(remoteUrl)
+    : (bundledCatalog as ControlCatalog);
 }
 
 function parseCompleteCatalog(
@@ -73,8 +77,9 @@ function parseCompleteCatalog(
   return catalog as ControlCatalog;
 }
 
-async function readRemoteCompleteCatalog(): Promise<ControlCatalog> {
-  const url = await configuredCatalogUrl();
+async function readRemoteCompleteCatalog(
+  url: string,
+): Promise<ControlCatalog> {
   if (!/^https:\/\//i.test(url)) {
     throw new Error(
       "Remote catalog URL must use HTTPS. Update azureIacGuardrail.catalogUrl.",
@@ -116,21 +121,29 @@ function configuredControlsPath(uri: vscode.Uri): string {
   ) as string;
 }
 
-async function configuredCatalogUrl(): Promise<string> {
-  const value = vscode.workspace
-    .getConfiguration("azureIacGuardrail")
-    .get<string>("catalogUrl", "")
-    .trim();
-  if (value) {
-    return normalizeRemoteCatalogUrl(value);
+async function configuredRemoteCatalogUrl(): Promise<string | undefined> {
+  const configured = explicitlyConfiguredCatalogUrl();
+  if (configured) {
+    return normalizeRemoteCatalogUrl(configured);
   }
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
     const policy = await loadWorkspacePolicy(folder.uri.fsPath);
-    if (policy?.catalogUrl) {
+    if (policy?.catalogUrl && policy.catalogUrl !== DEFAULT_REMOTE_CATALOG_URL) {
       return policy.catalogUrl;
     }
   }
-  return DEFAULT_REMOTE_CATALOG_URL;
+  return undefined;
+}
+
+function explicitlyConfiguredCatalogUrl(): string | undefined {
+  const inspected = vscode.workspace
+    .getConfiguration("azureIacGuardrail")
+    .inspect<string>("catalogUrl");
+  const configured =
+    inspected?.workspaceFolderValue ??
+    inspected?.workspaceValue ??
+    inspected?.globalValue;
+  return configured?.trim() || undefined;
 }
 
 function configuredCatalogVersion(): string | undefined {
