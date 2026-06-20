@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "graph_data_connect",
   "displayName": "Microsoft Graph Data Connect",
   "shortName": "GDC",

@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "key_vault",
   "displayName": "Key Vault",
   "shortName": "KV",
@@ -251,7 +251,25 @@
       "reference": "https://learn.microsoft.com/azure/key-vault/general/howto-logging",
       "benchmarkReference": "https://avd.aquasec.com/misconfig/azure/key-vaults/key-vault-log-analytics-enabled/"
     },
-
+    {
+      "id": "AZ-KV-009",
+      "title": "Development key vault should use a lower SKU",
+      "description": "Development key vault should use a lower-cost SKU unless a higher tier is explicitly justified.",
+      "severity": "warning",
+      "resourceTypes": ["azurerm_key_vault"],
+      "attribute": "sku_name",
+      "operator": "oneOf",
+      "expected": ["standard"],
+      "conditions": [
+        {
+          "attribute": "tags.environment",
+          "operator": "equals",
+          "expected": ["development", "dev"]
+        }
+      ],
+      "remediation": "For development environments, set sku_name = \"standard\".",
+      "reference": "https://learn.microsoft.com/azure/key-vault/general/overview"
+    },
     {
       "id": "AZ-KV-KEY-001",
       "title": "Key Vault keys must have an expiration date",

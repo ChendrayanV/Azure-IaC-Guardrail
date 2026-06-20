@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "devtest_labs",
   "displayName": "Azure DevTest Labs",
   "shortName": "DTL",

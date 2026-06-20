@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "kubernetes_fleet_manager",
   "displayName": "Azure Kubernetes Fleet Manager",
   "shortName": "KFM",

@@ -4,7 +4,7 @@
   "generatedFrom": "catalog/services/{production,draft}/*.json",
   "services": {
     "ai_foundry": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "ai_foundry",
       "displayName": "Azure AI Foundry",
       "shortName": "AIF",
@@ -65,7 +65,7 @@
       ]
     },
     "ai_search": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "ai_search",
       "displayName": "AI Search",
       "shortName": "AIS",
@@ -84,7 +84,7 @@
       "assurances": []
     },
     "analysis_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "analysis_services",
       "displayName": "Analysis Services",
       "shortName": "AS",
@@ -103,7 +103,7 @@
       "assurances": []
     },
     "anomaly_detector": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "anomaly_detector",
       "displayName": "AI Anomaly Detector",
       "shortName": "ANOM",
@@ -122,7 +122,7 @@
       "assurances": []
     },
     "api_management": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "api_management",
       "displayName": "API Management",
       "shortName": "APIM",
@@ -176,7 +176,7 @@
       "assurances": []
     },
     "app_configuration": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "app_configuration",
       "displayName": "App Configuration",
       "shortName": "CFG",
@@ -357,7 +357,7 @@
       ]
     },
     "app_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "app_service",
       "displayName": "App Services",
       "shortName": "APP",
@@ -401,7 +401,7 @@
       "assurances": []
     },
     "app_testing": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "app_testing",
       "displayName": "Azure App Testing",
       "shortName": "TEST",
@@ -420,7 +420,7 @@
       "assurances": []
     },
     "application_gateway": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "application_gateway",
       "displayName": "Application Gateway",
       "shortName": "AGW",
@@ -740,7 +740,7 @@
       ]
     },
     "application_insights": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "application_insights",
       "displayName": "Application Insights",
       "shortName": "AI",
@@ -774,7 +774,7 @@
       "assurances": []
     },
     "archive_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "archive_storage",
       "displayName": "Archive Storage",
       "shortName": "ARC",
@@ -793,7 +793,7 @@
       "assurances": []
     },
     "arm_templates": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "arm_templates",
       "displayName": "Azure Resource Manager Templates",
       "shortName": "ARM",
@@ -812,7 +812,7 @@
       "assurances": []
     },
     "artifact_signing": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "artifact_signing",
       "displayName": "Artifact Signing",
       "shortName": "SIGN",
@@ -831,7 +831,7 @@
       "assurances": []
     },
     "automanage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "automanage",
       "displayName": "Azure Automanage",
       "shortName": "AUTO",
@@ -850,7 +850,7 @@
       "assurances": []
     },
     "automation_account": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "automation_account",
       "displayName": "Automation Accounts",
       "shortName": "AUT",
@@ -869,7 +869,7 @@
       "assurances": []
     },
     "azure_advisor": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_advisor",
       "displayName": "Azure Advisor",
       "shortName": "ADV",
@@ -888,7 +888,7 @@
       "assurances": []
     },
     "azure_arc": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_arc",
       "displayName": "Azure Arc",
       "shortName": "ARC",
@@ -907,7 +907,7 @@
       "assurances": []
     },
     "azure_artifacts": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_artifacts",
       "displayName": "Azure Artifacts",
       "shortName": "ART",
@@ -926,7 +926,7 @@
       "assurances": []
     },
     "azure_attestation": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_attestation",
       "displayName": "Microsoft Azure Attestation",
       "shortName": "MAA",
@@ -945,7 +945,7 @@
       "assurances": []
     },
     "azure_backup": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_backup",
       "displayName": "Azure Backup",
       "shortName": "BACK",
@@ -964,7 +964,7 @@
       "assurances": []
     },
     "azure_boards": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_boards",
       "displayName": "Azure Boards",
       "shortName": "BOARD",
@@ -983,7 +983,7 @@
       "assurances": []
     },
     "azure_copilot": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_copilot",
       "displayName": "Azure Copilot",
       "shortName": "COP",
@@ -1002,7 +1002,7 @@
       "assurances": []
     },
     "azure_devops": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_devops",
       "displayName": "Azure DevOps",
       "shortName": "ADO",
@@ -1021,7 +1021,7 @@
       "assurances": []
     },
     "azure_linux": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_linux",
       "displayName": "Azure Linux",
       "shortName": "AZL",
@@ -1040,7 +1040,7 @@
       "assurances": []
     },
     "azure_local": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_local",
       "displayName": "Azure Local",
       "shortName": "LOCAL",
@@ -1059,7 +1059,7 @@
       "assurances": []
     },
     "azure_migrate": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_migrate",
       "displayName": "Azure Migrate",
       "shortName": "MIG",
@@ -1078,7 +1078,7 @@
       "assurances": []
     },
     "azure_pipelines": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_pipelines",
       "displayName": "Azure Pipelines",
       "shortName": "PIPE",
@@ -1097,7 +1097,7 @@
       "assurances": []
     },
     "azure_policy": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_policy",
       "displayName": "Azure Policy",
       "shortName": "POL",
@@ -1116,7 +1116,7 @@
       "assurances": []
     },
     "azure_repos": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_repos",
       "displayName": "Azure Repos",
       "shortName": "REPO",
@@ -1135,7 +1135,7 @@
       "assurances": []
     },
     "azure_sdks": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_sdks",
       "displayName": "Azure SDKs",
       "shortName": "SDK",
@@ -1154,7 +1154,7 @@
       "assurances": []
     },
     "azure_sphere": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_sphere",
       "displayName": "Azure Sphere",
       "shortName": "SPH",
@@ -1173,7 +1173,7 @@
       "assurances": []
     },
     "azure_sql": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_sql",
       "displayName": "Azure SQL",
       "shortName": "AZSQL",
@@ -1296,7 +1296,7 @@
       ]
     },
     "azure_test_plans": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "azure_test_plans",
       "displayName": "Azure Test Plans",
       "shortName": "ATP",
@@ -1315,7 +1315,7 @@
       "assurances": []
     },
     "backup_vault": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "backup_vault",
       "displayName": "Backup Vault",
       "shortName": "BKP",
@@ -1334,7 +1334,7 @@
       "assurances": []
     },
     "bastion": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "bastion",
       "displayName": "Azure Bastion",
       "shortName": "BAS",
@@ -1353,7 +1353,7 @@
       "assurances": []
     },
     "batch": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "batch",
       "displayName": "Azure Batch",
       "shortName": "BAT",
@@ -1372,7 +1372,7 @@
       "assurances": []
     },
     "blob_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "blob_storage",
       "displayName": "Azure Blob Storage",
       "shortName": "BLOB",
@@ -1391,7 +1391,7 @@
       "assurances": []
     },
     "blueprints": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "blueprints",
       "displayName": "Azure Blueprints",
       "shortName": "BP",
@@ -1410,7 +1410,7 @@
       "assurances": []
     },
     "bot_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "bot_service",
       "displayName": "Azure Bot Service",
       "shortName": "BOT",
@@ -1429,7 +1429,7 @@
       "assurances": []
     },
     "cdn": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cdn",
       "displayName": "Azure CDN",
       "shortName": "CDN",
@@ -1448,7 +1448,7 @@
       "assurances": []
     },
     "chaos_studio": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "chaos_studio",
       "displayName": "Azure Chaos Studio",
       "shortName": "CHAOS",
@@ -1467,7 +1467,7 @@
       "assurances": []
     },
     "cloud_hsm": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cloud_hsm",
       "displayName": "Azure Cloud HSM",
       "shortName": "HSM",
@@ -1486,7 +1486,7 @@
       "assurances": []
     },
     "cloud_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cloud_services",
       "displayName": "Cloud Services",
       "shortName": "CS",
@@ -1505,7 +1505,7 @@
       "assurances": []
     },
     "cloud_shell": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cloud_shell",
       "displayName": "Cloud Shell",
       "shortName": "SH",
@@ -1524,7 +1524,7 @@
       "assurances": []
     },
     "communication_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "communication_services",
       "displayName": "Communication Services",
       "shortName": "ACS",
@@ -1557,7 +1557,7 @@
       "assurances": []
     },
     "compute_fleet": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "compute_fleet",
       "displayName": "Azure Compute Fleet",
       "shortName": "FLEET",
@@ -1576,7 +1576,7 @@
       "assurances": []
     },
     "computer_vision": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "computer_vision",
       "displayName": "AI Vision",
       "shortName": "VIS",
@@ -1595,7 +1595,7 @@
       "assurances": []
     },
     "confidential_ledger": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "confidential_ledger",
       "displayName": "Azure Confidential Ledger",
       "shortName": "ACL",
@@ -1639,7 +1639,7 @@
       "assurances": []
     },
     "container_apps": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "container_apps",
       "displayName": "Container Apps",
       "shortName": "ACA",
@@ -1658,7 +1658,7 @@
       "assurances": []
     },
     "container_instances": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "container_instances",
       "displayName": "Container Instances",
       "shortName": "ACI",
@@ -1677,7 +1677,7 @@
       "assurances": []
     },
     "container_registry": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "container_registry",
       "displayName": "Container Registry",
       "shortName": "ACR",
@@ -1981,7 +1981,7 @@
       ]
     },
     "container_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "container_storage",
       "displayName": "Azure Container Storage",
       "shortName": "ACS",
@@ -2000,7 +2000,7 @@
       "assurances": []
     },
     "content_safety": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "content_safety",
       "displayName": "AI Content Safety",
       "shortName": "SAFE",
@@ -2019,7 +2019,7 @@
       "assurances": []
     },
     "content_understanding": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "content_understanding",
       "displayName": "Azure Content Understanding",
       "shortName": "CU",
@@ -2038,7 +2038,7 @@
       "assurances": []
     },
     "cosmos_db": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cosmos_db",
       "displayName": "Azure Cosmos DB",
       "shortName": "COS",
@@ -2206,7 +2206,7 @@
       ]
     },
     "cost_management": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "cost_management",
       "displayName": "Cost Management",
       "shortName": "COST",
@@ -2225,7 +2225,7 @@
       "assurances": []
     },
     "custom_vision": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "custom_vision",
       "displayName": "Azure AI Custom Vision",
       "shortName": "CV",
@@ -2244,7 +2244,7 @@
       "assurances": []
     },
     "data_box": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_box",
       "displayName": "Azure Data Box",
       "shortName": "BOX",
@@ -2263,7 +2263,7 @@
       "assurances": []
     },
     "data_catalog": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_catalog",
       "displayName": "Data Catalog",
       "shortName": "CAT",
@@ -2282,7 +2282,7 @@
       "assurances": []
     },
     "data_explorer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_explorer",
       "displayName": "Data Explorer",
       "shortName": "ADX",
@@ -2301,7 +2301,7 @@
       "assurances": []
     },
     "data_factory": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_factory",
       "displayName": "Data Factory",
       "shortName": "ADF",
@@ -2324,7 +2324,7 @@
       "assurances": []
     },
     "data_lake_analytics": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_lake_analytics",
       "displayName": "Data Lake Analytics",
       "shortName": "DLA",
@@ -2343,7 +2343,7 @@
       "assurances": []
     },
     "data_lake_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_lake_storage",
       "displayName": "Azure Data Lake Storage",
       "shortName": "ADLS",
@@ -2362,7 +2362,7 @@
       "assurances": []
     },
     "data_science_vm": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_science_vm",
       "displayName": "Data Science Virtual Machines",
       "shortName": "DSVM",
@@ -2381,7 +2381,7 @@
       "assurances": []
     },
     "data_share": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "data_share",
       "displayName": "Azure Data Share",
       "shortName": "SHARE",
@@ -2400,7 +2400,7 @@
       "assurances": []
     },
     "database_migration_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "database_migration_service",
       "displayName": "Azure Database Migration Service",
       "shortName": "DMS",
@@ -2444,7 +2444,7 @@
       "assurances": []
     },
     "database_mysql": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "database_mysql",
       "displayName": "Azure Database for MySQL",
       "shortName": "MYSQL",
@@ -2550,7 +2550,7 @@
       ]
     },
     "database_postgresql": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "database_postgresql",
       "displayName": "Azure Database for PostgreSQL",
       "shortName": "PG",
@@ -2817,7 +2817,7 @@
       ]
     },
     "databricks": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "databricks",
       "displayName": "Azure Databricks",
       "shortName": "ADB",
@@ -2836,7 +2836,7 @@
       "assurances": []
     },
     "ddos_protection": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "ddos_protection",
       "displayName": "DDoS Protection",
       "shortName": "DDOS",
@@ -2855,7 +2855,7 @@
       "assurances": []
     },
     "dedicated_host": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "dedicated_host",
       "displayName": "Dedicated Host",
       "shortName": "HOST",
@@ -2874,7 +2874,7 @@
       "assurances": []
     },
     "defender_cloud": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "defender_cloud",
       "displayName": "Defender for Cloud",
       "shortName": "MDC",
@@ -2893,7 +2893,7 @@
       "assurances": []
     },
     "deployment_environments": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "deployment_environments",
       "displayName": "Azure Deployment Environments",
       "shortName": "ADE",
@@ -2912,7 +2912,7 @@
       "assurances": []
     },
     "dev_box": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "dev_box",
       "displayName": "Microsoft Dev Box",
       "shortName": "DEV",
@@ -2931,7 +2931,7 @@
       "assurances": []
     },
     "devops_integrations": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "devops_integrations",
       "displayName": "DevOps Tool Integrations",
       "shortName": "INT",
@@ -2950,7 +2950,7 @@
       "assurances": []
     },
     "devtest_labs": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "devtest_labs",
       "displayName": "Azure DevTest Labs",
       "shortName": "DTL",
@@ -2969,7 +2969,7 @@
       "assurances": []
     },
     "digital_twins": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "digital_twins",
       "displayName": "Digital Twins",
       "shortName": "ADT",
@@ -2988,7 +2988,7 @@
       "assurances": []
     },
     "disk_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "disk_storage",
       "displayName": "Disk Storage",
       "shortName": "DISK",
@@ -3007,7 +3007,7 @@
       "assurances": []
     },
     "dns": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "dns",
       "displayName": "Azure DNS",
       "shortName": "DNS",
@@ -3026,7 +3026,7 @@
       "assurances": []
     },
     "document_intelligence": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "document_intelligence",
       "displayName": "Document Intelligence",
       "shortName": "DOC",
@@ -3045,7 +3045,7 @@
       "assurances": []
     },
     "documentdb": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "documentdb",
       "displayName": "Azure DocumentDB",
       "shortName": "DOCDB",
@@ -3064,7 +3064,7 @@
       "assurances": []
     },
     "elastic_san": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "elastic_san",
       "displayName": "Azure Elastic SAN",
       "shortName": "SAN",
@@ -3118,7 +3118,7 @@
       "assurances": []
     },
     "energy_data_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "energy_data_services",
       "displayName": "Microsoft Energy Data Services",
       "shortName": "EDS",
@@ -3137,7 +3137,7 @@
       "assurances": []
     },
     "entra_domain_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "entra_domain_services",
       "displayName": "Entra Domain Services",
       "shortName": "DS",
@@ -3156,7 +3156,7 @@
       "assurances": []
     },
     "entra_external_id": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "entra_external_id",
       "displayName": "Entra External ID",
       "shortName": "EXT",
@@ -3175,7 +3175,7 @@
       "assurances": []
     },
     "entra_id": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "entra_id",
       "displayName": "Microsoft Entra ID",
       "shortName": "ENTRA",
@@ -3194,7 +3194,7 @@
       "assurances": []
     },
     "entra_verified_id": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "entra_verified_id",
       "displayName": "Microsoft Entra Verified ID",
       "shortName": "VID",
@@ -3213,7 +3213,7 @@
       "assurances": []
     },
     "event_grid": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "event_grid",
       "displayName": "Event Grid",
       "shortName": "EG",
@@ -3399,7 +3399,7 @@
       ]
     },
     "event_hubs": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "event_hubs",
       "displayName": "Event Hubs",
       "shortName": "EH",
@@ -3707,7 +3707,7 @@
       ]
     },
     "expressroute": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "expressroute",
       "displayName": "ExpressRoute",
       "shortName": "ER",
@@ -3726,7 +3726,7 @@
       "assurances": []
     },
     "external_attack_surface_management": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "external_attack_surface_management",
       "displayName": "Defender External Attack Surface Management",
       "shortName": "EASM",
@@ -3745,7 +3745,7 @@
       "assurances": []
     },
     "fabric": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "fabric",
       "displayName": "Microsoft Fabric",
       "shortName": "FAB",
@@ -3764,7 +3764,7 @@
       "assurances": []
     },
     "files": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "files",
       "displayName": "Azure Files",
       "shortName": "FILE",
@@ -3783,7 +3783,7 @@
       "assurances": []
     },
     "firewall": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "firewall",
       "displayName": "Azure Firewall",
       "shortName": "FW",
@@ -3879,7 +3879,7 @@
       ]
     },
     "firewall_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "firewall_manager",
       "displayName": "Azure Firewall Manager",
       "shortName": "FWM",
@@ -3898,7 +3898,7 @@
       "assurances": []
     },
     "fluid_relay": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "fluid_relay",
       "displayName": "Azure Fluid Relay",
       "shortName": "FLUID",
@@ -3917,7 +3917,7 @@
       "assurances": []
     },
     "foundry_agent_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_agent_service",
       "displayName": "Foundry Agent Service",
       "shortName": "AGENT",
@@ -3936,7 +3936,7 @@
       "assurances": []
     },
     "foundry_control_plane": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_control_plane",
       "displayName": "Foundry Control Plane",
       "shortName": "FCP",
@@ -3955,7 +3955,7 @@
       "assurances": []
     },
     "foundry_iq": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_iq",
       "displayName": "Foundry IQ",
       "shortName": "IQ",
@@ -3974,7 +3974,7 @@
       "assurances": []
     },
     "foundry_models": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_models",
       "displayName": "Foundry Models",
       "shortName": "FM",
@@ -3993,7 +3993,7 @@
       "assurances": []
     },
     "foundry_observability": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_observability",
       "displayName": "Foundry Observability",
       "shortName": "OBS",
@@ -4012,7 +4012,7 @@
       "assurances": []
     },
     "foundry_tools": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "foundry_tools",
       "displayName": "Foundry Tools",
       "shortName": "TOOLS",
@@ -4031,7 +4031,7 @@
       "assurances": []
     },
     "front_door": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "front_door",
       "displayName": "Front Door",
       "shortName": "FD",
@@ -4050,7 +4050,7 @@
       "assurances": []
     },
     "functions": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "functions",
       "displayName": "Functions",
       "shortName": "FUNC",
@@ -4385,7 +4385,7 @@
       }
     },
     "generic_api": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_api",
       "displayName": "API",
       "shortName": "API",
@@ -4404,7 +4404,7 @@
       "assurances": []
     },
     "generic_application": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_application",
       "displayName": "Application",
       "shortName": "APP",
@@ -4423,7 +4423,7 @@
       "assurances": []
     },
     "generic_architect": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_architect",
       "displayName": "IT Architect",
       "shortName": "ARCH",
@@ -4442,7 +4442,7 @@
       "assurances": []
     },
     "generic_browser": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_browser",
       "displayName": "Web Browser",
       "shortName": "WEB",
@@ -4461,7 +4461,7 @@
       "assurances": []
     },
     "generic_database": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_database",
       "displayName": "Database",
       "shortName": "DB",
@@ -4480,7 +4480,7 @@
       "assurances": []
     },
     "generic_developer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_developer",
       "displayName": "Developer",
       "shortName": "DEV",
@@ -4499,7 +4499,7 @@
       "assurances": []
     },
     "generic_device": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_device",
       "displayName": "Client Device",
       "shortName": "DEV",
@@ -4518,7 +4518,7 @@
       "assurances": []
     },
     "generic_external_system": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_external_system",
       "displayName": "External System",
       "shortName": "EXT",
@@ -4537,7 +4537,7 @@
       "assurances": []
     },
     "generic_firewall": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_firewall",
       "displayName": "Firewall",
       "shortName": "FW",
@@ -4605,7 +4605,7 @@
       "assurances": []
     },
     "generic_internet": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_internet",
       "displayName": "Internet",
       "shortName": "NET",
@@ -4624,7 +4624,7 @@
       "assurances": []
     },
     "generic_load_balancer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_load_balancer",
       "displayName": "Generic Load Balancer",
       "shortName": "LB",
@@ -4643,7 +4643,7 @@
       "assurances": []
     },
     "generic_mobile": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_mobile",
       "displayName": "Mobile Device",
       "shortName": "MOB",
@@ -4662,7 +4662,7 @@
       "assurances": []
     },
     "generic_network": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_network",
       "displayName": "Network",
       "shortName": "NET",
@@ -4681,7 +4681,7 @@
       "assurances": []
     },
     "generic_queue": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_queue",
       "displayName": "Message Queue",
       "shortName": "Q",
@@ -4700,7 +4700,7 @@
       "assurances": []
     },
     "generic_repository": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_repository",
       "displayName": "Code Repository",
       "shortName": "REPO",
@@ -4719,7 +4719,7 @@
       "assurances": []
     },
     "generic_server": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_server",
       "displayName": "Server",
       "shortName": "SRV",
@@ -4738,7 +4738,7 @@
       "assurances": []
     },
     "generic_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_storage",
       "displayName": "Storage",
       "shortName": "ST",
@@ -4757,7 +4757,7 @@
       "assurances": []
     },
     "generic_user": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_user",
       "displayName": "User",
       "shortName": "USR",
@@ -4776,7 +4776,7 @@
       "assurances": []
     },
     "generic_users": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "generic_users",
       "displayName": "User Group",
       "shortName": "USRS",
@@ -4795,7 +4795,7 @@
       "assurances": []
     },
     "github_advanced_security": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "github_advanced_security",
       "displayName": "GitHub Advanced Security",
       "shortName": "GHAS",
@@ -4814,7 +4814,7 @@
       "assurances": []
     },
     "github_advanced_security_ado": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "github_advanced_security_ado",
       "displayName": "GitHub Advanced Security for Azure DevOps",
       "shortName": "GHAS",
@@ -4833,7 +4833,7 @@
       "assurances": []
     },
     "github_copilot": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "github_copilot",
       "displayName": "GitHub Copilot",
       "shortName": "GHC",
@@ -4852,7 +4852,7 @@
       "assurances": []
     },
     "github_enterprise": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "github_enterprise",
       "displayName": "GitHub Enterprise",
       "shortName": "GHE",
@@ -4871,7 +4871,7 @@
       "assurances": []
     },
     "graph_data_connect": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "graph_data_connect",
       "displayName": "Microsoft Graph Data Connect",
       "shortName": "GDC",
@@ -4890,7 +4890,7 @@
       "assurances": []
     },
     "hdinsight": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "hdinsight",
       "displayName": "HDInsight",
       "shortName": "HDI",
@@ -4909,7 +4909,7 @@
       "assurances": []
     },
     "health_bot": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "health_bot",
       "displayName": "Health Bot",
       "shortName": "HB",
@@ -4928,7 +4928,7 @@
       "assurances": []
     },
     "health_data_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "health_data_services",
       "displayName": "Azure Health Data Services",
       "shortName": "FHIR",
@@ -4947,7 +4947,7 @@
       "assurances": []
     },
     "horizondb": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "horizondb",
       "displayName": "Azure HorizonDB",
       "shortName": "HDB",
@@ -4966,7 +4966,7 @@
       "assurances": []
     },
     "immersive_reader": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "immersive_reader",
       "displayName": "Azure AI Immersive Reader",
       "shortName": "IR",
@@ -4985,7 +4985,7 @@
       "assurances": []
     },
     "information_protection": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "information_protection",
       "displayName": "Azure Information Protection",
       "shortName": "AIP",
@@ -5004,7 +5004,7 @@
       "assurances": []
     },
     "iot_central": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "iot_central",
       "displayName": "IoT Central",
       "shortName": "IOTC",
@@ -5023,7 +5023,7 @@
       "assurances": []
     },
     "iot_edge": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "iot_edge",
       "displayName": "Azure IoT Edge",
       "shortName": "EDGE",
@@ -5042,7 +5042,7 @@
       "assurances": []
     },
     "iot_hub": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "iot_hub",
       "displayName": "IoT Hub",
       "shortName": "IOT",
@@ -5061,7 +5061,7 @@
       "assurances": []
     },
     "iot_operations": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "iot_operations",
       "displayName": "Azure IoT Operations",
       "shortName": "IOTO",
@@ -5080,7 +5080,7 @@
       "assurances": []
     },
     "key_vault": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "key_vault",
       "displayName": "Key Vault",
       "shortName": "KV",
@@ -5119,9 +5119,7 @@
               "standard",
               "premium"
             ],
-            "controlIds": [
-              "AZ-KV-009"
-            ],
+            "controlIds": [],
             "remediation": "For development environments, use the standard SKU unless a higher tier is explicitly required."
           },
           {
@@ -5401,7 +5399,7 @@
             }
           ],
           "remediation": "For development environments, set sku_name = \"standard\".",
-          "reference": "https://learn.microsoft.com/en-us/security/benchmark/azure/baselines/key-vault-security-baseline"
+          "reference": "https://learn.microsoft.com/azure/key-vault/general/overview"
         },
         {
           "id": "AZ-KV-KEY-001",
@@ -5435,7 +5433,7 @@
       ]
     },
     "kubernetes_fleet_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "kubernetes_fleet_manager",
       "displayName": "Azure Kubernetes Fleet Manager",
       "shortName": "KFM",
@@ -5458,7 +5456,7 @@
       "assurances": []
     },
     "kubernetes_namespace": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "kubernetes_namespace",
       "displayName": "Kubernetes Namespace",
       "shortName": "NS",
@@ -5494,7 +5492,7 @@
       "assurances": []
     },
     "kubernetes_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "kubernetes_service",
       "displayName": "Azure Kubernetes Service",
       "shortName": "AKS",
@@ -5823,7 +5821,7 @@
       ]
     },
     "lab_services": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "lab_services",
       "displayName": "Azure Lab Services",
       "shortName": "LAB",
@@ -5842,7 +5840,7 @@
       "assurances": []
     },
     "language_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "language_service",
       "displayName": "AI Language",
       "shortName": "LANG",
@@ -5861,7 +5859,7 @@
       "assurances": []
     },
     "lighthouse": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "lighthouse",
       "displayName": "Azure Lighthouse",
       "shortName": "LH",
@@ -5880,7 +5878,7 @@
       "assurances": []
     },
     "linux_virtual_machine": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "linux_virtual_machine",
       "displayName": "Linux Virtual Machines",
       "shortName": "LVM",
@@ -5899,7 +5897,7 @@
       "assurances": []
     },
     "load_balancer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "load_balancer",
       "displayName": "Load Balancer",
       "shortName": "LB",
@@ -5918,7 +5916,7 @@
       "assurances": []
     },
     "load_testing": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "load_testing",
       "displayName": "Azure Load Testing",
       "shortName": "LOAD",
@@ -5937,7 +5935,7 @@
       "assurances": []
     },
     "log_analytics": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "log_analytics",
       "displayName": "Log Analytics",
       "shortName": "LOG",
@@ -6064,7 +6062,7 @@
       ]
     },
     "logic_apps": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "logic_apps",
       "displayName": "Logic Apps",
       "shortName": "LA",
@@ -6124,7 +6122,7 @@
       "assurances": []
     },
     "machine_learning": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "machine_learning",
       "displayName": "Machine Learning",
       "shortName": "ML",
@@ -6240,7 +6238,7 @@
       ]
     },
     "managed_application": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_application",
       "displayName": "Managed Applications",
       "shortName": "MA",
@@ -6259,7 +6257,7 @@
       "assurances": []
     },
     "managed_cassandra": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_cassandra",
       "displayName": "Azure Managed Instance for Apache Cassandra",
       "shortName": "CAS",
@@ -6278,7 +6276,7 @@
       "assurances": []
     },
     "managed_grafana": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_grafana",
       "displayName": "Managed Grafana",
       "shortName": "GRAF",
@@ -6297,7 +6295,7 @@
       "assurances": []
     },
     "managed_identity": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_identity",
       "displayName": "Managed Identities",
       "shortName": "MI",
@@ -6316,7 +6314,7 @@
       "assurances": []
     },
     "managed_instance": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_instance",
       "displayName": "SQL Managed Instance",
       "shortName": "MI",
@@ -6335,7 +6333,7 @@
       "assurances": []
     },
     "managed_lustre": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "managed_lustre",
       "displayName": "Azure Managed Lustre",
       "shortName": "LUS",
@@ -6354,7 +6352,7 @@
       "assurances": []
     },
     "maps": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "maps",
       "displayName": "Azure Maps",
       "shortName": "MAP",
@@ -6373,7 +6371,7 @@
       "assurances": []
     },
     "metrics_advisor": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "metrics_advisor",
       "displayName": "Azure AI Metrics Advisor",
       "shortName": "MET",
@@ -6392,7 +6390,7 @@
       "assurances": []
     },
     "monitor": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "monitor",
       "displayName": "Azure Monitor",
       "shortName": "MON",
@@ -6411,7 +6409,7 @@
       "assurances": []
     },
     "nat_gateway": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "nat_gateway",
       "displayName": "NAT Gateway",
       "shortName": "NAT",
@@ -6434,7 +6432,7 @@
       "assurances": []
     },
     "netapp_files": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "netapp_files",
       "displayName": "Azure NetApp Files",
       "shortName": "ANF",
@@ -6453,7 +6451,7 @@
       "assurances": []
     },
     "network_function_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "network_function_manager",
       "displayName": "Azure Network Function Manager",
       "shortName": "NFM",
@@ -6472,7 +6470,7 @@
       "assurances": []
     },
     "network_security_group": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "network_security_group",
       "displayName": "Network Security Group",
       "shortName": "NSG",
@@ -6543,7 +6541,7 @@
       ]
     },
     "network_watcher": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "network_watcher",
       "displayName": "Azure Network Watcher",
       "shortName": "NW",
@@ -6566,7 +6564,7 @@
       "assurances": []
     },
     "notification_hubs": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "notification_hubs",
       "displayName": "Notification Hubs",
       "shortName": "NH",
@@ -6585,7 +6583,7 @@
       "assurances": []
     },
     "nutanix_cloud_clusters": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "nutanix_cloud_clusters",
       "displayName": "Nutanix Cloud Clusters",
       "shortName": "NC2",
@@ -6604,7 +6602,7 @@
       "assurances": []
     },
     "open_datasets": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "open_datasets",
       "displayName": "Azure Open Datasets",
       "shortName": "DATA",
@@ -6623,7 +6621,7 @@
       "assurances": []
     },
     "openai_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "openai_service",
       "displayName": "Azure OpenAI",
       "shortName": "AOAI",
@@ -6642,7 +6640,7 @@
       "assurances": []
     },
     "operator_nexus": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "operator_nexus",
       "displayName": "Azure Operator Nexus",
       "shortName": "NEX",
@@ -6661,7 +6659,7 @@
       "assurances": []
     },
     "operator_service_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "operator_service_manager",
       "displayName": "Azure Operator Service Manager",
       "shortName": "OSM",
@@ -6680,7 +6678,7 @@
       "assurances": []
     },
     "personalizer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "personalizer",
       "displayName": "Azure AI Personalizer",
       "shortName": "PERS",
@@ -6699,7 +6697,7 @@
       "assurances": []
     },
     "phi_models": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "phi_models",
       "displayName": "Phi Open Models",
       "shortName": "PHI",
@@ -6718,7 +6716,7 @@
       "assurances": []
     },
     "planetary_computer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "planetary_computer",
       "displayName": "Microsoft Planetary Computer Pro",
       "shortName": "PCP",
@@ -6737,7 +6735,7 @@
       "assurances": []
     },
     "playwright_testing": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "playwright_testing",
       "displayName": "Microsoft Playwright Testing",
       "shortName": "PWT",
@@ -6756,7 +6754,7 @@
       "assurances": []
     },
     "power_bi": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "power_bi",
       "displayName": "Power BI",
       "shortName": "PBI",
@@ -6775,7 +6773,7 @@
       "assurances": []
     },
     "power_bi_embedded": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "power_bi_embedded",
       "displayName": "Power BI Embedded",
       "shortName": "PBI",
@@ -6794,7 +6792,7 @@
       "assurances": []
     },
     "private_endpoint": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "private_endpoint",
       "displayName": "Private Endpoint",
       "shortName": "PE",
@@ -6838,7 +6836,7 @@
       "assurances": []
     },
     "private_link": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "private_link",
       "displayName": "Azure Private Link",
       "shortName": "PL",
@@ -6872,7 +6870,7 @@
       "assurances": []
     },
     "public_ip": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "public_ip",
       "displayName": "Public IP",
       "shortName": "PIP",
@@ -6944,7 +6942,7 @@
       ]
     },
     "purview": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "purview",
       "displayName": "Microsoft Purview",
       "shortName": "PUR",
@@ -6963,7 +6961,7 @@
       "assurances": []
     },
     "quantum": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "quantum",
       "displayName": "Azure Quantum",
       "shortName": "Q",
@@ -6982,7 +6980,7 @@
       "assurances": []
     },
     "queue_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "queue_storage",
       "displayName": "Queue Storage",
       "shortName": "QUEUE",
@@ -7001,7 +6999,7 @@
       "assurances": []
     },
     "red_hat_openshift": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "red_hat_openshift",
       "displayName": "Azure Red Hat OpenShift",
       "shortName": "ARO",
@@ -7020,7 +7018,7 @@
       "assurances": []
     },
     "redis_cache": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "redis_cache",
       "displayName": "Azure Managed Redis",
       "shortName": "REDIS",
@@ -7039,7 +7037,7 @@
       "assurances": []
     },
     "resource_group": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "resource_group",
       "displayName": "Resource Group",
       "shortName": "RG",
@@ -7088,7 +7086,7 @@
       ]
     },
     "resource_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "resource_manager",
       "displayName": "Azure Resource Manager",
       "shortName": "ARM",
@@ -7107,7 +7105,7 @@
       "assurances": []
     },
     "resource_mover": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "resource_mover",
       "displayName": "Azure Resource Mover",
       "shortName": "MOVE",
@@ -7126,7 +7124,7 @@
       "assurances": []
     },
     "route_server": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "route_server",
       "displayName": "Azure Route Server",
       "shortName": "ARS",
@@ -7145,7 +7143,7 @@
       "assurances": []
     },
     "route_table": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "route_table",
       "displayName": "Route Table",
       "shortName": "UDR",
@@ -7164,7 +7162,7 @@
       "assurances": []
     },
     "security_copilot": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "security_copilot",
       "displayName": "Microsoft Security Copilot",
       "shortName": "SC",
@@ -7183,7 +7181,7 @@
       "assurances": []
     },
     "sentinel": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "sentinel",
       "displayName": "Microsoft Sentinel",
       "shortName": "SENT",
@@ -7202,7 +7200,7 @@
       "assurances": []
     },
     "service_bus": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "service_bus",
       "displayName": "Service Bus",
       "shortName": "SB",
@@ -7371,7 +7369,7 @@
       ]
     },
     "service_fabric": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "service_fabric",
       "displayName": "Service Fabric",
       "shortName": "SF",
@@ -7390,7 +7388,7 @@
       "assurances": []
     },
     "service_health": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "service_health",
       "displayName": "Service Health",
       "shortName": "HLTH",
@@ -7409,7 +7407,7 @@
       "assurances": []
     },
     "service_plan": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "service_plan",
       "displayName": "App Service Plan",
       "shortName": "ASP",
@@ -7473,7 +7471,7 @@
       "assurances": []
     },
     "signalr_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "signalr_service",
       "displayName": "Azure SignalR Service",
       "shortName": "SIG",
@@ -7507,7 +7505,7 @@
       "assurances": []
     },
     "site_recovery": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "site_recovery",
       "displayName": "Azure Site Recovery",
       "shortName": "ASR",
@@ -7526,7 +7524,7 @@
       "assurances": []
     },
     "speech_service": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "speech_service",
       "displayName": "AI Speech",
       "shortName": "SPCH",
@@ -7545,7 +7543,7 @@
       "assurances": []
     },
     "spot_virtual_machine": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "spot_virtual_machine",
       "displayName": "Azure Spot Virtual Machines",
       "shortName": "SPOT",
@@ -7564,7 +7562,7 @@
       "assurances": []
     },
     "spring_apps": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "spring_apps",
       "displayName": "Azure Spring Apps",
       "shortName": "SPR",
@@ -7583,7 +7581,7 @@
       "assurances": []
     },
     "sql_database": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "sql_database",
       "displayName": "SQL Database",
       "shortName": "DB",
@@ -7647,7 +7645,7 @@
       "assurances": []
     },
     "sql_server": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "sql_server",
       "displayName": "SQL Server",
       "shortName": "SQL",
@@ -7807,7 +7805,7 @@
       ]
     },
     "sql_virtual_machine": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "sql_virtual_machine",
       "displayName": "SQL Server on Azure Virtual Machines",
       "shortName": "SQLVM",
@@ -7826,7 +7824,7 @@
       "assurances": []
     },
     "sre_agent": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "sre_agent",
       "displayName": "Azure SRE Agent",
       "shortName": "SRE",
@@ -7845,7 +7843,7 @@
       "assurances": []
     },
     "stack_edge": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "stack_edge",
       "displayName": "Azure Stack Edge",
       "shortName": "ASE",
@@ -7864,7 +7862,7 @@
       "assurances": []
     },
     "stack_hub": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "stack_hub",
       "displayName": "Azure Stack Hub",
       "shortName": "ASH",
@@ -7883,7 +7881,7 @@
       "assurances": []
     },
     "static_web_apps": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "static_web_apps",
       "displayName": "Static Web Apps",
       "shortName": "SWA",
@@ -7902,7 +7900,7 @@
       "assurances": []
     },
     "storage_account": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "storage_account",
       "displayName": "Storage Account",
       "shortName": "ST",
@@ -8526,7 +8524,7 @@
       ]
     },
     "storage_actions": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "storage_actions",
       "displayName": "Azure Storage Actions",
       "shortName": "ACT",
@@ -8545,7 +8543,7 @@
       "assurances": []
     },
     "storage_discovery": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "storage_discovery",
       "displayName": "Azure Storage Discovery",
       "shortName": "DISC",
@@ -8564,7 +8562,7 @@
       "assurances": []
     },
     "storage_explorer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "storage_explorer",
       "displayName": "Storage Explorer",
       "shortName": "EXP",
@@ -8583,7 +8581,7 @@
       "assurances": []
     },
     "storage_mover": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "storage_mover",
       "displayName": "Azure Storage Mover",
       "shortName": "STM",
@@ -8602,7 +8600,7 @@
       "assurances": []
     },
     "stream_analytics": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "stream_analytics",
       "displayName": "Stream Analytics",
       "shortName": "ASA",
@@ -8621,7 +8619,7 @@
       "assurances": []
     },
     "subnet": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "subnet",
       "displayName": "Subnet",
       "shortName": "SNET",
@@ -8690,7 +8688,7 @@
       }
     },
     "synapse_analytics": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "synapse_analytics",
       "displayName": "Synapse Analytics",
       "shortName": "SYN",
@@ -8709,7 +8707,7 @@
       "assurances": []
     },
     "table_storage": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "table_storage",
       "displayName": "Table Storage",
       "shortName": "TABLE",
@@ -8728,7 +8726,7 @@
       "assurances": []
     },
     "traffic_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "traffic_manager",
       "displayName": "Traffic Manager",
       "shortName": "TM",
@@ -8747,7 +8745,7 @@
       "assurances": []
     },
     "translator": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "translator",
       "displayName": "AI Translator",
       "shortName": "TR",
@@ -8766,7 +8764,7 @@
       "assurances": []
     },
     "update_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "update_manager",
       "displayName": "Azure Update Manager",
       "shortName": "UPD",
@@ -8785,7 +8783,7 @@
       "assurances": []
     },
     "video_indexer": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "video_indexer",
       "displayName": "Azure AI Video Indexer",
       "shortName": "VID",
@@ -8804,7 +8802,7 @@
       "assurances": []
     },
     "virtual_desktop": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "virtual_desktop",
       "displayName": "Azure Virtual Desktop",
       "shortName": "AVD",
@@ -8823,7 +8821,7 @@
       "assurances": []
     },
     "virtual_machine": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "virtual_machine",
       "displayName": "Virtual Machine",
       "shortName": "VM",
@@ -9004,7 +9002,7 @@
       ]
     },
     "virtual_network": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "virtual_network",
       "displayName": "Virtual Network",
       "shortName": "VNET",
@@ -9046,7 +9044,7 @@
       "assurances": []
     },
     "virtual_network_manager": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "virtual_network_manager",
       "displayName": "Azure Virtual Network Manager",
       "shortName": "AVNM",
@@ -9065,7 +9063,7 @@
       "assurances": []
     },
     "virtual_wan": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "virtual_wan",
       "displayName": "Azure Virtual WAN",
       "shortName": "VWAN",
@@ -9088,7 +9086,7 @@
       "assurances": []
     },
     "visual_studio": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "visual_studio",
       "displayName": "Visual Studio",
       "shortName": "VS",
@@ -9107,7 +9105,7 @@
       "assurances": []
     },
     "visual_studio_code": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "visual_studio_code",
       "displayName": "Visual Studio Code",
       "shortName": "VSC",
@@ -9126,7 +9124,7 @@
       "assurances": []
     },
     "vm_image_builder": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "vm_image_builder",
       "displayName": "Azure VM Image Builder",
       "shortName": "AIB",
@@ -9145,7 +9143,7 @@
       "assurances": []
     },
     "vm_scale_sets": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "vm_scale_sets",
       "displayName": "Virtual Machine Scale Sets",
       "shortName": "VMSS",
@@ -9199,7 +9197,7 @@
       "assurances": []
     },
     "vmware_solution": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "vmware_solution",
       "displayName": "Azure VMware Solution",
       "shortName": "AVS",
@@ -9218,7 +9216,7 @@
       "assurances": []
     },
     "vpn_gateway": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "vpn_gateway",
       "displayName": "VPN Gateway",
       "shortName": "VPN",
@@ -9237,7 +9235,7 @@
       "assurances": []
     },
     "web_app": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "web_app",
       "displayName": "Web App",
       "shortName": "WEB",
@@ -9604,7 +9602,7 @@
       }
     },
     "web_application_firewall": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "web_application_firewall",
       "displayName": "Azure Web Application Firewall",
       "shortName": "WAF",
@@ -9681,7 +9679,7 @@
       ]
     },
     "web_pubsub": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "web_pubsub",
       "displayName": "Azure Web PubSub",
       "shortName": "WPS",
@@ -9715,7 +9713,7 @@
       "assurances": []
     },
     "windows_iot": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "windows_iot",
       "displayName": "Windows for IoT",
       "shortName": "WIOT",
@@ -9734,7 +9732,7 @@
       "assurances": []
     },
     "windows_server": {
-      "$schema": "../schema/service.schema.json",
+      "$schema": "../../schema/service.schema.json",
       "serviceId": "windows_server",
       "displayName": "Windows Server",
       "shortName": "WIN",
@@ -10959,7 +10957,7 @@
         }
       ],
       "remediation": "For development environments, set sku_name = \"standard\".",
-      "reference": "https://learn.microsoft.com/en-us/security/benchmark/azure/baselines/key-vault-security-baseline"
+      "reference": "https://learn.microsoft.com/azure/key-vault/general/overview"
     },
     {
       "id": "AZ-KV-KEY-001",

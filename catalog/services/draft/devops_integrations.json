@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "devops_integrations",
   "displayName": "DevOps Tool Integrations",
   "shortName": "INT",

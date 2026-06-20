@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "content_understanding",
   "displayName": "Azure Content Understanding",
   "shortName": "CU",

@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "open_datasets",
   "displayName": "Azure Open Datasets",
   "shortName": "DATA",

@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "data_share",
   "displayName": "Azure Data Share",
   "shortName": "SHARE",

@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "azure_boards",
   "displayName": "Azure Boards",
   "shortName": "BOARD",

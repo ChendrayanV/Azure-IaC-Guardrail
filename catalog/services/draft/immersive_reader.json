@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "immersive_reader",
   "displayName": "Azure AI Immersive Reader",
   "shortName": "IR",

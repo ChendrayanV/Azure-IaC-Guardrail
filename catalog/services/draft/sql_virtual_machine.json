@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "sql_virtual_machine",
   "displayName": "SQL Server on Azure Virtual Machines",
   "shortName": "SQLVM",

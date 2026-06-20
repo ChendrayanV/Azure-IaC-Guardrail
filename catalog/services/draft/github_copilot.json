@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "github_copilot",
   "displayName": "GitHub Copilot",
   "shortName": "GHC",

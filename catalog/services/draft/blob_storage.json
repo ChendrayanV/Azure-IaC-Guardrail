@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "blob_storage",
   "displayName": "Azure Blob Storage",
   "shortName": "BLOB",

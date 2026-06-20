@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "data_box",
   "displayName": "Azure Data Box",
   "shortName": "BOX",

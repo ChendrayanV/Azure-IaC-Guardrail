@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "managed_cassandra",
   "displayName": "Azure Managed Instance for Apache Cassandra",
   "shortName": "CAS",

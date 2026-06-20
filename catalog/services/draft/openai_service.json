@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "openai_service",
   "displayName": "Azure OpenAI",
   "shortName": "AOAI",

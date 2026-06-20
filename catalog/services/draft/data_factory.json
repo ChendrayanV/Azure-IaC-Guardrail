@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "data_factory",
   "displayName": "Data Factory",
   "shortName": "ADF",

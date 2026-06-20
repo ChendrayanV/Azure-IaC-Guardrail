@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "stream_analytics",
   "displayName": "Stream Analytics",
   "shortName": "ASA",

@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "storage_account",
   "displayName": "Storage Account",
   "shortName": "ST",

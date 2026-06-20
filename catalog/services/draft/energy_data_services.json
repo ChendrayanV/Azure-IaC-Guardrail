@@ -1,5 +1,5 @@
 {
-  "$schema": "../schema/service.schema.json",
+  "$schema": "../../schema/service.schema.json",
   "serviceId": "energy_data_services",
   "displayName": "Microsoft Energy Data Services",
   "shortName": "EDS",
