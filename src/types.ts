@@ -42,8 +42,11 @@ export interface PlatformAssurance {
 }
 
 export interface ControlCatalog {
+  version?: number;
   catalogVersion: string;
+  generatedFrom?: string;
   controls: Control[];
+  services?: Record<string, unknown>;
   assurances?: PlatformAssurance[];
 }
 

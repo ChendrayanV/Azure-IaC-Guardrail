@@ -26,6 +26,30 @@ Preview features do not receive GA compatibility guarantees until documented.
 - Compatibility and migration notes.
 - Known limitations and rollback guidance.
 
+## Catalog releases
+
+The extension runtime and guardrail catalog are released independently.
+
+- Extension version: the VS Code runtime, commands, panels, scanners, and
+  packaging metadata in `package.json`.
+- Catalog version: the generated service/control payload built from
+  `catalog/services/{production,draft}/*.json` and stamped from
+  `catalog/VERSION`.
+
+The repository remains the source of truth for both. Catalog authors update the
+service JSON files, bump `catalog/VERSION` when publishing a governed catalog
+drop, and regenerate `azure-complete-catalog-vscode.json`.
+
+The extension supports three catalog sources:
+
+- `bundled`: use the catalog packaged in the VSIX.
+- `workspace`: load a complete catalog from the open repository or workspace.
+- `remote`: load a complete catalog from the configured catalog URL.
+
+Set `azureIacGuardrail.catalogVersion` to require a specific approved catalog
+version. If the selected catalog does not match, scanning fails closed instead
+of silently using an unapproved control set.
+
 ## Hotfixes
 
 Hotfixes are limited to critical security, correctness, installation, or data

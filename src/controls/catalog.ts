@@ -11,11 +11,8 @@ import {
 export async function loadControls(
   context: vscode.ExtensionContext,
 ): Promise<Control[]> {
-  const builtInCatalog = vscode.Uri.joinPath(
-    context.extensionUri,
-    "azure-complete-catalog-vscode.json",
-  ).fsPath;
-  const controls = await readCompleteCatalog(builtInCatalog);
+  const catalog = await loadCompleteCatalog(context);
+  const controls = [...catalog.controls];
   const skippedControlIds = new Set<string>();
 
   for (const folder of vscode.workspace.workspaceFolders ?? []) {
@@ -61,16 +58,111 @@ export async function loadControls(
   );
 }
 
-async function readCompleteCatalog(filePath: string): Promise<Control[]> {
-  const content = await fs.readFile(filePath, "utf8");
-  const catalog = JSON.parse(content) as {
-    catalogVersion?: string;
-    controls?: Control[];
-  };
-  if (!catalog.catalogVersion || !Array.isArray(catalog.controls)) {
-    throw new Error(`Invalid complete service catalog: ${filePath}`);
+export async function loadCompleteCatalog(
+  context: vscode.ExtensionContext,
+): Promise<ControlCatalog> {
+  const builtInCatalog = vscode.Uri.joinPath(
+    context.extensionUri,
+    "azure-complete-catalog-vscode.json",
+  ).fsPath;
+  const source = configuredCatalogSource();
+
+  if (source === "workspace") {
+    const workspaceCatalog = await readWorkspaceCompleteCatalog();
+    if (workspaceCatalog) {
+      return workspaceCatalog;
+    }
+    return readCompleteCatalog(builtInCatalog);
   }
-  return catalog.controls;
+
+  if (source === "remote") {
+    const remoteCatalog = await readRemoteCompleteCatalog();
+    if (remoteCatalog) {
+      return remoteCatalog;
+    }
+    return readCompleteCatalog(builtInCatalog);
+  }
+
+  return readCompleteCatalog(builtInCatalog);
+}
+
+async function readCompleteCatalog(filePath: string): Promise<ControlCatalog> {
+  const catalog = parseCompleteCatalog(
+    await fs.readFile(filePath, "utf8"),
+    filePath,
+  );
+  assertPinnedCatalogVersion(catalog, filePath);
+  return catalog;
+}
+
+function parseCompleteCatalog(
+  content: string,
+  source: string,
+): ControlCatalog {
+  const catalog = JSON.parse(content) as Partial<ControlCatalog>;
+  if (!catalog.catalogVersion || !Array.isArray(catalog.controls)) {
+    throw new Error(`Invalid complete service catalog: ${source}`);
+  }
+  return catalog as ControlCatalog;
+}
+
+async function readWorkspaceCompleteCatalog(): Promise<
+  ControlCatalog | undefined
+> {
+  for (const folder of vscode.workspace.workspaceFolders ?? []) {
+    const configuredPath = configuredCatalogPath(folder.uri);
+    const catalogPath = path.isAbsolute(configuredPath)
+      ? configuredPath
+      : path.join(folder.uri.fsPath, configuredPath);
+    const catalog = await tryReadCompleteCatalog(catalogPath);
+    if (catalog) {
+      return catalog;
+    }
+  }
+  return undefined;
+}
+
+async function readRemoteCompleteCatalog(): Promise<
+  ControlCatalog | undefined
+> {
+  const url = configuredCatalogUrl();
+  if (!url) {
+    return undefined;
+  }
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(
+      `Unable to load remote catalog ${url}: HTTP ${response.status}`,
+    );
+  }
+  const catalog = parseCompleteCatalog(await response.text(), url);
+  assertPinnedCatalogVersion(catalog, url);
+  return catalog;
+}
+
+async function tryReadCompleteCatalog(
+  filePath: string,
+): Promise<ControlCatalog | undefined> {
+  try {
+    return await readCompleteCatalog(filePath);
+  } catch (error) {
+    if (isMissingFile(error)) {
+      return undefined;
+    }
+    throw error;
+  }
+}
+
+function assertPinnedCatalogVersion(
+  catalog: ControlCatalog,
+  source: string,
+): void {
+  const pinnedVersion = configuredCatalogVersion();
+  if (pinnedVersion && catalog.catalogVersion !== pinnedVersion) {
+    throw new Error(
+      `Catalog ${source} version ${catalog.catalogVersion} does not match pinned version ${pinnedVersion}.`,
+    );
+  }
 }
 
 function isExpired(expiresOn: string): boolean {
@@ -84,6 +176,37 @@ function configuredControlsPath(uri: vscode.Uri): string {
     "workspaceControlsPath",
     ".azure-iac-guardrail/controls",
   ) as string;
+}
+
+function configuredCatalogSource(): "bundled" | "workspace" | "remote" {
+  const value = vscode.workspace
+    .getConfiguration("azureIacGuardrail")
+    .get<string>("catalogSource", "bundled");
+  return value === "workspace" || value === "remote" ? value : "bundled";
+}
+
+function configuredCatalogPath(uri: vscode.Uri): string {
+  return getConfigurationValue(
+    uri,
+    "catalogPath",
+    ".azure-iac-guardrail/catalog/azure-complete-catalog-vscode.json",
+  ) as string;
+}
+
+function configuredCatalogUrl(): string | undefined {
+  const value = vscode.workspace
+    .getConfiguration("azureIacGuardrail")
+    .get<string>("catalogUrl", "")
+    .trim();
+  return value || undefined;
+}
+
+function configuredCatalogVersion(): string | undefined {
+  const value = vscode.workspace
+    .getConfiguration("azureIacGuardrail")
+    .get<string>("catalogVersion", "")
+    .trim();
+  return value || undefined;
 }
 
 async function readCatalogDirectory(directory: string): Promise<Control[]> {

@@ -50,6 +50,14 @@ For every release, the expected pair is:
 - `package.json` version: `X.Y.Z`
 - Git tag: `vX.Y.Z`
 
+Catalog-only releases do not have to change the VS Code extension version when
+teams consume the catalog through `azureIacGuardrail.catalogSource =
+"workspace"` or `"remote"`. Keep catalog authoring in this repository, bump
+`catalog/VERSION`, regenerate `azure-complete-catalog-vscode.json`, and publish
+the approved catalog artifact through the chosen workspace or remote channel.
+Marketplace releases are still required when the bundled fallback catalog or
+extension runtime changes.
+
 ## Recovery
 
 - A failed validation or package job publishes nothing.

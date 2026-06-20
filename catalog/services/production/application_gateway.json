@@ -15,13 +15,14 @@
     "parameters": [
       {
         "key": "sku",
-        "label": "Sku",
-        "type": "text",
-        "required": true,
+        "label": "SKU",
+        "type": "select",
+        "required": false,
         "nestedBlock": false,
-        "defaultValue": "",
-        "controlIds": [],
-        "remediation": ""
+        "defaultValue": "Basic",
+        "options": ["Basic", "Standard V2", "WAF V2"],
+        "controlIds": ["AZ-AGW-010"],
+        "remediation": "For development environments, use the Basic SKU unless a higher tier is explicitly required."
       },
       {
         "key": "gateway_ip_configuration",
@@ -253,6 +254,25 @@
       "expected": true,
       "remediation": "Set fips_enabled = true when required by the workload compliance profile.",
       "reference": "https://learn.microsoft.com/azure/application-gateway/application-gateway-fips"
+    },
+    {
+      "id": "AZ-AGW-010",
+      "title": "Development application gateway should use a lower SKU",
+      "description": "Development Application Gateways should use a lower-cost SKU unless a higher tier is explicitly justified.",
+      "severity": "warning",
+      "resourceTypes": ["azurerm_application_gateway"],
+      "attribute": "sku",
+      "operator": "oneOf",
+      "expected": ["Basic"],
+      "conditions": [
+        {
+          "attribute": "tags.environment",
+          "operator": "equals",
+          "expected": "development"
+        }
+      ],
+      "remediation": "For development environments, set sku = \"Basic\".",
+      "reference": "https://learn.microsoft.com/azure/application-gateway/understanding-pricing"
     }
   ]
 }

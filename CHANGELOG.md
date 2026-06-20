@@ -7,6 +7,15 @@ their general-availability milestone.
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-06-20
+
+### Added
+
+- Decoupled the guardrail catalog from the extension runtime with selectable
+  bundled, workspace, or remote complete catalog sources.
+- Added optional catalog version pinning so teams can hold the extension to an
+  approved catalog release while still managing catalog content in this repo.
+
 ## [0.1.7] - 2026-06-19
 
 ### Fixed

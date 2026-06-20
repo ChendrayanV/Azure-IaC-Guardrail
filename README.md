@@ -155,6 +155,23 @@ Canvas, but draft controls and assurances are not shipped until the service is
 promoted. The generated `azure-complete-catalog-vscode.json` is consumed by
 scanning and Cloud Canvas; do not edit it directly.
 
+The extension runtime and catalog content are versioned separately. The
+Marketplace extension ships a bundled catalog for offline use, while managed
+teams can point the same extension version at a workspace or remote complete
+catalog and optionally pin the approved `catalogVersion`:
+
+```json
+{
+  "azureIacGuardrail.catalogSource": "workspace",
+  "azureIacGuardrail.catalogPath": ".azure-iac-guardrail/catalog/azure-complete-catalog-vscode.json",
+  "azureIacGuardrail.catalogVersion": "2026.06.4"
+}
+```
+
+This keeps the repository as the source of truth for service and control
+authoring while avoiding a required VS Code extension release for every
+catalog-only update.
+
 Built-in production scanning currently covers these Azure service families:
 
 ```text
