@@ -218,17 +218,16 @@ Run **Azure IaC Guardrail: Cloud Canvas** from the Command
 Palette. The command ID is `sketchyourinfra`.
 
 1. Select **Generate From Terraform** to analyze the configured Terraform root.
-2. Select **Generate From Plan File** to choose a local `.tfplan` or
-   `terraform show -json` file.
-3. Use search and filters to focus the generated diagram.
-4. Select a resource to inspect dependencies, dependants, exposure signals,
-   risk, and action metadata.
-5. Select **Export SVG** to save the generated architecture diagram.
+2. Review the static GraphViz architecture preview.
+3. Select **Edit SVG** to open the generated image source in VS Code for
+   manual changes.
+4. Select **Export DOT** or **Export SVG** to save the generated architecture
+   diagram.
 
 Cloud Canvas does not provide manual drag-and-drop authoring. It does not
 generate Terraform, preview Terraform, create image drafts, or run Validate +
 Static Scan. It generates a professional Azure architecture diagram from local
-Terraform inputs.
+Terraform configuration.
 
 Newly cataloged services default to the red **Not approved or not yet
 reviewed** state. They can be used in diagrams immediately. Services without a

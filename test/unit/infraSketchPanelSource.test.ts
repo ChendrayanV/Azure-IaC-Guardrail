@@ -17,14 +17,15 @@ const configArchitectureSource = fs.readFileSync(
 const combinedSource = `${panelSource}\n${webviewSource}\n${configArchitectureSource}`;
 
 describe("Cloud Canvas generated architecture source", () => {
-  it("generates diagrams from Terraform configuration and local plan files", () => {
+  it("generates static diagrams from Terraform configuration", () => {
     expect(panelSource).toContain("generateFromConfiguration");
-    expect(panelSource).toContain("generateFromPlan");
     expect(panelSource).toContain("loadStaticWorkspace");
     expect(panelSource).toContain("parseTerraform");
     expect(panelSource).toContain("analyzeTerraformConfiguration");
-    expect(panelSource).toContain("analyzeTerraformPlan");
-    expect(panelSource).toContain("showTerraformPlan");
+    expect(panelSource).toContain("renderGraphvizSvg");
+    expect(panelSource).toContain("openEditableSvg");
+    expect(panelSource).not.toContain("showOpenDialog");
+    expect(panelSource).not.toContain("showTerraformPlan");
   });
 
   it("removes manual canvas authoring controls", () => {
@@ -39,6 +40,8 @@ describe("Cloud Canvas generated architecture source", () => {
     expect(webviewSource).not.toContain("Arrow style");
     expect(webviewSource).not.toContain("Dark view");
     expect(webviewSource).not.toContain("Clear canvas");
+    expect(webviewSource).not.toContain("selectNode");
+    expect(webviewSource).not.toContain("connectedAddresses");
   });
 
   it("keeps removed Cloud Canvas actions unavailable", () => {
@@ -54,11 +57,14 @@ describe("Cloud Canvas generated architecture source", () => {
 
   it("renders a professional architecture viewer", () => {
     expect(webviewSource).toContain("Generate From Terraform");
-    expect(webviewSource).toContain("Generate From Plan File");
     expect(webviewSource).toContain("Azure architecture diagram");
+    expect(webviewSource).toContain("Export DOT");
     expect(webviewSource).toContain("Export SVG");
-    expect(webviewSource).toContain("Architecture overview");
-    expect(webviewSource).toContain("public exposure signals");
+    expect(webviewSource).toContain("Edit SVG");
+    expect(webviewSource).toContain("empty-panel");
+    expect(webviewSource).toContain("fromConfigEmpty");
+    expect(webviewSource).not.toContain("Generate From Plan File");
+    expect(webviewSource).not.toContain("Search resource");
   });
 
   it("infers configuration relationships and exposure signals", () => {

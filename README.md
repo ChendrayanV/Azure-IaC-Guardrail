@@ -121,7 +121,7 @@ names and findings shown here are representative sample data.</sub>
 | Plan architecture | Search and filter plan topology, risk, actions, and exposure; export SVG | [Plan Scanning and Review](docs/wiki/Plan-Scanning-and-Review.md) |
 | Plan comparison and blast radius | Compare plans and summarize connected change impact | [Plan Scanning and Review](docs/wiki/Plan-Scanning-and-Review.md) |
 | Resource Cost | Estimate supported retail costs from declared configuration and assumptions | [Resource Cost](docs/wiki/Resource-Cost.md) |
-| Cloud Canvas | Generate Azure architecture diagrams from Terraform or plan files | [Cloud Canvas](docs/wiki/Cloud-Canvas.md) |
+| Cloud Canvas | Generate static GraphViz Azure architecture diagrams from Terraform configuration | [Cloud Canvas](docs/wiki/Cloud-Canvas.md) |
 | Evidence export | Produce a PDF report plus machine-readable JSON and Markdown | [Evidence and Reporting](docs/wiki/Evidence-and-Reporting.md) |
 
 Resource Cost is a **Preview** feature. Architecture diagrams require human

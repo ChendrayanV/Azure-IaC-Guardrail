@@ -36,8 +36,8 @@ catalog-driven interpretation of Terraform configuration and plan files.
 - VS Code diagnostics, hover details, completions, and quick actions are active.
 - The plan architecture diagram supports deterministic layout, dependencies,
   action/risk/exposure overlays, search, filtering, details, and SVG export.
-- Cloud Canvas generates Azure architecture diagrams from Terraform
-  configuration or local plan files.
+- Cloud Canvas generates static GraphViz Azure architecture diagrams from
+  Terraform configuration.
 
 Issues #8, #9, and #10 remain open where acceptance criteria still require
 official icon licensing, 100-node performance evidence, organization module

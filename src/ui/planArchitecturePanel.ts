@@ -5,6 +5,7 @@ import type {
   Finding,
   PlanAnalysis,
 } from "../types";
+import { renderGraphvizDot } from "../core/graphvizDiagram";
 
 interface PositionedNode extends ArchitectureNode {
   findingCount: number;
@@ -67,6 +68,7 @@ function renderPlanArchitecture(
   const payload = JSON.stringify({
     ...layout,
     edges: analysis.edges,
+    graphvizDot: renderGraphvizDot(analysis, { title: label }),
   }).replaceAll("<", "\\u003c");
 
   return `<!DOCTYPE html>
@@ -150,6 +152,7 @@ function renderPlanArchitecture(
       <span id="zoomLabel" class="zoom-label">100%</span>
       <button id="zoomIn" class="secondary" type="button" title="Zoom in">+</button>
       <button id="fit" class="secondary" type="button">Fit</button>
+      <button id="exportDot" class="secondary" type="button">Export DOT</button>
       <button id="export" type="button">Export SVG</button>
     </div>
     <main>
@@ -283,6 +286,13 @@ function renderPlanArchitecture(
     document.getElementById("zoomIn").addEventListener("click", () => setZoom(zoom + .1));
     document.getElementById("zoomOut").addEventListener("click", () => setZoom(zoom - .1));
     document.getElementById("fit").addEventListener("click", fit);
+    document.getElementById("exportDot").addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(new Blob([model.graphvizDot], { type: "text/vnd.graphviz" }));
+      link.download = "terraform-plan-architecture.dot";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
     viewport.addEventListener("pointerdown", event => {
       if (event.button !== 0 || event.target.closest(".node")) return;
       const startX = event.clientX, startY = event.clientY, left = viewport.scrollLeft, top = viewport.scrollTop;

@@ -57,13 +57,11 @@ The canvas renders only structural metadata:
 ## Cloud Canvas generated diagrams
 
 Run **Azure IaC Guardrail: Cloud Canvas** to generate a professional Azure
-architecture diagram from the configured Terraform root or from a local plan
-file.
+architecture diagram from the configured Terraform root.
 
 The generated view infers Azure resources, relationships, public exposure
-signals, change actions, and risk context from local Terraform inputs. It is a
-read-only architecture review surface and does not provide manual drag-and-drop
-editing.
+signals, and risk context from local Terraform configuration. It is a static
+architecture review surface and does not provide manual drag-and-drop editing.
 
 ## Custom service catalog
 

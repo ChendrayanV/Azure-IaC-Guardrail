@@ -1,13 +1,10 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import * as vscode from "vscode";
 import { analyzeTerraformConfiguration } from "../core/configArchitecture";
-import { analyzeTerraformPlan } from "../core/planAnalysis";
-import { parseTerraform } from "../core/terraformParser";
 import {
-  showTerraformPlan,
-  terraformPathFor,
-} from "../terraform/terraformCli";
+  renderGraphvizDot,
+  renderGraphvizSvg,
+} from "../core/graphvizDiagram";
+import { parseTerraform } from "../core/terraformParser";
 import { loadStaticWorkspace } from "../terraform/staticWorkspace";
 import {
   createNonce,
@@ -72,7 +69,7 @@ export class InfraSketchPanel implements vscode.Disposable {
         await this.generateFromConfiguration();
         return;
       }
-      await this.generateFromPlanFile();
+      await this.openEditableSvg(message.svg, message.label);
     } catch (error) {
       void vscode.window.showErrorMessage(
         `Cloud Canvas could not generate the diagram: ${error instanceof Error ? error.message : String(error)}`,
@@ -101,7 +98,7 @@ export class InfraSketchPanel implements vscode.Disposable {
         if (resources.length === 0) {
           throw new Error("No Terraform resource blocks were found in the configured Terraform root.");
         }
-        this.postDiagram({
+        await this.postDiagram({
           label: `${this.workspaceFolder!.name} Terraform configuration`,
           sourceKind: "configuration",
           analysis: analyzeTerraformConfiguration(resources),
@@ -111,60 +108,35 @@ export class InfraSketchPanel implements vscode.Disposable {
     );
   }
 
-  private async generateFromPlanFile(): Promise<void> {
-    if (!this.workspaceFolder) {
-      return;
-    }
-    const selected = await vscode.window.showOpenDialog({
-      canSelectFiles: true,
-      canSelectFolders: false,
-      canSelectMany: false,
-      defaultUri: this.workspaceFolder.uri,
-      filters: {
-        "Terraform plans": ["tfplan", "json"],
-        "All files": ["*"],
-      },
-      openLabel: "Generate Diagram",
-      title: "Select a Terraform plan or terraform show JSON file",
+  private async postDiagram(
+    payload: CloudCanvasDiagramPayload,
+  ): Promise<void> {
+    const graphvizDot = renderGraphvizDot(payload.analysis, {
+      title: payload.label,
     });
-    const planUri = selected?.[0];
-    if (!planUri) {
-      return;
-    }
-    await vscode.window.withProgress(
-      {
-        location: vscode.ProgressLocation.Notification,
-        title: "Generating Azure architecture from Terraform plan",
-      },
-      async () => {
-        const planJson = planUri.fsPath.endsWith(".json")
-          ? await fs.readFile(planUri.fsPath, "utf8")
-          : await showTerraformPlan(
-              terraformPathFor(this.workspaceFolder!.uri),
-              planUri.fsPath,
-              this.workspaceFolder!.uri.fsPath,
-            );
-        this.postDiagram({
-          label: path.basename(planUri.fsPath),
-          sourceKind: "plan",
-          analysis: analyzeTerraformPlan(planJson, []),
-          findings: [],
-        });
-      },
-    );
-  }
-
-  private postDiagram(payload: CloudCanvasDiagramPayload): void {
+    const previewDot = renderGraphvizDot(payload.analysis, {
+      title: payload.label,
+      includeIcons: false,
+    });
+    const graphvizSvg = await renderGraphvizSvg(previewDot);
     this.panel?.webview.postMessage({
       type: "diagramGenerated",
-      payload,
+      payload: { ...payload, graphvizDot, graphvizSvg },
     });
+  }
+
+  private async openEditableSvg(svg: string, label: string): Promise<void> {
+    const document = await vscode.workspace.openTextDocument({
+      language: "xml",
+      content: `<!-- ${label} -->\n${svg}`,
+    });
+    await vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
   }
 }
 
 type CloudCanvasMessage =
   | { type: "generateFromConfiguration" }
-  | { type: "generateFromPlan" };
+  | { type: "editSvg"; svg: string; label: string };
 
 function isCloudCanvasMessage(
   message: unknown,
@@ -172,9 +144,11 @@ function isCloudCanvasMessage(
   return (
     !!message &&
     typeof message === "object" &&
-    ["generateFromConfiguration", "generateFromPlan"].includes(
-      String((message as Partial<CloudCanvasMessage>).type ?? ""),
-    )
+    ((message as Partial<CloudCanvasMessage>).type ===
+      "generateFromConfiguration" ||
+      ((message as Partial<CloudCanvasMessage>).type === "editSvg" &&
+        typeof (message as Partial<{ svg: unknown }>).svg === "string" &&
+        typeof (message as Partial<{ label: unknown }>).label === "string"))
   );
 }
 

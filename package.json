@@ -85,7 +85,7 @@
           {
             "id": "sketchYourInfra",
             "title": "Sketch Azure infrastructure",
-            "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to generate an Azure architecture diagram from Terraform configuration or a local plan file."
+            "description": "Run [Azure IaC Guardrail: Cloud Canvas](command:sketchyourinfra) to generate a static GraphViz Azure architecture diagram from Terraform configuration."
           },
           {
             "id": "openPlanArchitecture",
@@ -225,6 +225,7 @@
     "vitest": "^4.1.8"
   },
   "dependencies": {
+    "@hpcc-js/wasm": "^2.34.2",
     "pdf-lib": "^1.17.1"
   },
   "overrides": {

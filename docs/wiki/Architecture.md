@@ -15,7 +15,7 @@ execution, webview panels, and exports.
 | Control catalog | Built-in and workspace controls |
 | Workspace policy | Regions, tags, exceptions, exclusions, cost assumptions |
 | Results webview | Findings, architecture, change impact, and cost preview |
-| Cloud Canvas | Generated Azure architecture diagrams from Terraform configuration or plan files |
+| Cloud Canvas | Static GraphViz Azure architecture diagrams from Terraform configuration |
 | Plan architecture canvas | Configuration-reference and resolved-ID topology, dependency-aware layout, connectivity highlighting, filtering, and SVG export |
 | Evidence and PDF export | Human and machine-readable review artifacts |
 
